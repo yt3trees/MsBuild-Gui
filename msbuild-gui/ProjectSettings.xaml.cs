@@ -203,6 +203,12 @@ namespace msbuild_gui
             // window.AnswerをMainWindow.Projects.ProjectsListに追加
             if (window.ShowDialog() == true)
             {
+                // window.Answerがすでに存在するなら登録できない(大文字小文字を区別しない)
+                if (MainWindow.Projects.ProjectsList.Any(x => x.Value.ProjectName.ToLower() == window.Answer.ToLower()))
+                {
+                    ModernWpf.MessageBox.Show("すでに存在するプロジェクト名です。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
                 // MainWindow.Projects.ProjectsListのID+1を取得
                 int key = MainWindow.Projects.ProjectsList.Keys.Max() + 1;
                 MainWindow.Projects.ProjectsList.Add(key, new MainWindow.Projects.ProjectData
