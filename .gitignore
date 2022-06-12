@@ -1,0 +1,5 @@
+/.vs
+/msbuild-gui/obj
+/msbuild-gui/bin
+/msbuild-gui-installer/Debug
+/msbuild-gui-installer/Release

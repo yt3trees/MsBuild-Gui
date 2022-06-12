@@ -1,0 +1,50 @@
+﻿<Window x:Class="msbuild_gui.Console"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:msbuild_gui"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        FocusManager.FocusedElement="{Binding ElementName=CmdResult}"
+        mc:Ignorable="d"
+        Title="実行結果"
+        Height="500"
+        Width="800"
+        WindowStartupLocation="Manual"
+        KeyDown="Window_KeyDown">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="450*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <TextBox x:Name="CmdResult"
+                 TextWrapping="Wrap"
+                 Text="TextBox"
+                 IsReadOnly="True"
+                 VerticalScrollBarVisibility="Auto"
+                 Background="#FF111111"
+                 Foreground="LightGray"
+                 Padding="10,10,10,10"
+                 FontFamily="BIZ UDGothic"
+                 FontSize="14"
+                 FontWeight="Normal"
+                 KeyDown="CmdResult_KeyDown" />
+        <Border x:Name="Border"
+                BorderBrush="Black"
+                BorderThickness="1" />
+        <Grid Grid.Row="1">
+            <Button x:Name="NextButton"
+                    Content="▼"
+                    HorizontalAlignment="Center"
+                    Padding="0,0,0,0"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    VerticalAlignment="Top"
+                    Width="800"
+                    FontSize="16"
+                    Click="NextButton_Click"
+                    Height="30" />
+        </Grid>
+    </Grid>
+</Window>

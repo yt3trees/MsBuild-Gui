@@ -1,0 +1,221 @@
+﻿<Window x:Class="msbuild_gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:msbuild_gui"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        mc:Ignorable="d"
+        Title="MsBuild-Gui"
+        ResizeMode="CanResize"
+        Height="600"
+        Width="800"
+        SourceInitialized="Window_SourceInitialized"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing"
+        KeyDown="Window_KeyDown"
+        Icon="/msbuild-gui;component/Resources/MsBuild-Gui.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="120" />
+            <RowDefinition />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="15*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="15*" />
+        </Grid.ColumnDefinitions>
+        <ProgressBar x:Name="ProgressBar"
+                     Grid.Row="3"
+                     MinHeight="5"
+                     MinWidth="800"
+                     Background="#33000000"
+                     Orientation="Horizontal"
+                     Grid.ColumnSpan="3"
+                     VerticalAlignment="Bottom"
+                     Opacity="0.9" />
+        <StackPanel Margin="0,2,0,0"
+                    Grid.Row="1">
+            <Label Content="プロジェクト"
+                   HorizontalContentAlignment="Center"
+                   Height="30"
+                   VerticalContentAlignment="Center"
+                   FontSize="14" />
+            <ComboBox x:Name="ProjCombo"
+                      Width="180"
+                      HorizontalAlignment="Center"
+                      SelectionChanged="ProjCombo_SelectionChanged"
+                      VerticalAlignment="Center" />
+            <Button x:Name="SettingButton"
+                    Content="プロジェクト設定"
+                    Margin="30,10,30,10"
+                    FontSize="14"
+                    HorizontalAlignment="Center"
+                    Click="SettingButton_Click" />
+        </StackPanel>
+        <Button x:Name="AddButton"
+                Content="追加(_A)＞"
+                HorizontalAlignment="Center"
+                FontFamily="Yu Gothic UI"
+                Height="30"
+                Grid.Column="1"
+                Grid.Row="2"
+                Padding="5,0,5,0"
+                Width="75"
+                Margin="0,-50,0,0"
+                Click="AddButton_Click" />
+        <Button x:Name="RemoveButton"
+                Content="＜削除(_D)"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="Yu Gothic UI"
+                Height="30"
+                Grid.Column="1"
+                Margin="0,50,0,0"
+                Grid.Row="2"
+                Padding="5,0,5,0"
+                Width="75"
+                Click="RemoveButton_Click" />
+        <ListBox x:Name="SourceList"
+                 d:ItemsSource="{d:SampleData ItemCount=5}"
+                 Margin="10,40,10,0"
+                 FontFamily="Consolas"
+                 Grid.Row="2"
+                 FontSize="12"
+                 MouseDoubleClick="SourceList_MouseDoubleClick"
+                 KeyDown="SourceList_KeyDown" />
+        <ListBox x:Name="TargetList"
+                 d:ItemsSource="{d:SampleData ItemCount=5}"
+                 Margin="10,40,10,0"
+                 FontFamily="Consolas"
+                 Grid.Column="2"
+                 Grid.Row="2"
+                 FontSize="12"
+                 MouseDoubleClick="TargetList_MouseDoubleClick"
+                 KeyDown="TargetList_KeyDown" />
+        <Grid Grid.Column="2"
+              Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid Width="250"
+                  HorizontalAlignment="Center">
+                <ui:ProgressRing x:Name="ProgressRing"
+                                 IsActive="False"
+                                 Height="30"
+                                 Width="30"
+                                 HorizontalAlignment="Left"
+                                 Margin="-40,0,0,0" />
+                <!--"{Binding IsOn, ElementName=ProgressToggle}"-->
+                <!--<ui:ToggleSwitch x:Name="ProgressToggle"
+                                 Header="Toggle work"
+                                 OffContent="Do work"
+                                 OnContent="Working"
+                                 IsOn="False"
+                                 Margin="-314,-6,0,0"
+                                 VerticalAlignment="Top" />-->
+                <Button x:Name="BuildButton"
+                        Content="ビルド"
+                        Click="BuildButton_Click"
+                        Height="30"
+                        FontSize="14"
+                        Padding="0,1,0,1"
+                        Width="120"
+                        Style="{StaticResource AccentButtonStyle}" />
+                <CheckBox x:Name="ShowLogCheck"
+                          Content="ビルドログを表示"
+                          Click="ShowLogCheck_Click"
+                          HorizontalAlignment="Right" />
+            </Grid>
+        </Grid>
+        <Label Grid.Column="2"
+               Content="ビルド対象"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Top"
+               FontSize="14"
+               Grid.Row="2"
+               Height="29"
+               Width="70"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Margin="0,5,0,0" />
+        <Label Content="csproj一覧"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Top"
+               FontSize="14"
+               Grid.Row="2"
+               Height="29"
+               Width="76"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Margin="0,5,0,0" />
+        <!--<Button x:Name="UpdateButton"
+                Content="更新"
+                HorizontalAlignment="Right"
+                Margin="0,5,10,0"
+                Grid.Row="2"
+                VerticalAlignment="Top"
+                Padding="10,1,10,1"
+                Height="20"
+                Width="46"
+                FontSize="12"
+                Click="UpdateButton_Click" />-->
+        <Menu Grid.ColumnSpan="3"
+              Margin="0,4,0,6">
+            <MenuItem Header="ファイル(_F)"
+                      Click="MenuItem_Click">
+                <MenuItem Header="終了(_X)" />
+            </MenuItem>
+            <MenuItem Header="設定(_E)">
+                <MenuItem Header="プロジェクト設定(_P)"
+                          Click="Button_Click" />
+            </MenuItem>
+            <MenuItem Header="ヘルプ(_H)">
+                <MenuItem Header="バージョン情報(_A)"
+                          Click="MenuItem_Click_1" />
+            </MenuItem>
+        </Menu>
+        <Button x:Name="UpButton"
+                Content="▲"
+                HorizontalAlignment="Right"
+                Margin="0,15,10,0"
+                Grid.Row="2"
+                VerticalAlignment="Top"
+                Padding="0,0,0,0"
+                Height="20"
+                Width="20"
+                FontSize="12"
+                Grid.Column="2"
+                Click="UpButton_Click" />
+        <Button x:Name="DownButton"
+                Content="▼"
+                HorizontalAlignment="Right"
+                Margin="0,15,35,0"
+                Grid.Row="2"
+                VerticalAlignment="Top"
+                Padding="0,0,0,0"
+                Height="20"
+                Width="20"
+                FontSize="12"
+                Click="DownButton_Click"
+                Grid.Column="2" />
+        <TextBox x:Name="SearchTextbox"
+                 HorizontalAlignment="Right"
+                 Margin="0,5,10,0"
+                 Grid.Row="2"
+                 TextWrapping="Wrap"
+                 VerticalAlignment="Top"
+                 Width="120"
+                 Height="20"
+                 Padding="5,5,5,5"
+                 VerticalContentAlignment="Center"
+                 FontSize="14"
+                 TextChanged="SearchTextbox_TextChanged"
+                 ui:ControlHelper.PlaceholderText="Search"
+                 TextAlignment="Left" />
+
+    </Grid>
+</Window>
