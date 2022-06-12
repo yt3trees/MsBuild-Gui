@@ -90,17 +90,53 @@ namespace msbuild_gui
 
         private void ProjFolderSelect_Click(object sender, RoutedEventArgs e)
         {
-            ProjFolderPath.Text = OpenFolderDialog(true, ProjFolderPath.Text);
+            using (var cofd = new CommonOpenFileDialog()
+            {
+                Title = "フォルダ選択",
+                InitialDirectory = ProjFolderPath.Text,
+                IsFolderPicker = true,
+            }
+                )
+            {
+                if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    ProjFolderPath.Text = cofd.FileName;
+                }
+            }
         }
 
         private void OutputFolderSelect_Click(object sender, RoutedEventArgs e)
         {
-            OutputFolderPath.Text = OpenFolderDialog(true, OutputFolderPath.Text);
+            using (var cofd = new CommonOpenFileDialog()
+            {
+                Title = "dll出力先フォルダ選択",
+                InitialDirectory = OutputFolderPath.Text,
+                IsFolderPicker = true,
+            }
+                )
+            {
+                if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    OutputFolderPath.Text = cofd.FileName;
+                }
+            }
         }
 
         private void MsBuildFileSelect_Click(object sender, RoutedEventArgs e)
         {
-            MsBuildPath.Text = OpenFolderDialog(false, MsBuildPath.Text);
+            using (var cofd = new CommonOpenFileDialog()
+            {
+                Title = "MsBuild.exe選択",
+                InitialDirectory = MsBuildPath.Text.Substring(0, MsBuildPath.Text.LastIndexOf("\\")),
+                IsFolderPicker = false,
+            }
+                )
+            {
+                if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    MsBuildPath.Text = cofd.FileName;
+                }
+            }
         }
         private void ProjSettingCombo_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
