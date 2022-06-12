@@ -208,7 +208,7 @@
                 {
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_41A8E19578D04788A51CE1C57A76F355"
                     {
-                    "Name" = "8:msbuild-gui"
+                    "Name" = "8:MsBuild-Gui"
                     "AlwaysCreate" = "11:FALSE"
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
@@ -246,15 +246,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:msbuild-gui"
-        "ProductCode" = "8:{FEFF4B89-19D4-4656-9F73-AC8D4C9FF2E9}"
-        "PackageCode" = "8:{AB1B4AB9-F391-4468-AE08-551ADE788C99}"
+        "ProductCode" = "8:{3B375737-40E0-4881-8CCB-A9BE3E9D0A76}"
+        "PackageCode" = "8:{B23D01DE-2672-4CB5-B474-0A83C0F5F3CA}"
         "UpgradeCode" = "8:{7D70ECDB-383F-40E2-B1A8-D750CFA02BE0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.9.2"
+        "ProductVersion" = "8:0.9.3"
         "Manufacturer" = "8:yt3trees"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -369,7 +369,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_29887B2A422E4914A72AE9F677BE9106"
             {
-            "Name" = "8:msbuild-gui"
+            "Name" = "8:MsBuild-Gui"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -383,7 +383,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_312CD2C15AE34B0583B9961B0426B32B"
             {
-            "Name" = "8:msbuild-gui"
+            "Name" = "8:MsBuild-Gui"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"

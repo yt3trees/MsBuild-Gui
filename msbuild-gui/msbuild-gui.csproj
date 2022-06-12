@@ -6,12 +6,18 @@
     <RootNamespace>msbuild_gui</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <AssemblyVersion>0.9.2.0</AssemblyVersion>
+    <AssemblyVersion>0.9.3.0</AssemblyVersion>
     <Company>yt3trees</Company>
-    <FileVersion>0.9.2.0</FileVersion>
+    <FileVersion>0.9.3.0</FileVersion>
     <PackageIcon>MsBuild-Gui.png</PackageIcon>
     <ApplicationIcon>image\MsBuild-Gui.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Copyright>yt3trees</Copyright>
+    <PackageProjectUrl>https://github.com/yt3trees/MsBuild-Gui</PackageProjectUrl>
+    <PackageReadmeFile></PackageReadmeFile>
+    <RepositoryUrl>https://github.com/yt3trees/MsBuild-Gui</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseFile>C:\work\dev\msbuild-gui\msbuild-gui\LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>

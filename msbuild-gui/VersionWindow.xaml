@@ -9,20 +9,20 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="バージョン情報"
-        Height="180"
-        Width="280"
+        Height="220"
+        Width="380"
         WindowStyle="ToolWindow"
         KeyDown="Window_KeyDown">
     <Grid Margin="5,5,5,5"
           VerticalAlignment="Stretch"
           HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="10*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="15*" />
-            <RowDefinition Height="15*" />
+            <RowDefinition Height="18*" />
         </Grid.RowDefinitions>
 
 
@@ -34,17 +34,36 @@
                Content="MsBuild-Gui"
                VerticalAlignment="Center"
                HorizontalAlignment="Left"
-               FontSize="18" />
+               FontSize="20" />
         <TextBlock x:Name="VersionText"
                    HorizontalAlignment="Left"
                    TextWrapping="Wrap"
                    VerticalAlignment="Top"
                    FontSize="14"
-                   Height="18"
+                   Height="20"
                    Width="155"
-                   Text="Version"
+                   Text="Version:"
                    Grid.Column="1"
-                   Grid.Row="1" />
+                   Grid.Row="1"
+                   Margin="1,0,0,0" />
+        <TextBox x:Name="githubURLText"
+                 HorizontalAlignment="Left"
+                 TextWrapping="Wrap"
+                 VerticalAlignment="Top"
+                 Width="262"
+                 Text="https://github.com/yt3trees/MsBuild-Gui"
+                 Grid.Row="1"
+                 Margin="0,20,0,0"
+                 SelectionTextBrush="Transparent"
+                 Background="Transparent"
+                 BorderBrush="#00000000"
+                 Padding="0,0,0,0"
+                 FontSize="14"
+                 VerticalContentAlignment="Center"
+                 Height="20"
+                 MinHeight="25"
+                 SelectionBrush="#CC0078D7"
+                 Grid.Column="1" />
         <Button IsDefault="True"
                 x:Name="OkButton"
                 MinWidth="60"
