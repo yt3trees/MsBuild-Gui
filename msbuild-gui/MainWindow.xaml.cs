@@ -183,11 +183,23 @@ namespace msbuild_gui
                         foreach (string subFolder in subFolders)
                         {
                             // フォルダ名を取得
-                            string folderName = System.IO.Path.GetFileName(subFolder);
+                            //string folderName = System.IO.Path.GetFileName(subFolder);
+                            //.csprojファイルを取得
+                            string[] files = System.IO.Directory.GetFiles(
+                                path: subFolder, "*.csproj", SearchOption.AllDirectories);
+                            foreach (string filepath in files)
+                            {
+                                // filesからproj.Value.SourceFolderを削除
+                                string filename = filepath.Replace(proj.Value.SourceFolder, "");
+                                // フォルダ名をComboBoxに追加
+                                SourceList.Items.Add(filename);
+                                // プロパティList.sourceListに追加(検索用)
+                                List.sourceList.Add(filename);
+                            }
                             // フォルダ名をComboBoxに追加
-                            SourceList.Items.Add(folderName);
+                            //SourceList.Items.Add(folderName);
                             // プロパティList.sourceListに追加(検索用)
-                            List.sourceList.Add(folderName);
+                            //List.sourceList.Add(folderName);
                         }
                     }
                     catch (Exception ex)
@@ -447,7 +459,7 @@ namespace msbuild_gui
                
                 foreach (var target in targets)
                 {
-                    string targetFilePath = SourceFolder + "\\" + target + "\\" + target + ".csproj";
+                    string targetFilePath = SourceFolder + target;
                     Process? process = Process.Start(new ProcessStartInfo
                     {
                         FileName = "cmd.exe",
