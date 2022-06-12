@@ -111,6 +111,11 @@ namespace msbuild_gui
         /// </summary>
         protected virtual void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            // エラー出力ファイルは終了時に削除する(ソフトウェアアンインストール時にファイルが残るため)
+            if (File.Exists(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt"))
+            {
+                File.Delete(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt");
+            }
         }
         /// <summary>
         /// ビルド実行
