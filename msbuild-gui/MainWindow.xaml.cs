@@ -111,10 +111,17 @@ namespace msbuild_gui
         /// </summary>
         protected virtual void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // エラー出力ファイルは終了時に削除する(ソフトウェアアンインストール時にファイルが残るため)
-            if (File.Exists(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt"))
+            try
             {
-                File.Delete(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt");
+                // エラー出力ファイルは終了時に削除する(ソフトウェアアンインストール時にファイルが残るため)
+                if (File.Exists(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt"))
+                {
+                    File.Delete(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         /// <summary>
@@ -155,63 +162,6 @@ namespace msbuild_gui
         private void ProjCombo_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             InputSourceList();
-        }
-        public void InputSourceList()
-        {
-            // 選択した値を取得
-            string? projectName = ProjCombo.SelectedItem as string;
-            // プロジェクトリストからプロジェクト名を検索
-            var proj = Projects.ProjectsList.FirstOrDefault(x => x.Value.ProjectName == projectName);
-
-            // 選択したソースをクリア
-            SourceList.Items.Clear();
-            TargetList.Items.Clear();
-
-            // フォルダが存在するかチェック
-            if (projectName != null)
-            {
-                if (System.IO.Directory.Exists(proj.Value.SourceFolder))
-                {
-                    try
-                    {
-                        string[] subFolders = System.IO.Directory.GetDirectories(
-                            path: proj.Value.SourceFolder, "*");
-
-                        // プロパティを初期化(検索用)
-                        List.sourceList.Clear();
-
-                        foreach (string subFolder in subFolders)
-                        {
-                            // フォルダ名を取得
-                            //string folderName = System.IO.Path.GetFileName(subFolder);
-                            //.csprojファイルを取得
-                            string[] files = System.IO.Directory.GetFiles(
-                                path: subFolder, "*.csproj", SearchOption.AllDirectories);
-                            foreach (string filepath in files)
-                            {
-                                // filesからproj.Value.SourceFolderを削除
-                                string filename = filepath.Replace(proj.Value.SourceFolder, "");
-                                // フォルダ名をComboBoxに追加
-                                SourceList.Items.Add(filename);
-                                // プロパティList.sourceListに追加(検索用)
-                                List.sourceList.Add(filename);
-                            }
-                            // フォルダ名をComboBoxに追加
-                            //SourceList.Items.Add(folderName);
-                            // プロパティList.sourceListに追加(検索用)
-                            //List.sourceList.Add(folderName);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-                else
-                {
-                    ModernWpf.MessageBox.Show("フォルダが存在しません。\n" + proj.Value.SourceFolder,"Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
         }
 
         private void SourceList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -378,63 +328,123 @@ namespace msbuild_gui
         #endregion
 
         #region methods
+        public void InputSourceList()
+        {
+            // 選択した値を取得
+            string? projectName = ProjCombo.SelectedItem as string;
+            // プロジェクトリストからプロジェクト名を検索
+            var proj = Projects.ProjectsList.FirstOrDefault(x => x.Value.ProjectName == projectName);
 
+            // 選択したソースをクリア
+            SourceList.Items.Clear();
+            TargetList.Items.Clear();
+
+            // フォルダが存在するかチェック
+            if (projectName != null)
+            {
+                if (System.IO.Directory.Exists(proj.Value.SourceFolder))
+                {
+                    try
+                    {
+                        string[] subFolders = System.IO.Directory.GetDirectories(
+                            path: proj.Value.SourceFolder, "*");
+
+                        // プロパティを初期化(検索用)
+                        List.sourceList.Clear();
+
+                        foreach (string subFolder in subFolders)
+                        {
+                            // フォルダ名を取得
+                            //.csprojファイルを取得
+                            string[] files = System.IO.Directory.GetFiles(
+                                path: subFolder, "*.csproj", SearchOption.AllDirectories);
+                            foreach (string filepath in files)
+                            {
+                                // filesからproj.Value.SourceFolderを削除
+                                string filename = filepath.Replace(proj.Value.SourceFolder, "");
+                                // フォルダ名をComboBoxに追加
+                                SourceList.Items.Add(filename);
+                                // プロパティList.sourceListに追加(検索用)
+                                List.sourceList.Add(filename);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    ModernWpf.MessageBox.Show("フォルダが存在しません。\n" + proj.Value.SourceFolder, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
         /// <summary>
         /// ビルド前準備
         /// PrepareBuild(UIスレッド)→RunBuild(ワーカースレッド)→ShowResult(UIスレッド)の順で実行します
         /// </summary>
         private void PrepareBuild()
         {
-            if (File.Exists(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt"))
+            try
             {
-                // エラーログ出力用ファイルをクリア
-                File.WriteAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt", "");
+
+                if (File.Exists(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt"))
+                {
+                    // エラーログ出力用ファイルをクリア
+                    File.WriteAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt", "");
+                }
+                //TargetListの内容を変数に格納
+                List<string> targets = TargetList.Items.Cast<string>().ToList();
+                if (targets.Count == 0)
+                {
+                    ModernWpf.MessageBox.Show("ビルド対象を選択してください。", "確認", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                // Build実行するか確認
+                if (ModernWpf.MessageBox.Show("ビルドを実行しますか？", "確認", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+                // ぐるぐるを有効化
+                ProgressRing.IsActive = true;
+
+                ProgressBar.Visibility = Visibility.Visible;
+                ProgressBar.Value = 0;
+                ProgressBar.Minimum = 0;
+                ProgressBar.Maximum = targets.Count;
+
+                BuildButton.IsEnabled = false;
+
+                string? projectName = ProjCombo.SelectedItem as string;
+                string? SourceFolder = Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.SourceFolder).FirstOrDefault();
+                string? OutputFolder = Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.OutputFolder).FirstOrDefault();
+                string? MsBuild = Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.MsBuild).FirstOrDefault();
+                string? Target = Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Target).FirstOrDefault();
+                string? AssemblySearchPaths = Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.AssemblySearchPaths).FirstOrDefault();
+                string? Configuration = Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault();
+
+                // 別スレッドでビルドを実行
+                Task.Run(() => RunBuild(targets
+                                        , SourceFolder
+                                        , OutputFolder
+                                        , MsBuild
+                                        , Target
+                                        , AssemblySearchPaths
+                                        , Configuration
+                                        ));
             }
-            //TargetListの内容を変数に格納
-            List<string> targets = TargetList.Items.Cast<string>().ToList();
-            if (targets.Count == 0)
+            catch (Exception ex)
             {
-                ModernWpf.MessageBox.Show("ビルド対象を選択してください。", "確認", MessageBoxButton.OK, MessageBoxImage.Information);
+                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            // Build実行するか確認
-            if (ModernWpf.MessageBox.Show("ビルドを実行しますか？", "確認", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-            {
-                return;
-            }
-            // ぐるぐるを有効化
-            ProgressRing.IsActive = true;
-
-            ProgressBar.Visibility = Visibility.Visible;
-            ProgressBar.Value = 0;
-            ProgressBar.Minimum = 0;
-            ProgressBar.Maximum = targets.Count;
-
-            BuildButton.IsEnabled = false;
-
-            string? projectName = ProjCombo.SelectedItem as string;
-            string? SourceFolder = Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.SourceFolder).FirstOrDefault();
-            string? OutputFolder = Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.OutputFolder).FirstOrDefault();
-            string? MsBuild = Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.MsBuild).FirstOrDefault();
-            string? Target = Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Target).FirstOrDefault();
-            string? AssemblySearchPaths = Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.AssemblySearchPaths).FirstOrDefault();
-            string? Configuration = Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault();
-            
-            // 別スレッドでビルドを実行
-            Task.Run(() => RunBuild(targets
-                                    , SourceFolder
-                                    , OutputFolder
-                                    , MsBuild
-                                    , Target
-                                    , AssemblySearchPaths
-                                    , Configuration
-                                    ));
         }
         /// <summary>
         /// ビルド実行
@@ -510,7 +520,6 @@ namespace msbuild_gui
         /// </summary>
         /// <param name="resultText">実行結果</param>
         /// <param name="cmdErrorText">コマンドエラー結果</param>
-        /// <param name="showlog">実行結果を表示するか否か</param>
         private void ShowResult(string resultText , string cmdErrorText)
         {
             try
@@ -574,17 +583,6 @@ namespace msbuild_gui
                     }
                     errorWindow.Show();
                 }
-                else
-                {
-                    //if (cmdErrorText != "")
-                    //{
-                    //    ModernWpf.MessageBox.Show("ビルドに失敗しました。", "アラート", MessageBoxButton.OK, MessageBoxImage.Error);
-                    //}
-                    //else
-                    //{
-                    //    ModernWpf.MessageBox.Show("実行完了", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
-                    //}
-                }
             }
             catch (Exception ex)
             {
@@ -604,42 +602,50 @@ namespace msbuild_gui
         /// <exception cref="NotImplementedException"></exception>
         public void LoadAppSettings()
         {
-            Projects.ProjectsList.Clear();
-
-            IConfigurationRoot config = new ConfigurationBuilder()
-            .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile(App.AppSettingsFile, optional: true, reloadOnChange: false)
-            .Build();
-
-            // 設定読み込み
-            var projects = config.GetSection("Project").Get<ProjectData[]>();
-            foreach (var proj in projects)
+            try
             {
-                //Projects.ProjectsList.Add(proj.Id, );
-                //追加(ProjectDataを使用)
-                Projects.ProjectsList.Add(proj.Id, new Projects.ProjectData
+                Projects.ProjectsList.Clear();
+
+                IConfigurationRoot config = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile(App.AppSettingsFile, optional: true, reloadOnChange: false)
+                .Build();
+
+                // 設定読み込み
+                var projects = config.GetSection("Project").Get<ProjectData[]>();
+                foreach (var proj in projects)
                 {
-                    ProjectName = proj.ProjectName,
-                    SourceFolder = proj.SourceFolder,
-                    OutputFolder = proj.OutputFolder,
-                    MsBuild = proj.MsBuild,
-                    Target = proj.Target,
-                    AssemblySearchPaths = proj.AssemblySearchPaths,
-                    Configuration = proj.Configuration
-                });
+                    //Projects.ProjectsList.Add(proj.Id, );
+                    //追加(ProjectDataを使用)
+                    Projects.ProjectsList.Add(proj.Id, new Projects.ProjectData
+                    {
+                        ProjectName = proj.ProjectName,
+                        SourceFolder = proj.SourceFolder,
+                        OutputFolder = proj.OutputFolder,
+                        MsBuild = proj.MsBuild,
+                        Target = proj.Target,
+                        AssemblySearchPaths = proj.AssemblySearchPaths,
+                        Configuration = proj.Configuration
+                    });
+                }
+                // プロジェクトリストを表示
+                Debug.Print("■取得プロジェクト一覧");
+                foreach (var proj in Projects.ProjectsList)
+                {
+                    Debug.Print($"Id: {proj.Key}, ProjectName: {proj.Value.ProjectName}, SourceFolder: {proj.Value.SourceFolder}" +
+                        $", OutputFolder: {proj.Value.OutputFolder}, MsBuild: {proj.Value.MsBuild}" +
+                        $", Target: {proj.Value.Target}, AssemblySearchPaths: {proj.Value.AssemblySearchPaths}" +
+                        $", Configuration: {proj.Value.Configuration}");
+                }
+                // ShowLogを元にShowLogCheckのチェックを制御する
+                Projects.ShowLog = config.GetValue<bool>("ShowLog", false);
+                ShowLogCheck.IsChecked = Projects.ShowLog;
             }
-            // プロジェクトリストを表示
-            Debug.Print("■取得プロジェクト一覧");
-            foreach (var proj in Projects.ProjectsList)
+            catch (Exception ex)
             {
-                Debug.Print($"Id: {proj.Key}, ProjectName: {proj.Value.ProjectName}, SourceFolder: {proj.Value.SourceFolder}" +
-                    $", OutputFolder: {proj.Value.OutputFolder}, MsBuild: {proj.Value.MsBuild}" +
-                    $", Target: {proj.Value.Target}, AssemblySearchPaths: {proj.Value.AssemblySearchPaths}" +
-                    $", Configuration: {proj.Value.Configuration}");
+                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
-            // ShowLogを元にShowLogCheckのチェックを制御する
-            Projects.ShowLog = config.GetValue<bool>("ShowLog", false);
-            ShowLogCheck.IsChecked = Projects.ShowLog;
         }
 
         /// <summary>
@@ -647,34 +653,42 @@ namespace msbuild_gui
         /// </summary>
         public void saveJson()
         {
-            // "ビルドログを表示"チェックボックスのチェック状態を取得
-            bool isChecked = ShowLogCheck.IsChecked ?? false;
-            Appsettings appsettings = new Appsettings
+            try
             {
-                Project = new List<ProjectData>(),
-                ShowLog = isChecked.ToString(),
-            };
-            foreach (var proj in Projects.ProjectsList)
-            {
-                appsettings.Project.Add(new ProjectData
+                // "ビルドログを表示"チェックボックスのチェック状態を取得
+                bool isChecked = ShowLogCheck.IsChecked ?? false;
+                Appsettings appsettings = new Appsettings
                 {
-                    Id = proj.Key,
-                    ProjectName = proj.Value.ProjectName,
-                    SourceFolder = proj.Value.SourceFolder,
-                    OutputFolder = proj.Value.OutputFolder,
-                    MsBuild = proj.Value.MsBuild,
-                    Target = proj.Value.Target,
-                    AssemblySearchPaths = proj.Value.AssemblySearchPaths,
-                    Configuration = proj.Value.Configuration,
-                });
+                    Project = new List<ProjectData>(),
+                    ShowLog = isChecked.ToString(),
+                };
+                foreach (var proj in Projects.ProjectsList)
+                {
+                    appsettings.Project.Add(new ProjectData
+                    {
+                        Id = proj.Key,
+                        ProjectName = proj.Value.ProjectName,
+                        SourceFolder = proj.Value.SourceFolder,
+                        OutputFolder = proj.Value.OutputFolder,
+                        MsBuild = proj.Value.MsBuild,
+                        Target = proj.Value.Target,
+                        AssemblySearchPaths = proj.Value.AssemblySearchPaths,
+                        Configuration = proj.Value.Configuration,
+                    });
+                }
+                var jsonData = JsonConvert.SerializeObject(appsettings, Formatting.Indented);
+                using (var sw = new StreamWriter($"{AppContext.BaseDirectory}/appsettings.json", false, System.Text.Encoding.UTF8))
+                {
+                    // JSON データをファイルに書き込み
+                    sw.Write(jsonData);
+                }
+                LoadAppSettings();
             }
-            var jsonData = JsonConvert.SerializeObject(appsettings, Formatting.Indented);
-            using (var sw = new StreamWriter($"{AppContext.BaseDirectory}/appsettings.json", false, System.Text.Encoding.UTF8))
+            catch (Exception ex)
             {
-                // JSON データをファイルに書き込み
-                sw.Write(jsonData);
+                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
-            LoadAppSettings();
         }
         #endregion
     }

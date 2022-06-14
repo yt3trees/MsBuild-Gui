@@ -71,8 +71,6 @@ namespace msbuild_gui
                 .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault() != ConfigurationCombo.Text
                 )
             {
-
-                // ModernWpf.MessageBoxで確認(入力内容が変更されています。\n保存せず画面を閉じますか？)
                 var result = ModernWpf.MessageBox.Show("入力内容が変更されています。\n保存せず画面を閉じますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result != MessageBoxResult.Yes)
                 {
@@ -144,41 +142,48 @@ namespace msbuild_gui
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            var result = ModernWpf.MessageBox.Show("保存しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result != MessageBoxResult.Yes)
+            try
             {
-                return;
-            }
-            // ProjSettingComboが空白の場合は実行しない
-            if (ProjSettingCombo.Text != "")
-            {
-                // 入力した値を取得
-                string? projectName = ProjSettingCombo.SelectedItem as string;
-                string? SourceFolder = ProjFolderPath.Text;
-                string? OutputFolder = OutputFolderPath.Text;
-                string? MsBuild = MsBuildPath.Text;
-                string? Target = TargetCombo.Text;
-                string? AssemblySearchPaths = (AssemblySearchPath1.Text == "" ? "" : AssemblySearchPath1.Text + ";")
-                                                + (AssemblySearchPath2.Text == "" ? "" : AssemblySearchPath2.Text + ";")
-                                                + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";");
-                string? Configuration = ConfigurationCombo.Text;
-                //projectNameからProjectsのKeyを取得
-                int key = MainWindow.Projects.ProjectsList
-                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Key).FirstOrDefault();
+                var result = ModernWpf.MessageBox.Show("保存しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+                // ProjSettingComboが空白の場合は実行しない
+                if (ProjSettingCombo.Text != "")
+                {
+                    // 入力した値を取得
+                    string? projectName = ProjSettingCombo.SelectedItem as string;
+                    string? SourceFolder = ProjFolderPath.Text;
+                    string? OutputFolder = OutputFolderPath.Text;
+                    string? MsBuild = MsBuildPath.Text;
+                    string? Target = TargetCombo.Text;
+                    string? AssemblySearchPaths = (AssemblySearchPath1.Text == "" ? "" : AssemblySearchPath1.Text + ";")
+                                                    + (AssemblySearchPath2.Text == "" ? "" : AssemblySearchPath2.Text + ";")
+                                                    + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";");
+                    string? Configuration = ConfigurationCombo.Text;
+                    //projectNameからProjectsのKeyを取得
+                    int key = MainWindow.Projects.ProjectsList
+                            .Where(x => x.Value.ProjectName == projectName).Select(x => x.Key).FirstOrDefault();
 
-                // 内容をjsonに保存
-                MainWindow.Projects.ProjectsList[key].SourceFolder = SourceFolder;
-                MainWindow.Projects.ProjectsList[key].OutputFolder = OutputFolder;
-                MainWindow.Projects.ProjectsList[key].MsBuild = MsBuild;
-                MainWindow.Projects.ProjectsList[key].Target = Target;
-                MainWindow.Projects.ProjectsList[key].AssemblySearchPaths = AssemblySearchPaths;
-                MainWindow.Projects.ProjectsList[key].Configuration = Configuration;
-            }
+                    // 内容をjsonに保存
+                    MainWindow.Projects.ProjectsList[key].SourceFolder = SourceFolder;
+                    MainWindow.Projects.ProjectsList[key].OutputFolder = OutputFolder;
+                    MainWindow.Projects.ProjectsList[key].MsBuild = MsBuild;
+                    MainWindow.Projects.ProjectsList[key].Target = Target;
+                    MainWindow.Projects.ProjectsList[key].AssemblySearchPaths = AssemblySearchPaths;
+                    MainWindow.Projects.ProjectsList[key].Configuration = Configuration;
+                }
             // jsonファイルに保存
             ((MainWindow)this.Owner).saveJson();
-            // MainWindowのプロジェクトドロップダウンをクリアして再セット
-            ((MainWindow)this.Owner).ProjCombo.Items.Clear();
-            MainWindow.Projects.ProjectsList.ToList().ForEach(x => ((MainWindow)this.Owner).ProjCombo.Items.Add(x.Value.ProjectName));
+                // MainWindowのプロジェクトドロップダウンをクリアして再セット
+                ((MainWindow)this.Owner).ProjCombo.Items.Clear();
+                MainWindow.Projects.ProjectsList.ToList().ForEach(x => ((MainWindow)this.Owner).ProjCombo.Items.Add(x.Value.ProjectName));
+            }
+            catch (Exception ex)
+            {
+                ModernWpf.MessageBox.Show(ex.Message, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ASPCopyButton1_Click(object sender, RoutedEventArgs e)
@@ -298,76 +303,58 @@ namespace msbuild_gui
 
         #region methods
         /// <summary>
-        /// フォルダダイアログを開く
-        /// </summary>
-        /// <param name="FolderPicker">フォルダ選択true/ファイル選択false</param>
-        /// <returns>選択したパス</returns>
-        private string OpenFolderDialog(bool FolderPicker, string FolderPath)
-        {
-            var browser = new CommonOpenFileDialog();
-            if (FolderPath == "")
-            {
-                browser.InitialDirectory = @"C:\";
-            }
-            else
-            {
-                browser.InitialDirectory = FolderPath;
-            }
-            browser.Title = "フォルダを選択してください";
-            browser.IsFolderPicker = FolderPicker;
-            if (browser.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                string path = browser.FileName;
-                return path;
-            }
-            return FolderPath;
-        }
-        /// <summary>
         /// ProjSettingComboに値をセット
         /// </summary>
         /// <param name="item"></param>
         public void SetParameter(string item)
         {
-            // 選択した値を取得
-            string? projectName = item;
-            ProjSettingCombo.Text = projectName;
-
-            string? SourceFolder = MainWindow.Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.SourceFolder).FirstOrDefault();
-            string? OutputFolder = MainWindow.Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.OutputFolder).FirstOrDefault();
-            string? MsBuild = MainWindow.Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.MsBuild).FirstOrDefault();
-            string? Target = MainWindow.Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Target).FirstOrDefault();
-            string? AssemblySearchPaths = MainWindow.Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.AssemblySearchPaths).FirstOrDefault();
-            string[] AssmblySearchPath123 = new string[3];
-            AssmblySearchPath123 = (AssemblySearchPaths == null ? "" : AssemblySearchPaths).Split(';');
-            string? Configuration = MainWindow.Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault();
-
-            ProjFolderPath.Text = (SourceFolder == null ? "" : SourceFolder).ToString();
-            OutputFolderPath.Text = (OutputFolder == null ? "" : OutputFolder).ToString();
-            MsBuildPath.Text = (MsBuild == null ? "" : MsBuild).ToString();
-            TargetCombo.Text = (Target == null ? "" : Target).ToString();
-            ConfigurationCombo.Text = (Configuration == null ? "" : Configuration).ToString();
-
-            //配列数が存在するなら格納する
-            AssemblySearchPath1.Text = "";
-            AssemblySearchPath2.Text = "";
-            AssemblySearchPath3.Text = "";
-            if (AssmblySearchPath123.Length > 0)
+            try
             {
-                AssemblySearchPath1.Text = AssmblySearchPath123[0] == "*" ? (OutputFolder == null ? "" : OutputFolder).ToString() : AssmblySearchPath123[0];
+                // 選択した値を取得
+                string? projectName = item;
+                ProjSettingCombo.Text = projectName;
+
+                string? SourceFolder = MainWindow.Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.SourceFolder).FirstOrDefault();
+                string? OutputFolder = MainWindow.Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.OutputFolder).FirstOrDefault();
+                string? MsBuild = MainWindow.Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.MsBuild).FirstOrDefault();
+                string? Target = MainWindow.Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Target).FirstOrDefault();
+                string? AssemblySearchPaths = MainWindow.Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.AssemblySearchPaths).FirstOrDefault();
+                string[] AssmblySearchPath123 = new string[3];
+                AssmblySearchPath123 = (AssemblySearchPaths == null ? "" : AssemblySearchPaths).Split(';');
+                string? Configuration = MainWindow.Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault();
+
+                ProjFolderPath.Text = (SourceFolder == null ? "" : SourceFolder).ToString();
+                OutputFolderPath.Text = (OutputFolder == null ? "" : OutputFolder).ToString();
+                MsBuildPath.Text = (MsBuild == null ? "" : MsBuild).ToString();
+                TargetCombo.Text = (Target == null ? "" : Target).ToString();
+                ConfigurationCombo.Text = (Configuration == null ? "" : Configuration).ToString();
+
+                //配列数が存在するなら格納する
+                AssemblySearchPath1.Text = "";
+                AssemblySearchPath2.Text = "";
+                AssemblySearchPath3.Text = "";
+                if (AssmblySearchPath123.Length > 0)
+                {
+                    AssemblySearchPath1.Text = AssmblySearchPath123[0] == "*" ? (OutputFolder == null ? "" : OutputFolder).ToString() : AssmblySearchPath123[0];
+                }
+                if (AssmblySearchPath123.Length > 1)
+                {
+                    AssemblySearchPath2.Text = AssmblySearchPath123[1] == "*" ? (OutputFolder == null ? "" : OutputFolder).ToString() : AssmblySearchPath123[1];
+                }
+                if (AssmblySearchPath123.Length > 2)
+                {
+                    AssemblySearchPath3.Text = AssmblySearchPath123[2] == "*" ? (OutputFolder == null ? "" : OutputFolder).ToString() : AssmblySearchPath123[2];
+                }
             }
-            if (AssmblySearchPath123.Length > 1)
+            catch (Exception ex)
             {
-                AssemblySearchPath2.Text = AssmblySearchPath123[1] == "*" ? (OutputFolder == null ? "" : OutputFolder).ToString() : AssmblySearchPath123[1];
-            }
-            if (AssmblySearchPath123.Length > 2)
-            {
-                AssemblySearchPath3.Text = AssmblySearchPath123[2] == "*" ? (OutputFolder == null ? "" : OutputFolder).ToString() : AssmblySearchPath123[2];
+                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         #endregion

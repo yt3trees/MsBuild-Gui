@@ -13,7 +13,14 @@ namespace msbuild_gui
         {
             InitializeComponent();
             // バージョン情報を取得
-            VersionText.Text = "Version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            try
+            {
+                VersionText.Text = "Version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            }
+            catch (Exception ex)
+            {
+                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
