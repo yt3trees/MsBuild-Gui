@@ -22,6 +22,7 @@ MsBuild-GuiはMsBuildをGuiで操作・実行できるツールです。
 # Requirement
 - Windows10
 - Visual Studio 2022
+- .NET6
 - [ModernWpf](https://github.com/Kinnara/ModernWpf)
 
 ## Usage
