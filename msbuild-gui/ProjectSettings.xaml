@@ -188,26 +188,29 @@
                         Click="ASPCopyButton3_Click"
                         ToolTip="DLL出力先フォルダのパスをコピーします。" />
             </Grid>
-            <!--<Grid Height="30">
+            <Grid Height="30">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="10*" />
                     <ColumnDefinition Width="10*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="ImportButton"
-                        Content="インポート"
-                        Margin="10,0,10,0"
+               
+                <Button x:Name="ExportButton"
+                        Content="エクスポート"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Right"
                         Padding="10,0,10,0"
-                        Width="100" />
-                <Button x:Name="ExportButton"
-                        Content="エクスポート"
-                        HorizontalAlignment="Right"
-                        Padding="10,0,10,0"
-                        Grid.Column="1"
+                        Width="100"
+                        Margin="90,0,0,0"
+                        Click="ExportButton_Click" />
+                <Button x:Name="ImportButton"
+                        Content="インポート"
                         Margin="0,0,90,0"
-                        Width="100" />
-            </Grid>-->
+                        HorizontalAlignment="Right"
+                        Grid.Column="1"
+                        Padding="10,0,10,0"
+                        Width="100"
+                        Click="ImportButton_Click" />
+            </Grid>
         </StackPanel>
         <Grid Grid.Column="1"
               Grid.Row="1"

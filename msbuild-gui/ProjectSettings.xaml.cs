@@ -1,6 +1,10 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,6 +19,33 @@ namespace msbuild_gui
         public static string? projText { get; set; }
         public static string? ProjectNameTemp = "";
         public static bool IsProjContentsCopy = false;
+        #endregion
+
+        #region properties
+        [JsonObject("Appsettings")]
+        class Appsettings
+        {
+            [JsonProperty("Project")]
+            public List<ProjectData>? Project { get; set; }
+        }
+        [JsonObject("ProjectData")]
+        public class ProjectData
+        {
+            [JsonProperty("ProjectName")]
+            public string? ProjectName { get; set; }
+            [JsonProperty("SourceFolder")]
+            public string? SourceFolder { get; set; }
+            [JsonProperty("OutputFolder")]
+            public string? OutputFolder { get; set; }
+            [JsonProperty("MsBuild")]
+            public string? MsBuild { get; set; }
+            [JsonProperty("Target")]
+            public string? Target { get; set; }
+            [JsonProperty("AssemblySearchPaths")]
+            public string? AssemblySearchPaths { get; set; }
+            [JsonProperty("Configuration")]
+            public string? Configuration { get; set; }
+        }
         #endregion
 
         #region constructors
@@ -174,8 +205,8 @@ namespace msbuild_gui
                     MainWindow.Projects.ProjectsList[key].AssemblySearchPaths = AssemblySearchPaths;
                     MainWindow.Projects.ProjectsList[key].Configuration = Configuration;
                 }
-            // jsonファイルに保存
-            ((MainWindow)this.Owner).saveJson();
+                // 設定ファイルに保存
+                ((MainWindow)this.Owner).saveJson();
                 // MainWindowのプロジェクトドロップダウンをクリアして再セット
                 ((MainWindow)this.Owner).ProjCombo.Items.Clear();
                 MainWindow.Projects.ProjectsList.ToList().ForEach(x => ((MainWindow)this.Owner).ProjCombo.Items.Add(x.Value.ProjectName));
@@ -211,7 +242,7 @@ namespace msbuild_gui
                 // window.Answerがすでに存在するなら登録できない(大文字小文字を区別しない)
                 if (MainWindow.Projects.ProjectsList.Any(x => x.Value.ProjectName.ToLower() == window.Answer.ToLower()))
                 {
-                    ModernWpf.MessageBox.Show("すでに存在するプロジェクト名です。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ModernWpf.MessageBox.Show("すでに存在するプロジェクト名です。", "error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 // MainWindow.Projects.ProjectsListのID+1を取得
@@ -250,7 +281,7 @@ namespace msbuild_gui
                 return;
             }
             // 削除してよいですか？
-            var result = ModernWpf.MessageBox.Show("削除しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = ModernWpf.MessageBox.Show($"{ProjSettingCombo.SelectedItem}を削除しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes)
             {
                 return;
@@ -283,7 +314,126 @@ namespace msbuild_gui
             // 1つ目を選択
             ProjSettingCombo.SelectedIndex = 0;
         }
+        /// <summary>
+        /// 登録内容をエクスポート
+        /// </summary>
+        private void ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var ms = ModernWpf.MessageBox.Show("登録内容ををエクスポートします。", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            if (ms == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+            // MainWindow.ProjectDataのデータをjson出力
+            string? projectName = ProjSettingCombo.SelectedItem as string;
+            // projectNameからProjectsのKeyを取得
+            int key = MainWindow.Projects.ProjectsList
+                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Key).FirstOrDefault();
+            Appsettings appsettings = new Appsettings
+            {
+                Project = new List<ProjectData>(),
+            };
+            foreach (var proj in MainWindow.Projects.ProjectsList)
+            {
+                appsettings.Project.Add(new ProjectData
+                {
+                    ProjectName = proj.Value.ProjectName,
+                    SourceFolder = proj.Value.SourceFolder,
+                    OutputFolder = proj.Value.OutputFolder,
+                    MsBuild = proj.Value.MsBuild,
+                    Target = proj.Value.Target,
+                    AssemblySearchPaths = proj.Value.AssemblySearchPaths,
+                    Configuration = proj.Value.Configuration,
+                });
+            }
+            var jsonData = JsonConvert.SerializeObject(appsettings, Formatting.Indented);
+            // jsonファイルに出力
+            var now = DateTime.Now.ToString("yyyyMMdd");
+            string fileName = now + "_msbuildgui.json";
 
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "ファイルを保存する"; // ダイアログタイトル
+            saveFileDialog.InitialDirectory = @"C:\";    // 初期のディレクトリ
+            saveFileDialog.FileName = fileName;       // デフォルトファイル名
+            bool? result = saveFileDialog.ShowDialog();
+            if (result == true)
+            {
+                string filePath = saveFileDialog.FileName;
+                System.IO.File.WriteAllText(filePath, jsonData, Encoding.UTF8);
+                ModernWpf.MessageBox.Show($"エクスポート完了\n{filePath}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                //string filePath = System.IO.Path.Combine(System.I, fileName);
+            }
+        }
+
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var ms = ModernWpf.MessageBox.Show("jsonファイルをインポートします。", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            if (ms == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+            // jsonファイルを選択する
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "ファイルを開く";               // ダイアログタイトル
+            openFileDialog.InitialDirectory = @"C:\";              // 初期のディレクトリ
+            openFileDialog.FileName = "msbuildgui.json";           // デフォルトファイル名
+            openFileDialog.Filter = "jsonファイル(*.json)|*.json"; // jsonファイルのみ選択可
+            bool? result = openFileDialog.ShowDialog();
+            // 選択したファイルをインポート
+            if (result == true)
+            {
+                string filePath = openFileDialog.FileName;
+                string jsonData = System.IO.File.ReadAllText(filePath, Encoding.UTF8);
+                Appsettings appsettings = JsonConvert.DeserializeObject<Appsettings>(jsonData);
+                string[] projects = { };
+                try
+                {
+                    foreach (var proj in appsettings.Project)
+                    {
+                        // window.Answerがすでに存在するなら登録できない(大文字小文字を区別しない)
+                        if (MainWindow.Projects.ProjectsList.Any(x => x.Value.ProjectName.ToLower() == proj.ProjectName.ToLower()))
+                        {
+                            ModernWpf.MessageBox.Show($"すでに存在するプロジェクト名はインポートできません。\n{proj.ProjectName}", "error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                    }
+                    // jsonファイルからデータを取得
+                    foreach (var proj in appsettings.Project)
+                    {
+                        // projectsにproj.ProjectNameを格納
+                        Array.Resize(ref projects, projects.Length + 1);
+                        projects[projects.Length - 1] = proj.ProjectName;
+
+                        // ProjectsListのId+1を取得
+                        int id = MainWindow.Projects.ProjectsList.Count + 1;
+                        MainWindow.Projects.ProjectsList.Add(id, new MainWindow.Projects.ProjectData
+                        {
+                            ProjectName = proj.ProjectName,
+                            SourceFolder = proj.SourceFolder,
+                            OutputFolder = proj.OutputFolder,
+                            MsBuild = proj.MsBuild,
+                            Target = proj.Target,
+                            AssemblySearchPaths = proj.AssemblySearchPaths,
+                            Configuration = proj.Configuration,
+                        });
+                    }
+                    // 設定ファイルに保存
+                    ((MainWindow)this.Owner).saveJson();
+                    // 結果表示
+                    string importProj = string.Join(", ", projects);
+                    ModernWpf.MessageBox.Show($"インポート完了\n{importProj}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // コンボボックスを更新
+                    Window_SourceInitialized(null, null);
+                    // MainWindowのプロジェクトドロップダウンをクリアして再セット
+                    ((MainWindow)this.Owner).ProjCombo.Items.Clear();
+                    MainWindow.Projects.ProjectsList.ToList().ForEach(x => ((MainWindow)this.Owner).ProjCombo.Items.Add(x.Value.ProjectName));
+                }
+                catch (Exception ex)
+                {
+                    ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             // Escキーが押されたとき
