@@ -406,6 +406,11 @@ namespace msbuild_gui
 
                         // ProjectsListのId+1を取得
                         int id = MainWindow.Projects.ProjectsList.Count + 1;
+                        // idがすでに存在するならさらに+1
+                        while (MainWindow.Projects.ProjectsList.Any(x => x.Key == id))
+                        {
+                            id++;
+                        }
                         MainWindow.Projects.ProjectsList.Add(id, new MainWindow.Projects.ProjectData
                         {
                             ProjectName = proj.ProjectName,
