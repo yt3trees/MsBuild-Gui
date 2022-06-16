@@ -69,7 +69,8 @@
                 Width="75"
                 Margin="0,-50,0,0"
                 Click="AddButton_Click"
-                TabIndex="8" />
+                TabIndex="8" 
+                ToolTip="csproj一覧からビルド対象に追加します。"/>
         <Button x:Name="RemoveButton"
                 Content="＜削除(_D)"
                 HorizontalAlignment="Center"
@@ -82,7 +83,8 @@
                 Padding="5,0,5,0"
                 Width="75"
                 Click="RemoveButton_Click"
-                TabIndex="9" />
+                TabIndex="9"
+                ToolTip="ビルド対象から削除します。"/>
         <ListBox x:Name="SourceList"
                  d:ItemsSource="{d:SampleData ItemCount=5}"
                  Margin="10,40,10,0"
@@ -202,7 +204,8 @@
                 FontSize="12"
                 Grid.Column="2"
                 Click="UpButton_Click"
-                TabIndex="12" />
+                TabIndex="12"
+                ToolTip="ビルド実行順序を入れ替えます。" />
         <Button x:Name="DownButton"
                 Content="▼"
                 HorizontalAlignment="Right"
@@ -215,7 +218,8 @@
                 FontSize="12"
                 Click="DownButton_Click"
                 Grid.Column="2"
-                TabIndex="11" />
+                TabIndex="11" 
+                ToolTip="ビルド実行順序を入れ替えます。"/>
         <TextBox x:Name="SearchTextbox"
                  HorizontalAlignment="Right"
                  Margin="0,5,10,0"

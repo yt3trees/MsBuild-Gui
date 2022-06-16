@@ -48,14 +48,16 @@
                         Click="AddButton_Click"
                         VerticalContentAlignment="Center"
                         Padding="5,5,5,5"
-                        Height="30" />
+                        Height="30" 
+                        ToolTip="プロジェクトを追加します。"/>
                 <Button x:Name="DeleteButton"
                         Content="-"
                         Margin="335,0,0,0"
                         Width="30"
                         Click="DeleteButton_Click"
                         Padding="5,5,5,5"
-                        Height="30" />
+                        Height="30"
+                        ToolTip="プロジェクトを削除します。"/>
             </Grid>
             <Label Content="ソースフォルダ"
                    VerticalContentAlignment="Top"
@@ -72,7 +74,7 @@
                          Width="300"
                          HorizontalAlignment="Center"
                          FontSize="12"
-                         ToolTip="../A/B/xxx.csprojのAまでのフォルダパスを入力してください。" />
+                         ToolTip="配下に.csprojが格納されているフォルダパスを入力してください。" />
             </Grid>
             <Label Content="DLL出力先フォルダ"
                    VerticalContentAlignment="Top"
@@ -199,14 +201,16 @@
                         Width="100"
                         Click="ExportButton_Click"
                         HorizontalAlignment="Center"
-                        Margin="-110,0,0,0" />
+                        Margin="-110,0,0,0" 
+                        ToolTip="登録済みデータをエクスポートします。"/>
                 <Button x:Name="ImportButton"
                         Content="インポート"
                         Padding="10,0,10,0"
                         Width="100"
                         Click="ImportButton_Click"
                         HorizontalAlignment="Center"
-                        Margin="0,0,-110,0" />
+                        Margin="0,0,-110,0" 
+                        ToolTip="エクスポートしたjsonファイルをインポートします。"/>
             </Grid>
         </StackPanel>
         <Grid Grid.Column="1"
