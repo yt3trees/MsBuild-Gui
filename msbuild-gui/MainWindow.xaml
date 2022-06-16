@@ -48,13 +48,15 @@
                       Width="180"
                       HorizontalAlignment="Center"
                       SelectionChanged="ProjCombo_SelectionChanged"
-                      VerticalAlignment="Center" />
+                      VerticalAlignment="Center"
+                      TabIndex="4" />
             <Button x:Name="SettingButton"
                     Content="プロジェクト設定"
                     Margin="30,10,30,10"
                     FontSize="14"
                     HorizontalAlignment="Center"
-                    Click="SettingButton_Click" />
+                    Click="SettingButton_Click"
+                    TabIndex="5" />
         </StackPanel>
         <Button x:Name="AddButton"
                 Content="追加(_A)＞"
@@ -66,7 +68,8 @@
                 Padding="5,0,5,0"
                 Width="75"
                 Margin="0,-50,0,0"
-                Click="AddButton_Click" />
+                Click="AddButton_Click"
+                TabIndex="8" />
         <Button x:Name="RemoveButton"
                 Content="＜削除(_D)"
                 HorizontalAlignment="Center"
@@ -78,7 +81,8 @@
                 Grid.Row="2"
                 Padding="5,0,5,0"
                 Width="75"
-                Click="RemoveButton_Click" />
+                Click="RemoveButton_Click"
+                TabIndex="9" />
         <ListBox x:Name="SourceList"
                  d:ItemsSource="{d:SampleData ItemCount=5}"
                  Margin="10,40,10,0"
@@ -87,7 +91,8 @@
                  FontSize="12"
                  MouseDoubleClick="SourceList_MouseDoubleClick"
                  KeyDown="SourceList_KeyDown"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 TabIndex="7" />
         <ListBox x:Name="TargetList"
                  d:ItemsSource="{d:SampleData ItemCount=5}"
                  Margin="10,40,10,0"
@@ -97,7 +102,8 @@
                  FontSize="12"
                  MouseDoubleClick="TargetList_MouseDoubleClick"
                  KeyDown="TargetList_KeyDown"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 TabIndex="10" />
         <Grid Grid.Column="2"
               Grid.Row="3">
             <Grid.ColumnDefinitions>
@@ -126,11 +132,13 @@
                         FontSize="14"
                         Padding="0,1,0,1"
                         Width="120"
-                        Style="{StaticResource AccentButtonStyle}" />
+                        Style="{StaticResource AccentButtonStyle}"
+                        TabIndex="13" />
                 <CheckBox x:Name="ShowLogCheck"
                           Content="ビルドログを表示"
                           Click="ShowLogCheck_Click"
-                          HorizontalAlignment="Right" />
+                          HorizontalAlignment="Right"
+                          TabIndex="14" />
             </Grid>
         </Grid>
         <Label Grid.Column="2"
@@ -168,14 +176,16 @@
         <Menu Grid.ColumnSpan="3"
               Margin="0,4,0,6">
             <MenuItem Header="ファイル(_F)"
-                      Click="MenuItem_Click">
+                      Click="MenuItem_Click" TabIndex="1">
                 <MenuItem Header="終了(_X)" />
             </MenuItem>
-            <MenuItem Header="設定(_E)">
+            <MenuItem Header="設定(_E)"
+                      TabIndex="2">
                 <MenuItem Header="プロジェクト設定(_P)"
                           Click="Button_Click" />
             </MenuItem>
-            <MenuItem Header="ヘルプ(_H)">
+            <MenuItem Header="ヘルプ(_H)"
+                      TabIndex="3">
                 <MenuItem Header="バージョン情報(_A)"
                           Click="MenuItem_Click_1" />
             </MenuItem>
@@ -191,7 +201,8 @@
                 Width="20"
                 FontSize="12"
                 Grid.Column="2"
-                Click="UpButton_Click" />
+                Click="UpButton_Click"
+                TabIndex="12" />
         <Button x:Name="DownButton"
                 Content="▼"
                 HorizontalAlignment="Right"
@@ -203,7 +214,8 @@
                 Width="20"
                 FontSize="12"
                 Click="DownButton_Click"
-                Grid.Column="2" />
+                Grid.Column="2"
+                TabIndex="11" />
         <TextBox x:Name="SearchTextbox"
                  HorizontalAlignment="Right"
                  Margin="0,5,10,0"
@@ -217,7 +229,8 @@
                  FontSize="14"
                  TextChanged="SearchTextbox_TextChanged"
                  ui:ControlHelper.PlaceholderText="Search"
-                 TextAlignment="Left" />
+                 TextAlignment="Left"
+                 TabIndex="6" />
 
     </Grid>
 </Window>
