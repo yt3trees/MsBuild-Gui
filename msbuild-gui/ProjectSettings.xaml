@@ -190,26 +190,23 @@
             </Grid>
             <Grid Height="30">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10*" />
-                    <ColumnDefinition Width="10*" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-               
+
                 <Button x:Name="ExportButton"
                         Content="エクスポート"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Right"
                         Padding="10,0,10,0"
                         Width="100"
-                        Margin="90,0,0,0"
-                        Click="ExportButton_Click" />
+                        Click="ExportButton_Click"
+                        HorizontalAlignment="Center"
+                        Margin="-110,0,0,0" />
                 <Button x:Name="ImportButton"
                         Content="インポート"
-                        Margin="0,0,90,0"
-                        HorizontalAlignment="Right"
-                        Grid.Column="1"
                         Padding="10,0,10,0"
                         Width="100"
-                        Click="ImportButton_Click" />
+                        Click="ImportButton_Click"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,-110,0" />
             </Grid>
         </StackPanel>
         <Grid Grid.Column="1"
