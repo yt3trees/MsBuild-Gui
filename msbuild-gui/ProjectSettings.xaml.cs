@@ -319,11 +319,11 @@ namespace msbuild_gui
         /// </summary>
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            var ms = ModernWpf.MessageBox.Show("登録内容ををエクスポートします。", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Information);
-            if (ms == MessageBoxResult.Cancel)
-            {
-                return;
-            }
+            //var ms = ModernWpf.MessageBox.Show("登録内容ををエクスポートします。", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            //if (ms == MessageBoxResult.Cancel)
+            //{
+            //    return;
+            //}
             // MainWindow.ProjectDataのデータをjson出力
             string? projectName = ProjSettingCombo.SelectedItem as string;
             // projectNameからProjectsのKeyを取得
@@ -367,11 +367,11 @@ namespace msbuild_gui
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
-            var ms = ModernWpf.MessageBox.Show("jsonファイルをインポートします。", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Information);
-            if (ms == MessageBoxResult.Cancel)
-            {
-                return;
-            }
+            //var ms = ModernWpf.MessageBox.Show("jsonファイルをインポートします。", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+            //if (ms == MessageBoxResult.Cancel)
+            //{
+            //    return;
+            //}
             // jsonファイルを選択する
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "ファイルを開く";               // ダイアログタイトル
