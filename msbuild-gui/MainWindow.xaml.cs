@@ -479,10 +479,10 @@ namespace msbuild_gui
                         $"\"{MsBuild}\" " +
                         $"{targetFilePath} " +
                         $"/target:{Target} " +
-                        $"/fileloggerparameters:LogFile=\"{Directory.GetCurrentDirectory()}\\BuildErrorLog.txt\";ErrorsOnly;Append=True "+
                         $"/p:OutputPath={OutputFolder} /p:DebugType=None " +
                         asp +
-                        $"/p:Configuration={Configuration}",
+                        $"/p:Configuration={Configuration} " +
+                        $"/fileloggerparameters:LogFile=\"{Directory.GetCurrentDirectory()}\\BuildErrorLog.txt\";ErrorsOnly;Append=True",
                         CreateNoWindow = true, // ウィンドウを表示しない
                         UseShellExecute = false,
                         RedirectStandardOutput = true, // 標準出力を取得できるようにする
