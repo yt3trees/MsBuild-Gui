@@ -325,10 +325,10 @@ namespace msbuild_gui
             //    return;
             //}
             // MainWindow.ProjectDataのデータをjson出力
-            string? projectName = ProjSettingCombo.SelectedItem as string;
-            // projectNameからProjectsのKeyを取得
-            int key = MainWindow.Projects.ProjectsList
-                    .Where(x => x.Value.ProjectName == projectName).Select(x => x.Key).FirstOrDefault();
+            //string? projectName = ProjSettingCombo.SelectedItem as string;
+            //// projectNameからProjectsのKeyを取得
+            //int key = MainWindow.Projects.ProjectsList
+            //        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Key).FirstOrDefault();
             Appsettings appsettings = new Appsettings
             {
                 Project = new List<ProjectData>(),

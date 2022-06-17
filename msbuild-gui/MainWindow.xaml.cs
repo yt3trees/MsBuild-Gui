@@ -466,7 +466,9 @@ namespace msbuild_gui
                 //targetsの数を格納
                 int targetCount = targets.Count;
                 int targetIndex = 0;
-               
+
+                string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
+                
                 foreach (var target in targets)
                 {
                     string targetFilePath = SourceFolder + target;
@@ -479,7 +481,7 @@ namespace msbuild_gui
                         $"/target:{Target} " +
                         $"/fileloggerparameters:LogFile=\"{Directory.GetCurrentDirectory()}\\BuildErrorLog.txt\";ErrorsOnly;Append=True "+
                         $"/p:OutputPath={OutputFolder} /p:DebugType=None " +
-                        $"/p:AssemblySearchPaths=\"{AssemblySearchPaths}\"\" " +
+                        asp +
                         $"/p:Configuration={Configuration}",
                         CreateNoWindow = true, // ウィンドウを表示しない
                         UseShellExecute = false,
