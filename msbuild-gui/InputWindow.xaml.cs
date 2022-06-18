@@ -13,7 +13,6 @@ namespace msbuild_gui
         {
             InitializeComponent();
             AnswerText.Text = defaultAnswer;
-            // ProjSettingComboの内容を取得
             var projSetting = ProjectSettings.ProjectNameTemp;
             CopyCheck.Content = projSetting + "の内容をコピーして作成";
         }

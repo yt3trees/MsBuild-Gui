@@ -57,17 +57,14 @@ namespace msbuild_gui
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
             ProjSettingCombo.Items.Clear();
-            //Projects.ProjectsListをProjSettingComboに追加
             foreach (var item in MainWindow.Projects.ProjectsList)
             {
                 ProjSettingCombo.Items.Add(item.Value.ProjectName);
             }
-            //ProjSettingComboが選択されているならSetParamaterを実行
             if (ProjSettingCombo.SelectedItem != null)
             {
                 SetParameter((string)ProjSettingCombo.SelectedItem);
             }
-            // MainWindowからプロジェクト名を受け取って格納
             ProjSettingCombo.Text = projText;
         }
         #endregion
@@ -78,12 +75,11 @@ namespace msbuild_gui
         /// </summary>
         protected virtual void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // ProjSettingComboで何も選択されてないなら終了
             if (ProjSettingCombo.SelectedItem == null)
             {
                 return;
             }
-            // MainWindow.Projects.ProjectsListの内容と入力内容を比較して変更があった場合は閉じてよいか確認する
+            // 保存せず閉じてよいか確認
             string? projectName = ProjSettingCombo.SelectedItem as string;
             if (MainWindow.Projects.ProjectsList
                 .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.SourceFolder).FirstOrDefault() != ProjFolderPath.Text
@@ -93,11 +89,10 @@ namespace msbuild_gui
                 .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.MsBuild).FirstOrDefault() != MsBuildPath.Text
                 | MainWindow.Projects.ProjectsList
                 .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Target).FirstOrDefault() != TargetCombo.Text
-                // TODO:*置換対策
-                //| MainWindow.Projects.ProjectsList
-                //.Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.AssemblySearchPaths).FirstOrDefault() != (AssemblySearchPath1.Text == "" ? "" : AssemblySearchPath1.Text + ";")
-                //                                                                                                           + (AssemblySearchPath2.Text == "" ? "" : AssemblySearchPath2.Text + ";")
-                //                                                                                                           + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";")                                                                                                      
+                | MainWindow.Projects.ProjectsList
+                .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.AssemblySearchPaths).FirstOrDefault() != (AssemblySearchPath1.Text == "" ? "" : AssemblySearchPath1.Text + ";")
+                                                                                                                           + (AssemblySearchPath2.Text == "" ? "" : AssemblySearchPath2.Text + ";")
+                                                                                                                           + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";")                                                                                                      
                 | MainWindow.Projects.ProjectsList
                 .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault() != ConfigurationCombo.Text
                 )
@@ -113,19 +108,17 @@ namespace msbuild_gui
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            //ウィンドウを閉じる
             this.Close();
         }
-
         private void ProjFolderSelect_Click(object sender, RoutedEventArgs e)
         {
             using (var cofd = new CommonOpenFileDialog()
-            {
-                Title = "フォルダ選択",
-                InitialDirectory = ProjFolderPath.Text,
-                IsFolderPicker = true,
-            }
-                )
+                {
+                    Title = "フォルダ選択",
+                    InitialDirectory = ProjFolderPath.Text,
+                    IsFolderPicker = true,
+                }
+            )
             {
                 if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
                 {
@@ -133,16 +126,15 @@ namespace msbuild_gui
                 }
             }
         }
-
         private void OutputFolderSelect_Click(object sender, RoutedEventArgs e)
         {
             using (var cofd = new CommonOpenFileDialog()
-            {
-                Title = "dll出力先フォルダ選択",
-                InitialDirectory = OutputFolderPath.Text,
-                IsFolderPicker = true,
-            }
-                )
+                {
+                    Title = "dll出力先フォルダ選択",
+                    InitialDirectory = OutputFolderPath.Text,
+                    IsFolderPicker = true,
+                }
+            )
             {
                 if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
                 {
@@ -150,16 +142,15 @@ namespace msbuild_gui
                 }
             }
         }
-
         private void MsBuildFileSelect_Click(object sender, RoutedEventArgs e)
         {
             using (var cofd = new CommonOpenFileDialog()
-            {
-                Title = "MsBuild.exe選択",
-                InitialDirectory = MsBuildPath.Text == "" ? "" : MsBuildPath.Text.Substring(0, MsBuildPath.Text.LastIndexOf("\\")),
-                IsFolderPicker = false,
-            }
-                )
+                {
+                    Title = "MsBuild.exe選択",
+                    InitialDirectory = MsBuildPath.Text == "" ? "" : MsBuildPath.Text.Substring(0, MsBuildPath.Text.LastIndexOf("\\")),
+                    IsFolderPicker = false,
+                }
+            )
             {
                 if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
                 {
@@ -180,10 +171,8 @@ namespace msbuild_gui
                 {
                     return;
                 }
-                // ProjSettingComboが空白の場合は実行しない
                 if (ProjSettingCombo.Text != "")
                 {
-                    // 入力した値を取得
                     string? projectName = ProjSettingCombo.SelectedItem as string;
                     string? SourceFolder = ProjFolderPath.Text;
                     string? OutputFolder = OutputFolderPath.Text;
@@ -193,11 +182,9 @@ namespace msbuild_gui
                                                     + (AssemblySearchPath2.Text == "" ? "" : AssemblySearchPath2.Text + ";")
                                                     + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";");
                     string? Configuration = ConfigurationCombo.Text;
-                    //projectNameからProjectsのKeyを取得
+ 
                     int key = MainWindow.Projects.ProjectsList
                             .Where(x => x.Value.ProjectName == projectName).Select(x => x.Key).FirstOrDefault();
-
-                    // 内容をjsonに保存
                     MainWindow.Projects.ProjectsList[key].SourceFolder = SourceFolder;
                     MainWindow.Projects.ProjectsList[key].OutputFolder = OutputFolder;
                     MainWindow.Projects.ProjectsList[key].MsBuild = MsBuild;
@@ -216,17 +203,14 @@ namespace msbuild_gui
                 ModernWpf.MessageBox.Show(ex.Message, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
         private void ASPCopyButton1_Click(object sender, RoutedEventArgs e)
         {
             AssemblySearchPath1.Text = OutputFolderPath.Text;
         }
-
         private void ASPCopyButton2_Click(object sender, RoutedEventArgs e)
         {
             AssemblySearchPath2.Text = OutputFolderPath.Text;
         }
-
         private void ASPCopyButton3_Click(object sender, RoutedEventArgs e)
         {
             AssemblySearchPath3.Text = OutputFolderPath.Text;
@@ -236,16 +220,14 @@ namespace msbuild_gui
             ProjectNameTemp = ProjSettingCombo.Text;
             InputWindow window = new InputWindow();
             window.Owner = this;
-            // window.AnswerをMainWindow.Projects.ProjectsListに追加
             if (window.ShowDialog() == true)
             {
-                // window.Answerがすでに存在するなら登録できない(大文字小文字を区別しない)
+                // 入力したプロジェクト名重複している場合は登録できない(大文字小文字を区別しない)
                 if (MainWindow.Projects.ProjectsList.Any(x => x.Value.ProjectName.ToLower() == window.Answer.ToLower()))
                 {
                     ModernWpf.MessageBox.Show("すでに存在するプロジェクト名です。", "error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                // MainWindow.Projects.ProjectsListのID+1を取得
                 int key = MainWindow.Projects.ProjectsList.Keys.Max() + 1;
                 MainWindow.Projects.ProjectsList.Add(key, new MainWindow.Projects.ProjectData
                 {
@@ -268,29 +250,25 @@ namespace msbuild_gui
         }
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            // 1つしか存在しない場合は削除できないようにする
             if (ProjSettingCombo.Items.Count == 1)
             {
                 ModernWpf.MessageBox.Show("全てのプロジェクトを削除することはできません。", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            // 未選択なら削除できない
             if (ProjSettingCombo.SelectedItem == null)
             {
                 ModernWpf.MessageBox.Show("削除対象を選択してください。", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            // 削除してよいですか？
             var result = ModernWpf.MessageBox.Show($"{ProjSettingCombo.SelectedItem}を削除しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes)
             {
                 return;
             }
+
             string? projectName = ProjSettingCombo.SelectedItem as string;
-            // projectNameからProjectsのKeyを取得
             int key = MainWindow.Projects.ProjectsList
                     .Where(x => x.Value.ProjectName == projectName).Select(x => x.Key).FirstOrDefault();
-            // 削除
             MainWindow.Projects.ProjectsList.Remove(key);
 
             // コンボボックスの内容をクリアして再セット
@@ -311,7 +289,6 @@ namespace msbuild_gui
             // MainWindowのプロジェクトドロップダウンをクリアして再セット
             ((MainWindow)this.Owner).ProjCombo.Items.Clear();
             MainWindow.Projects.ProjectsList.ToList().ForEach(x => ((MainWindow)this.Owner).ProjCombo.Items.Add(x.Value.ProjectName));
-            // 1つ目を選択
             ProjSettingCombo.SelectedIndex = 0;
         }
         /// <summary>
@@ -319,16 +296,6 @@ namespace msbuild_gui
         /// </summary>
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            //var ms = ModernWpf.MessageBox.Show("登録内容ををエクスポートします。", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Information);
-            //if (ms == MessageBoxResult.Cancel)
-            //{
-            //    return;
-            //}
-            // MainWindow.ProjectDataのデータをjson出力
-            //string? projectName = ProjSettingCombo.SelectedItem as string;
-            //// projectNameからProjectsのKeyを取得
-            //int key = MainWindow.Projects.ProjectsList
-            //        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Key).FirstOrDefault();
             Appsettings appsettings = new Appsettings
             {
                 Project = new List<ProjectData>(),
@@ -347,39 +314,31 @@ namespace msbuild_gui
                 });
             }
             var jsonData = JsonConvert.SerializeObject(appsettings, Formatting.Indented);
-            // jsonファイルに出力
             var now = DateTime.Now.ToString("yyyyMMdd");
             string fileName = now + "_msbuildgui.json";
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = "ファイルを保存する"; // ダイアログタイトル
-            saveFileDialog.InitialDirectory = @"C:\";    // 初期のディレクトリ
-            saveFileDialog.FileName = fileName;       // デフォルトファイル名
+            saveFileDialog.Title = "ファイルを保存する";
+            saveFileDialog.InitialDirectory = @"C:\";
+            saveFileDialog.FileName = fileName;
             bool? result = saveFileDialog.ShowDialog();
             if (result == true)
             {
                 string filePath = saveFileDialog.FileName;
                 System.IO.File.WriteAllText(filePath, jsonData, Encoding.UTF8);
                 ModernWpf.MessageBox.Show($"エクスポート完了\n{filePath}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                //string filePath = System.IO.Path.Combine(System.I, fileName);
             }
         }
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
-            //var ms = ModernWpf.MessageBox.Show("jsonファイルをインポートします。", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Information);
-            //if (ms == MessageBoxResult.Cancel)
-            //{
-            //    return;
-            //}
             // jsonファイルを選択する
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "ファイルを開く";               // ダイアログタイトル
-            openFileDialog.InitialDirectory = @"C:\";              // 初期のディレクトリ
-            openFileDialog.FileName = "msbuildgui.json";           // デフォルトファイル名
-            openFileDialog.Filter = "jsonファイル(*.json)|*.json"; // jsonファイルのみ選択可
+            openFileDialog.Title = "ファイルを開く";
+            openFileDialog.InitialDirectory = @"C:\";
+            openFileDialog.FileName = "msbuildgui.json";
+            openFileDialog.Filter = "jsonファイル(*.json)|*.json";
             bool? result = openFileDialog.ShowDialog();
-            // 選択したファイルをインポート
             if (result == true)
             {
                 string filePath = openFileDialog.FileName;
@@ -390,7 +349,7 @@ namespace msbuild_gui
                 {
                     foreach (var proj in appsettings.Project)
                     {
-                        // window.Answerがすでに存在するなら登録できない(大文字小文字を区別しない)
+                        // 入力したプロジェクト名重複している場合は登録できない(大文字小文字を区別しない)
                         if (MainWindow.Projects.ProjectsList.Any(x => x.Value.ProjectName.ToLower() == proj.ProjectName.ToLower()))
                         {
                             ModernWpf.MessageBox.Show($"すでに存在するプロジェクト名はインポートできません。\n{proj.ProjectName}", "error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -400,7 +359,6 @@ namespace msbuild_gui
                     // jsonファイルからデータを取得
                     foreach (var proj in appsettings.Project)
                     {
-                        // projectsにproj.ProjectNameを格納
                         Array.Resize(ref projects, projects.Length + 1);
                         projects[projects.Length - 1] = proj.ProjectName;
 
@@ -424,7 +382,7 @@ namespace msbuild_gui
                     }
                     // 設定ファイルに保存
                     ((MainWindow)this.Owner).saveJson();
-                    // 結果表示
+
                     string importProj = string.Join(", ", projects);
                     ModernWpf.MessageBox.Show($"インポート完了\n{importProj}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     // コンボボックスを更新
@@ -441,16 +399,12 @@ namespace msbuild_gui
         }
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            // Escキーが押されたとき
             if (e.Key == Key.Escape)
             {
-                // ウィンドウを閉じる
                 this.Close();
             }
-            // Ctrl+Sキーが押されたとき
             else if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                // プロジェクト設定を保存
                 SaveButton_Click(null, null);
             }
         }
@@ -465,7 +419,6 @@ namespace msbuild_gui
         {
             try
             {
-                // 選択した値を取得
                 string? projectName = item;
                 ProjSettingCombo.Text = projectName;
 
@@ -490,7 +443,6 @@ namespace msbuild_gui
                 TargetCombo.Text = (Target == null ? "" : Target).ToString();
                 ConfigurationCombo.Text = (Configuration == null ? "" : Configuration).ToString();
 
-                //配列数が存在するなら格納する
                 AssemblySearchPath1.Text = "";
                 AssemblySearchPath2.Text = "";
                 AssemblySearchPath3.Text = "";

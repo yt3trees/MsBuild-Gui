@@ -19,17 +19,14 @@ namespace msbuild_gui
             searchIndex = 2;
             searchIndexMAX = maxCount;
             Title = result;
-            // ボーダーカラーを変更する
             if (result == "エラーログ")
             {
                 Border.BorderBrush = new SolidColorBrush(Colors.LightSalmon);
             }
-            // result == "エラーログ"の場合は少し右下にずらして表示、それ以外の場合は中心
             if (result == "エラーログ")
             {
                 this.Left = System.Windows.SystemParameters.PrimaryScreenWidth / 2 - ((this.Width / 2) - 20);
                 this.Top = System.Windows.SystemParameters.PrimaryScreenHeight / 2 - ((this.Height / 2) - 20);
-                //NextButton.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -39,7 +36,6 @@ namespace msbuild_gui
         }
         private void CmdResult_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            // Ctrl+("+"or"-")で文字の大きさを調整する
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
                 if (e.Key == Key.Add)
@@ -66,11 +62,8 @@ namespace msbuild_gui
         /// </summary>
         private void FocusNext()
         {
-            // TextBoxにフォーカスする
             CmdResult.Focus();
-            // カーソルをTextBoxのsearchTextの値に移動
             string searchText = "[" + searchIndex + "]";
-            //最後のindexにfocusする
             CmdResult.CaretIndex = CmdResult.Text.Length;
 
             // searchIndexがsearchIndexMAXと同じ値ならIndexを0にする
@@ -88,7 +81,6 @@ namespace msbuild_gui
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            // Escキーで終了
             if (e.Key == Key.Escape)
             {
                 this.Close();

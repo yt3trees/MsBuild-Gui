@@ -12,7 +12,6 @@ namespace msbuild_gui
         public VersionWindow()
         {
             InitializeComponent();
-            // バージョン情報を取得
             try
             {
                 VersionText.Text = "Version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -30,10 +29,8 @@ namespace msbuild_gui
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            // Escキーが押されたとき
             if (e.Key == Key.Escape)
             {
-                // ウィンドウを閉じる
                 this.Close();
             }
         }

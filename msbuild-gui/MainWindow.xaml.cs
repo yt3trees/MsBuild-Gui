@@ -19,7 +19,7 @@ namespace msbuild_gui
     public partial class MainWindow : Window
     {
         #region fields
-        delegate void DelegateProcess(string a, string b); // デリゲート宣言
+        delegate void DelegateProcess(string a, string b);
         #endregion
  
         #region properties
@@ -94,7 +94,6 @@ namespace msbuild_gui
         {
             try
             {
-                // jsonファイル読み込み
                 LoadAppSettings();
                 Projects.ProjectsList.ToList().ForEach(x => ProjCombo.Items.Add(x.Value.ProjectName));
             }
@@ -140,9 +139,7 @@ namespace msbuild_gui
         /// </summary>
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            // SourceListの選択項目を取得
             string? sourceFolder = SourceList.SelectedItem as string;
-            // TargetListに格納
             if (sourceFolder != null)
             {
                 TargetList.Items.Add(sourceFolder);
@@ -153,9 +150,7 @@ namespace msbuild_gui
         /// </summary>
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            // TargetListの選択項目を取得
             string? targetFolder = TargetList.SelectedItem as string;
-            // TargetListから削除
             TargetList.Items.Remove(targetFolder);
         }
 
@@ -170,7 +165,6 @@ namespace msbuild_gui
         }
         private void SourceList_KeyDown(object sender, KeyEventArgs e)
         {
-            // Spaceキー押下時
             if (e.Key == Key.A)
             {
                 AddButton_Click(sender, e);
@@ -186,7 +180,7 @@ namespace msbuild_gui
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
             // ProjCombo.Textが空白の場合はProjComboの1つ目の値を取得
-            string pj = ProjCombo.Text;
+            string? pj = ProjCombo.Text;
             if (ProjCombo.Text == "")
             {
                 pj = ProjCombo.Items[0] as string;
@@ -207,21 +201,18 @@ namespace msbuild_gui
         /// </summary>
         private void UpButton_Click(object sender, RoutedEventArgs e)
         {
-            // 何も選択されていない場合は処理を終了
             if (TargetList.SelectedItem == null)
             {
                 return;
             }
             int index = TargetList.SelectedIndex;
             string? item = TargetList.SelectedItem.ToString();
-            // 一番上の場合は処理を終了
             if (index == 0)
             {
                 return;
             }
             TargetList.Items.RemoveAt(index);
             TargetList.Items.Insert(index - 1, item);
-            // 選択状態にする
             TargetList.SelectedIndex = index - 1;
         }
         /// <summary>
@@ -229,21 +220,18 @@ namespace msbuild_gui
         /// </summary>
         private void DownButton_Click(object sender, RoutedEventArgs e)
         {
-            // 何も選択されていない場合は処理を終了
             if (TargetList.SelectedItem == null)
             {
                 return;
             }
             int index = TargetList.SelectedIndex;
             string? item = TargetList.SelectedItem.ToString();
-            // 一番下の場合は処理を終了
             if (index == TargetList.Items.Count - 1)
             {
                 return;
             }
             TargetList.Items.RemoveAt(index);
             TargetList.Items.Insert(index + 1, item);
-            //　選択状態にする
             TargetList.SelectedIndex = index + 1;
         }
         /// <summary>
@@ -251,8 +239,8 @@ namespace msbuild_gui
         /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // ProjCombo.Textが空白の場合はProjComboの1つ目の値を取得
-            string pj = ProjCombo.Text;
+            // ProjComboが空白の場合はProjComboの1つ目の値をセット
+            string? pj = ProjCombo.Text;
             if (ProjCombo.Text == "")
             {
                 pj = ProjCombo.Items[0] as string;
@@ -276,7 +264,6 @@ namespace msbuild_gui
             {
                 ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
         /// <summary>
         /// 入力内容でSourceListをフィルタリング
@@ -296,22 +283,18 @@ namespace msbuild_gui
 
         private void TargetList_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            // Deleteキーを押したとき
             if (e.Key == Key.Delete)
             {
                 RemoveButton_Click(sender, e);
             }
-            // Dキーを押したとき
             if (e.Key == Key.D)
             {
                 RemoveButton_Click(sender, e);
             }
-            // Kキーを押したとき
             if (e.Key == Key.K)
             {
                 UpButton_Click(sender, e);
             }
-            // Jキーを押したとき
             if (e.Key == Key.J)
             {
                 DownButton_Click(sender, e);
@@ -319,7 +302,6 @@ namespace msbuild_gui
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            // F5が押されたとき
             if (e.Key == Key.F5)
             {
                 BuildButton_Click(sender, e);
@@ -330,16 +312,12 @@ namespace msbuild_gui
         #region methods
         public void InputSourceList()
         {
-            // 選択した値を取得
             string? projectName = ProjCombo.SelectedItem as string;
-            // プロジェクトリストからプロジェクト名を検索
             var proj = Projects.ProjectsList.FirstOrDefault(x => x.Value.ProjectName == projectName);
 
-            // 選択したソースをクリア
             SourceList.Items.Clear();
             TargetList.Items.Clear();
 
-            // フォルダが存在するかチェック
             if (projectName != null)
             {
                 if (System.IO.Directory.Exists(proj.Value.SourceFolder))
@@ -349,22 +327,17 @@ namespace msbuild_gui
                         string[] subFolders = System.IO.Directory.GetDirectories(
                             path: proj.Value.SourceFolder, "*");
 
-                        // プロパティを初期化(検索用)
                         List.sourceList.Clear();
 
                         foreach (string subFolder in subFolders)
                         {
-                            // フォルダ名を取得
-                            //.csprojファイルを取得
                             string[] files = System.IO.Directory.GetFiles(
                                 path: subFolder, "*.csproj", SearchOption.AllDirectories);
                             foreach (string filepath in files)
                             {
-                                // filesからproj.Value.SourceFolderを削除
+                                // ファイルのフルパスからソースフォルダを削除してリストボックスに表示する
                                 string filename = filepath.Replace(proj.Value.SourceFolder, "");
-                                // フォルダ名をComboBoxに追加
                                 SourceList.Items.Add(filename);
-                                // プロパティList.sourceListに追加(検索用)
                                 List.sourceList.Add(filename);
                             }
                         }
@@ -394,26 +367,22 @@ namespace msbuild_gui
                     // エラーログ出力用ファイルをクリア
                     File.WriteAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt", "");
                 }
-                //TargetListの内容を変数に格納
                 List<string> targets = TargetList.Items.Cast<string>().ToList();
                 if (targets.Count == 0)
                 {
                     ModernWpf.MessageBox.Show("ビルド対象を選択してください。", "確認", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
-                // Build実行するか確認
                 if (ModernWpf.MessageBox.Show("ビルドを実行しますか？", "確認", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 {
                     return;
                 }
-                // ぐるぐるを有効化
-                ProgressRing.IsActive = true;
 
+                ProgressRing.IsActive = true;
                 ProgressBar.Visibility = Visibility.Visible;
                 ProgressBar.Value = 0;
                 ProgressBar.Minimum = 0;
                 ProgressBar.Maximum = targets.Count;
-
                 BuildButton.IsEnabled = false;
 
                 string? projectName = ProjCombo.SelectedItem as string;
@@ -463,8 +432,6 @@ namespace msbuild_gui
                 string resultText = "";
                 string cmdErrorText = "";
 
-                //targetsの数を格納
-                int targetCount = targets.Count;
                 int targetIndex = 0;
 
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
@@ -483,10 +450,10 @@ namespace msbuild_gui
                         asp +
                         $"/p:Configuration={Configuration} " +
                         $"/fileloggerparameters:LogFile=\"{Directory.GetCurrentDirectory()}\\BuildErrorLog.txt\";ErrorsOnly;Append=True",
-                        CreateNoWindow = true, // ウィンドウを表示しない
+                        CreateNoWindow = true,
                         UseShellExecute = false,
-                        RedirectStandardOutput = true, // 標準出力を取得できるようにする
-                        RedirectStandardError = true // 標準エラー出力を取得できるようにする
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
                     });
 
                     // 標準出力・標準エラー出力・終了コードを取得する
@@ -500,7 +467,7 @@ namespace msbuild_gui
 
                     process?.Close();
                     
-                    // ProgressBarを表示
+                    // ProgressBarを進める
                     Application.Current.Dispatcher.Invoke(() => {
                         targetIndex += 1;
                         ProgressBar.Visibility = Visibility.Visible;
@@ -526,7 +493,6 @@ namespace msbuild_gui
         {
             try
             {
-                // ぐるぐるを無効化
                 ProgressRing.IsActive = false;
                 
                 bool errorFlg = false;
@@ -535,7 +501,6 @@ namespace msbuild_gui
                     errorFlg = true;
                 }
                 
-                // 実行結果を表示
                 if (errorFlg == false)
                 {
                     ModernWpf.MessageBox.Show("実行完了", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -545,16 +510,14 @@ namespace msbuild_gui
                         window.CmdResult.Text = resultText;
                         window.Show();
                     }
+                    if (cmdErrorText != "")
+                    {
+                        var window = new Console("エラー", TargetList.Items.Count);
+                        window.CmdResult.Text = cmdErrorText;
+                        window.Show();
+                    }
+                }
 
-                }
-                // コマンドエラーを表示
-                if (cmdErrorText != "" && errorFlg == false)
-                {
-                    var window = new Console("エラー", TargetList.Items.Count);
-                    window.CmdResult.Text = cmdErrorText;
-                    window.Show();
-                }
-                // Msbuildエラーを表示
                 if (errorFlg)
                 {
                     // エラー出力ファイルの読み込み
@@ -564,19 +527,16 @@ namespace msbuild_gui
                     // エラーウィンドウを表示
                     var errorWindow = new Console("エラーログ", TargetList.Items.Count);
                     errorWindow.CmdResult.Text = resultErrorText.ReadToEnd();
-                    // StreamReaderを終了する
                     resultErrorText.Close();
                     
-                    ModernWpf.MessageBox.Show("ビルドに失敗しました。", "アラート", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ModernWpf.MessageBox.Show("ビルドに失敗しました。", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    // 実行結果を表示
                     if (ShowLogCheck.IsChecked == true)
                     {
                         var window = new Console("実行結果", TargetList.Items.Count);
                         window.CmdResult.Text = resultText;
                         window.Show();
                     }
-                    // コマンドエラーを表示
                     if (cmdErrorText != "")
                     {
                         var window = new Console("エラー", TargetList.Items.Count);
@@ -617,8 +577,6 @@ namespace msbuild_gui
                 var projects = config.GetSection("Project").Get<ProjectData[]>();
                 foreach (var proj in projects)
                 {
-                    //Projects.ProjectsList.Add(proj.Id, );
-                    //追加(ProjectDataを使用)
                     Projects.ProjectsList.Add(proj.Id, new Projects.ProjectData
                     {
                         ProjectName = proj.ProjectName,
@@ -630,7 +588,7 @@ namespace msbuild_gui
                         Configuration = proj.Configuration
                     });
                 }
-                // プロジェクトリストを表示
+
                 Debug.Print("■取得プロジェクト一覧");
                 foreach (var proj in Projects.ProjectsList)
                 {
@@ -639,7 +597,6 @@ namespace msbuild_gui
                         $", Target: {proj.Value.Target}, AssemblySearchPaths: {proj.Value.AssemblySearchPaths}" +
                         $", Configuration: {proj.Value.Configuration}");
                 }
-                // ShowLogを元にShowLogCheckのチェックを制御する
                 Projects.ShowLog = config.GetValue<bool>("ShowLog", false);
                 ShowLogCheck.IsChecked = Projects.ShowLog;
             }
@@ -657,7 +614,6 @@ namespace msbuild_gui
         {
             try
             {
-                // "ビルドログを表示"チェックボックスのチェック状態を取得
                 bool isChecked = ShowLogCheck.IsChecked ?? false;
                 Appsettings appsettings = new Appsettings
                 {
@@ -681,7 +637,6 @@ namespace msbuild_gui
                 var jsonData = JsonConvert.SerializeObject(appsettings, Formatting.Indented);
                 using (var sw = new StreamWriter($"{AppContext.BaseDirectory}/appsettings.json", false, System.Text.Encoding.UTF8))
                 {
-                    // JSON データをファイルに書き込み
                     sw.Write(jsonData);
                 }
                 LoadAppSettings();
