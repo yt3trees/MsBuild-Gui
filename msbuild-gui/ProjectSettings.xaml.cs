@@ -156,7 +156,7 @@ namespace msbuild_gui
             using (var cofd = new CommonOpenFileDialog()
             {
                 Title = "MsBuild.exe選択",
-                InitialDirectory = MsBuildPath.Text.Substring(0, MsBuildPath.Text.LastIndexOf("\\")),
+                InitialDirectory = MsBuildPath.Text == "" ? "" : MsBuildPath.Text.Substring(0, MsBuildPath.Text.LastIndexOf("\\")),
                 IsFolderPicker = false,
             }
                 )
