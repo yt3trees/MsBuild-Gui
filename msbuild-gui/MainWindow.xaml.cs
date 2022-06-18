@@ -170,7 +170,7 @@ namespace msbuild_gui
                 AddButton_Click(sender, e);
             }
         }
-        private void TargetList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void TargetList_MouseDsoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             RemoveButton_Click(sender, e);
         }
