@@ -25,7 +25,9 @@ jobs:
       run: dotnet build -o src --configuration Release --no-restore
 
     - name: zip
-      run: zip -r -j -9 -m -o src.zip src
+      run: cd src|
+        zip -r src src/
+      
     
     - name: Create release
       id: create_release
