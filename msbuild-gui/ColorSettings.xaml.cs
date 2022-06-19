@@ -19,13 +19,19 @@ namespace msbuild_gui
             .GetProperties(BindingFlags.Public | BindingFlags.Static)
             .Select(info => (info.Name))
             .ToArray();
+        public static ApplicationTheme? BefTheme { get; set; }
+        public static Color? BefAccent { get; set; }
+        public static bool OkFlg { get; set; }
 
         public ColorSettings()
         {
             InitializeComponent();
 
+            OkFlg = false;
             AccentColorList.ItemsSource = KnownColorNames;
-            
+            BefTheme = ThemeManager.Current.ActualApplicationTheme;
+            BefAccent = ThemeManager.Current.AccentColor;
+
             if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark)
             {
                 ThemeDark.IsChecked = true;
@@ -49,7 +55,17 @@ namespace msbuild_gui
                 AccentColorList.SelectedItem = ThemeManager.Current.AccentColor.ToString();
             }
         }
-
+        /// <summary>
+        /// 閉じるボタン押下時
+        /// </summary>
+        protected virtual void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (OkFlg == false)
+            {
+                ThemeManager.Current.ApplicationTheme = BefTheme;
+                ThemeManager.Current.AccentColor = BefAccent;
+            }
+        }
         private void ThemeRadio_Click(object sender, RoutedEventArgs e)
         {
             var ctrl = sender as Control;
@@ -71,6 +87,7 @@ namespace msbuild_gui
         {
             // 設定ファイルに保存
             ((MainWindow)this.Owner).saveJson();
+            OkFlg = true;
             this.Close();
         }
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
