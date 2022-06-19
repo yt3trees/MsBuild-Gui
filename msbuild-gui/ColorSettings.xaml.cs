@@ -29,7 +29,7 @@ namespace msbuild_gui
 
             OkFlg = false;
             AccentColorList.ItemsSource = KnownColorNames;
-            BefTheme = ThemeManager.Current.ActualApplicationTheme;
+            BefTheme = ThemeManager.Current.ApplicationTheme;
             BefAccent = ThemeManager.Current.AccentColor;
 
             if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark)
