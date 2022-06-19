@@ -101,7 +101,7 @@
                 Content="_OK"
                 Click="OkButton_Click"
                 Style="{StaticResource AccentButtonStyle}"
-                Padding="5,5,5,5"
+                Padding="0,0,0,0"
                 Grid.Row="2"
                 Height="30"
                 Width="60"

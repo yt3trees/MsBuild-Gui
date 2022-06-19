@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Toolkit.Uwp.Notifications;
 using ModernWpf;
 using ModernWpf.Controls;
 using Newtonsoft.Json;
@@ -24,7 +25,7 @@ namespace msbuild_gui
         #region fields
         delegate void DelegateProcess(string a, string b);
         #endregion
- 
+
         #region properties
         /// <summary>
         /// プロジェクトリスト
@@ -96,6 +97,7 @@ namespace msbuild_gui
         {
             InitializeComponent();
             ProgressBar.Visibility = Visibility.Hidden;
+            ToastNotificationManagerCompat.OnActivated += this.ToastNotificationManagerCompat_OnActivated;
         }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
@@ -453,7 +455,7 @@ namespace msbuild_gui
         /// <param name="Target">MsBuildパラメータ:Target</param>
         /// <param name="AssemblySearchPaths">MsBuildパラメータ:AssemblySearchPaths</param>
         /// <param name="Configuration">MsBuildパラメータ:Configuration</param>
-        private void RunBuild(List<string> targets ,string? SourceFolder,string? OutputFolder,string? MsBuild, string? Target,string? AssemblySearchPaths,string? Configuration)
+        private void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration)
         {
             try
             {
@@ -463,7 +465,7 @@ namespace msbuild_gui
                 int targetIndex = 0;
 
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
-                
+
                 foreach (var target in targets)
                 {
                     string targetFilePath = SourceFolder + target;
@@ -488,13 +490,13 @@ namespace msbuild_gui
                     string? standardOutput = process?.StandardOutput.ReadToEnd();
                     string? standardError = process?.StandardError.ReadToEnd();
                     resultText += "------------------------------------------------------------------------------------------\n\n" +
-                                  $"[{targetIndex+1}] {target}\n\n" +
+                                  $"[{targetIndex + 1}] {target}\n\n" +
                                   "------------------------------------------------------------------------------------------\n\n" +
                                   standardOutput + "\n\n\n\n\n\n";
                     cmdErrorText += standardError;
 
                     process?.Close();
-                    
+
                     // ProgressBarを進める
                     Application.Current.Dispatcher.Invoke(() => {
                         targetIndex += 1;
@@ -503,7 +505,7 @@ namespace msbuild_gui
                     });
                 }
                 // UIスレッドでShowResultを実行
-                this.Dispatcher.Invoke(new DelegateProcess(ShowResult), new object[] { resultText, cmdErrorText});
+                this.Dispatcher.Invoke(new DelegateProcess(ShowResult), new object[] { resultText, cmdErrorText });
             }
             catch (Exception ex)
             {
@@ -517,37 +519,48 @@ namespace msbuild_gui
         /// </summary>
         /// <param name="resultText">実行結果</param>
         /// <param name="cmdErrorText">コマンドエラー結果</param>
-        private void ShowResult(string resultText , string cmdErrorText)
+        private void ShowResult(string resultText, string cmdErrorText)
         {
             try
             {
                 ProgressRing.IsActive = false;
-                
+
                 bool errorFlg = false;
-                if (File.Exists(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt") && File.ReadAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt") != "" )
+                if (File.Exists(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt") && File.ReadAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt") != "")
                 {
                     errorFlg = true;
                 }
-                
+
                 if (errorFlg == false)
                 {
-                    ModernWpf.MessageBox.Show("実行完了", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
+                    new ToastContentBuilder()
+                    .AddText("MsBuild-Gui")
+                    .AddText("ビルド完了しました。")
+                    .Show();
+                    //ModernWpf.MessageBox.Show("ビルド完了", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
                     if (ShowLogCheck.IsChecked == true)
                     {
                         var window = new Console("実行結果", TargetList.Items.Count);
                         window.CmdResult.Text = resultText;
+                        window.Owner = this;
                         window.Show();
                     }
                     if (cmdErrorText != "")
                     {
                         var window = new Console("エラー", TargetList.Items.Count);
                         window.CmdResult.Text = cmdErrorText;
+                        window.Owner = this;
                         window.Show();
                     }
                 }
 
                 if (errorFlg)
                 {
+                    new ToastContentBuilder()
+                    .AddText("MsBuild-Gui")
+                    .AddText("ビルドに失敗しました。")
+                    .Show();
+
                     // エラー出力ファイルの読み込み
                     System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance); // Shift-JISを扱うためのおまじない
                     StreamReader resultErrorText = new StreamReader(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt"
@@ -555,23 +568,27 @@ namespace msbuild_gui
                     // エラーウィンドウを表示
                     var errorWindow = new Console("エラーログ", TargetList.Items.Count);
                     errorWindow.CmdResult.Text = resultErrorText.ReadToEnd();
+                    errorWindow.Owner = this;
                     resultErrorText.Close();
-                    
-                    ModernWpf.MessageBox.Show("ビルドに失敗しました。", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    //ModernWpf.MessageBox.Show("ビルドに失敗しました。", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     if (ShowLogCheck.IsChecked == true)
                     {
                         var window = new Console("実行結果", TargetList.Items.Count);
                         window.CmdResult.Text = resultText;
+                        window.Owner = this;
                         window.Show();
                     }
                     if (cmdErrorText != "")
                     {
                         var window = new Console("エラー", TargetList.Items.Count);
                         window.CmdResult.Text = cmdErrorText;
+                        window.Owner = this;
                         window.Show();
                     }
                     errorWindow.Show();
+                    //errorWindow.Activate();
                 }
             }
             catch (Exception ex)
@@ -584,6 +601,20 @@ namespace msbuild_gui
                 ProgressBar.Visibility = Visibility.Hidden;
                 BuildButton.IsEnabled = true;
             }
+        }
+        private void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat e)
+        {
+            //// e.Argument で押されたボタンを確認
+            //var arg = e.Argument;
+            //if (arg == "cancel") return;
+            this.Dispatcher.Invoke(() =>
+            {
+                //最前面にする
+                this.Activate();
+                this.Topmost = true;
+                this.Topmost = false;
+            });
+
         }
 
         /// <summary>

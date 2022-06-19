@@ -17,6 +17,7 @@ namespace msbuild_gui
         public Console(string result , int maxCount)
         {
             InitializeComponent();
+            //this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             searchIndex = 2;
             searchIndexMAX = maxCount;
             Title = result;
