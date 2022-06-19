@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using ModernWpf;
+using ModernWpf.Controls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -51,6 +53,8 @@ namespace msbuild_gui
             public List<ProjectData>? Project { get; set; }
             [JsonProperty("ShowLog")]
             public string? ShowLog { get; set; }
+            [JsonProperty("Theme")]
+            public string? Theme { get; set; }
         }
         /// <summary>
         /// 設定ファイル用プロパティ
@@ -128,7 +132,16 @@ namespace msbuild_gui
         /// </summary>
         private void BuildButton_Click(object sender, RoutedEventArgs e)
         {
+            //PrepareBuild();
+        }
+        private void BuildButton2_Click(object sender, RoutedEventArgs e)
+        {
             PrepareBuild();
+            Flyout f = FlyoutService.GetFlyout(BuildButton) as Flyout;
+            if (f != null)
+            {
+                f.Hide();
+            }
         }
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -304,8 +317,14 @@ namespace msbuild_gui
         {
             if (e.Key == Key.F5)
             {
-                BuildButton_Click(sender, e);
+                BuildButton2_Click(sender, e);
             }
+        }
+        private void ColorSetting_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new ColorSettings();
+            window.Owner = this;
+            window.ShowDialog();
         }
         #endregion
 
@@ -373,10 +392,10 @@ namespace msbuild_gui
                     ModernWpf.MessageBox.Show("ビルド対象を選択してください。", "確認", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
-                if (ModernWpf.MessageBox.Show("ビルドを実行しますか？", "確認", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                {
-                    return;
-                }
+                //if (ModernWpf.MessageBox.Show("ビルドを実行しますか？", "確認", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                //{
+                //    return;
+                //}
 
                 ProgressRing.IsActive = true;
                 ProgressBar.Visibility = Visibility.Visible;
@@ -599,6 +618,20 @@ namespace msbuild_gui
                 }
                 Projects.ShowLog = config.GetValue<bool>("ShowLog", false);
                 ShowLogCheck.IsChecked = Projects.ShowLog;
+
+                string theme = config.GetValue<string>("Theme");
+                if (theme == "Dark")
+                {
+                    ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
+                }
+                else if (theme == "Light")
+                {
+                    ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
+                }
+                else
+                {
+                    ThemeManager.Current.ApplicationTheme = null;
+                }
             }
             catch (Exception ex)
             {
@@ -615,10 +648,24 @@ namespace msbuild_gui
             try
             {
                 bool isChecked = ShowLogCheck.IsChecked ?? false;
+                string? settingTheme;
+                if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark)
+                {
+                    settingTheme = "Dark";
+                }
+                else if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light)
+                {
+                    settingTheme = "Light";
+                }
+                else
+                {
+                    settingTheme = "Default";
+                }
                 Appsettings appsettings = new Appsettings
                 {
                     Project = new List<ProjectData>(),
                     ShowLog = isChecked.ToString(),
+                    Theme = settingTheme
                 };
                 foreach (var proj in Projects.ProjectsList)
                 {

@@ -69,8 +69,10 @@
                 Width="75"
                 Margin="0,-50,0,0"
                 Click="AddButton_Click"
-                TabIndex="8" 
-                ToolTip="csproj一覧からビルド対象に追加します。"/>
+                TabIndex="8"
+                ToolTip="csproj一覧からビルド対象に追加します。">
+            
+        </Button>
         <Button x:Name="RemoveButton"
                 Content="＜削除(_D)"
                 HorizontalAlignment="Center"
@@ -129,13 +131,27 @@
                                  VerticalAlignment="Top" />-->
                 <Button x:Name="BuildButton"
                         Content="ビルド"
-                        Click="BuildButton_Click"
                         Height="30"
                         FontSize="14"
                         Padding="0,1,0,1"
                         Width="120"
                         Style="{StaticResource AccentButtonStyle}"
-                        TabIndex="13" />
+                        TabIndex="13"
+                        Click="BuildButton_Click">
+                    <ui:FlyoutService.Flyout>
+                        <ui:Flyout x:Name="Flyout1">
+                            <StackPanel x:Name="StackPanelFlyout">
+                                <TextBlock Style="{StaticResource BaseTextBlockStyle}"
+                                           Text="ビルドを実行しますか？"
+                                           Margin="0,0,0,12" />
+                                <Button x:Name="BuildButton2"
+                                        Content="実行"
+                                        Click="BuildButton2_Click"
+                                        Width="80" />
+                            </StackPanel>
+                        </ui:Flyout>
+                    </ui:FlyoutService.Flyout>
+                </Button>
                 <CheckBox x:Name="ShowLogCheck"
                           Content="ビルドログを表示"
                           Click="ShowLogCheck_Click"
@@ -183,6 +199,8 @@
             </MenuItem>
             <MenuItem Header="設定(_E)"
                       TabIndex="2">
+                <MenuItem Header="カラー設定(_C)"
+                          Click="ColorSetting_Click" />
                 <MenuItem Header="プロジェクト設定(_P)"
                           Click="Button_Click" />
             </MenuItem>
