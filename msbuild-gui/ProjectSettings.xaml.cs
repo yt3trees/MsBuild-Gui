@@ -52,6 +52,7 @@ namespace msbuild_gui
         public ProjectSettings(string projTexts)
         {
             InitializeComponent();
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             projText = projTexts;
         }
         private void Window_SourceInitialized(object sender, EventArgs e)

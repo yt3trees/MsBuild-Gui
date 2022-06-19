@@ -12,6 +12,7 @@ namespace msbuild_gui
         public InputWindow(string defaultAnswer = "")
         {
             InitializeComponent();
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             AnswerText.Text = defaultAnswer;
             var projSetting = ProjectSettings.ProjectNameTemp;
             CopyCheck.Content = projSetting + "の内容をコピーして作成";

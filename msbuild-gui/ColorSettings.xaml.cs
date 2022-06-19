@@ -26,6 +26,7 @@ namespace msbuild_gui
         public ColorSettings()
         {
             InitializeComponent();
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             OkFlg = false;
             AccentColorList.ItemsSource = KnownColorNames;
