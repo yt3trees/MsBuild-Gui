@@ -400,10 +400,13 @@ namespace msbuild_gui
                 //    return;
                 //}
 
-                Brush brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ThemeManager.Current.AccentColor.ToString()));
+                if (ThemeManager.Current.AccentColor != null)
+                {
+                    Brush brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ThemeManager.Current.AccentColor.ToString()));
+                    ProgressRing.Foreground = brush;
+                    ProgressBar.Foreground = brush;
+                }
                 ProgressRing.IsActive = true;
-                ProgressRing.Foreground = brush;
-                ProgressBar.Foreground = brush;
                 ProgressBar.Visibility = Visibility.Visible;
                 ProgressBar.Value = 0;
                 ProgressBar.Minimum = 0;
