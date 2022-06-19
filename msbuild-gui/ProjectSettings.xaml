@@ -48,7 +48,7 @@
                         Width="30"
                         Click="AddButton_Click"
                         VerticalContentAlignment="Center"
-                        Padding="5,5,5,5"
+                        Padding="0,0,0,0"
                         Height="30" 
                         ToolTip="プロジェクトを追加します。"/>
                 <Button x:Name="DeleteButton"
@@ -56,7 +56,7 @@
                         Margin="335,0,0,0"
                         Width="30"
                         Click="DeleteButton_Click"
-                        Padding="5,5,5,5"
+                        Padding="0,0,0,0"
                         Height="30"
                         ToolTip="プロジェクトを削除します。"/>
             </Grid>
@@ -75,7 +75,7 @@
                          Width="300"
                          HorizontalAlignment="Center"
                          FontSize="12"
-                         ToolTip="配下に.csprojが格納されているフォルダパスを入力してください。" />
+                         ToolTip="配下に.csprojが格納されているフォルダパスを指定してください。" />
             </Grid>
             <Label Content="DLL出力先フォルダ"
                    VerticalContentAlignment="Top"
