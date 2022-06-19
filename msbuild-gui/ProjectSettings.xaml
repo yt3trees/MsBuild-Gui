@@ -16,7 +16,8 @@
         WindowStyle="ToolWindow"
         Closing="Window_Closing"
         KeyDown="Window_KeyDown"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
