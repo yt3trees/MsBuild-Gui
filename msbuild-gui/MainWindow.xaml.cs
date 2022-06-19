@@ -137,17 +137,17 @@ namespace msbuild_gui
         /// </summary>
         private void BuildButton_Click(object sender, RoutedEventArgs e)
         {
-            //PrepareBuild();
-        }
-        private void BuildButton2_Click(object sender, RoutedEventArgs e)
-        {
             PrepareBuild();
-            Flyout f = FlyoutService.GetFlyout(BuildButton) as Flyout;
-            if (f != null)
-            {
-                f.Hide();
-            }
         }
+        //private void BuildButton2_Click(object sender, RoutedEventArgs e)
+        //{
+        //    PrepareBuild();
+        //    Flyout f = FlyoutService.GetFlyout(BuildButton) as Flyout;
+        //    if (f != null)
+        //    {
+        //        f.Hide();
+        //    }
+        //}
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -322,7 +322,7 @@ namespace msbuild_gui
         {
             if (e.Key == Key.F5)
             {
-                BuildButton2_Click(sender, e);
+                BuildButton_Click(sender, e);
             }
         }
         private void ColorSetting_Click(object sender, RoutedEventArgs e)

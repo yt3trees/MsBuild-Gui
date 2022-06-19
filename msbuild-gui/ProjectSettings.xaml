@@ -35,29 +35,38 @@
                    Margin="0,5,0,5" />
             <Grid Height="33"
                   Margin="0,5,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300*" />
+                    <ColumnDefinition Width="30*" />
+                    <ColumnDefinition Width="65*" />
+                </Grid.ColumnDefinitions>
                 <ComboBox x:Name="ProjSettingCombo"
                           Width="200"
                           SelectionChanged="ProjSettingCombo_SelectionChanged"
-                          HorizontalAlignment="Center"
                           Height="30"
-                          VerticalAlignment="Center" />
+                          VerticalAlignment="Center"
+                          Margin="99,0,0,0" />
                 <Button x:Name="AddButton"
                         Content="+"
-                        Margin="300,0,0,0"
                         Width="30"
                         Click="AddButton_Click"
                         VerticalContentAlignment="Center"
                         Padding="0,0,0,0"
-                        Height="30" 
-                        ToolTip="プロジェクトを追加します。"/>
+                        Height="30"
+                        ToolTip="プロジェクトを追加します。"
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
                 <Button x:Name="DeleteButton"
                         Content="-"
-                        Margin="335,0,0,0"
                         Width="30"
                         Click="DeleteButton_Click"
                         Padding="0,0,0,0"
                         Height="30"
-                        ToolTip="プロジェクトを削除します。"/>
+                        ToolTip="プロジェクトを削除します。"
+                        Grid.Column="2"
+                        Margin="1,0,0,0"
+                        HorizontalAlignment="Left" />
             </Grid>
             <Label Content="ソースフォルダ"
                    VerticalContentAlignment="Top"
@@ -201,16 +210,16 @@
                         Width="100"
                         Click="ExportButton_Click"
                         HorizontalAlignment="Center"
-                        Margin="-110,0,0,0" 
-                        ToolTip="登録済みデータをエクスポートします。"/>
+                        Margin="-110,0,0,0"
+                        ToolTip="登録済みデータをエクスポートします。" />
                 <Button x:Name="ImportButton"
                         Content="インポート"
                         Padding="10,0,10,0"
                         Width="100"
                         Click="ImportButton_Click"
                         HorizontalAlignment="Center"
-                        Margin="0,0,-110,0" 
-                        ToolTip="エクスポートしたjsonファイルをインポートします。"/>
+                        Margin="0,0,-110,0"
+                        ToolTip="エクスポートしたjsonファイルをインポートします。" />
             </Grid>
         </StackPanel>
         <Grid Grid.Column="1"
@@ -225,7 +234,17 @@
                     Click="SaveButton_Click"
                     ToolTip="入力内容を保存します。"
                     Width="120"
-                    Style="{StaticResource AccentButtonStyle}" />
+                    Style="{StaticResource AccentButtonStyle}">
+                <ui:FlyoutService.Flyout>
+                    <ui:Flyout x:Name="Flyout1">
+                        <StackPanel x:Name="StackPanelFlyout">
+                            <TextBlock Style="{StaticResource BaseTextBlockStyle}"
+                                       Text="保存しました。"
+                                       Margin="0,0,0,0" />
+                        </StackPanel>
+                    </ui:Flyout>
+                </ui:FlyoutService.Flyout>
+            </Button>
             <Button x:Name="CloseButton"
                     Content="閉じる"
                     Margin="130,10,0,10"

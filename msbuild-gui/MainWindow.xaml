@@ -139,19 +139,15 @@
                         Style="{StaticResource AccentButtonStyle}"
                         TabIndex="13"
                         Click="BuildButton_Click">
-                    <ui:FlyoutService.Flyout>
+                    <!--<ui:FlyoutService.Flyout>
                         <ui:Flyout x:Name="Flyout1">
                             <StackPanel x:Name="StackPanelFlyout">
                                 <TextBlock Style="{StaticResource BaseTextBlockStyle}"
                                            Text="ビルドを実行しますか？"
-                                           Margin="0,0,0,12" />
-                                <Button x:Name="BuildButton2"
-                                        Content="実行"
-                                        Click="BuildButton2_Click"
-                                        Width="80" />
+                                           Margin="0,0,0,12"/>
                             </StackPanel>
                         </ui:Flyout>
-                    </ui:FlyoutService.Flyout>
+                    </ui:FlyoutService.Flyout>-->
                 </Button>
                 <CheckBox x:Name="ShowLogCheck"
                           Content="ビルドログを表示"

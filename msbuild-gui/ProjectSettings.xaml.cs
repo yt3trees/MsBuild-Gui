@@ -1,10 +1,12 @@
 ﻿using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using ModernWpf.Controls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -167,11 +169,6 @@ namespace msbuild_gui
         {
             try
             {
-                var result = ModernWpf.MessageBox.Show("保存しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result != MessageBoxResult.Yes)
-                {
-                    return;
-                }
                 if (ProjSettingCombo.Text != "")
                 {
                     string? projectName = ProjSettingCombo.SelectedItem as string;
@@ -243,7 +240,7 @@ namespace msbuild_gui
                                                 + (AssemblySearchPath2.Text == "" ? "" : AssemblySearchPath2.Text + ";")
                                                 + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";") : ""
                 });
-                Window_SourceInitialized(null, null);
+                Window_SourceInitialized(sender, e);
                 // 追加したプロジェクトをセット
                 SetParameter(window.Answer);
             }
@@ -387,7 +384,7 @@ namespace msbuild_gui
                     string importProj = string.Join(", ", projects);
                     ModernWpf.MessageBox.Show($"インポート完了\n{importProj}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     // コンボボックスを更新
-                    Window_SourceInitialized(null, null);
+                    Window_SourceInitialized(sender, e);
                     // MainWindowのプロジェクトドロップダウンをクリアして再セット
                     ((MainWindow)this.Owner).ProjCombo.Items.Clear();
                     MainWindow.Projects.ProjectsList.ToList().ForEach(x => ((MainWindow)this.Owner).ProjCombo.Items.Add(x.Value.ProjectName));
@@ -406,7 +403,9 @@ namespace msbuild_gui
             }
             else if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                SaveButton_Click(null, null);
+                SaveButton_Click(sender, e);
+                ModernWpf.MessageBox.Show("保存しました。", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.Input.Keyboard.ClearFocus();
             }
         }
         #endregion
