@@ -23,8 +23,6 @@
                  Text="TextBox"
                  IsReadOnly="True"
                  VerticalScrollBarVisibility="Auto"
-                 Background="#FF111111"
-                 Foreground="LightGray"
                  Padding="10,10,10,10"
                  FontFamily="BIZ UDGothic"
                  FontSize="14"

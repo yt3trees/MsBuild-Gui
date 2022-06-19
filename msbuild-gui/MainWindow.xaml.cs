@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using UI = ModernWpf;
 
 namespace msbuild_gui
@@ -55,6 +56,8 @@ namespace msbuild_gui
             public string? ShowLog { get; set; }
             [JsonProperty("Theme")]
             public string? Theme { get; set; }
+            [JsonProperty("AccentColor")]
+            public string? AccentColor { get; set; }
         }
         /// <summary>
         /// 設定ファイル用プロパティ
@@ -397,7 +400,10 @@ namespace msbuild_gui
                 //    return;
                 //}
 
+                Brush brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ThemeManager.Current.AccentColor.ToString()));
                 ProgressRing.IsActive = true;
+                ProgressRing.Foreground = brush;
+                ProgressBar.Foreground = brush;
                 ProgressBar.Visibility = Visibility.Visible;
                 ProgressBar.Value = 0;
                 ProgressBar.Minimum = 0;
@@ -616,9 +622,10 @@ namespace msbuild_gui
                         $", Target: {proj.Value.Target}, AssemblySearchPaths: {proj.Value.AssemblySearchPaths}" +
                         $", Configuration: {proj.Value.Configuration}");
                 }
+                // ビルドログ表示フラグ
                 Projects.ShowLog = config.GetValue<bool>("ShowLog", false);
                 ShowLogCheck.IsChecked = Projects.ShowLog;
-
+                // テーマ
                 string theme = config.GetValue<string>("Theme");
                 if (theme == "Dark")
                 {
@@ -631,6 +638,17 @@ namespace msbuild_gui
                 else
                 {
                     ThemeManager.Current.ApplicationTheme = null;
+                }
+                // アクセントカラー
+                string accentColor = config.GetValue<string>("AccentColor");
+                if (accentColor == "Default")
+                {
+                    ThemeManager.Current.AccentColor = null;
+                }
+                else
+                {
+                    var color = (Color)ColorConverter.ConvertFromString(accentColor);
+                    ThemeManager.Current.AccentColor = color;
                 }
             }
             catch (Exception ex)
@@ -647,7 +665,9 @@ namespace msbuild_gui
         {
             try
             {
+                // ビルドログ表示フラグ
                 bool isChecked = ShowLogCheck.IsChecked ?? false;
+                // テーマ
                 string? settingTheme;
                 if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark)
                 {
@@ -661,11 +681,23 @@ namespace msbuild_gui
                 {
                     settingTheme = "Default";
                 }
+                // アクセントカラー
+                string? settingAccentColor;
+                if (ThemeManager.Current.AccentColor == null)
+                {
+                    settingAccentColor = "Default";
+                }
+                else
+                {
+                    settingAccentColor = ThemeManager.Current.AccentColor.ToString();
+                }
+
                 Appsettings appsettings = new Appsettings
                 {
                     Project = new List<ProjectData>(),
                     ShowLog = isChecked.ToString(),
-                    Theme = settingTheme
+                    Theme = settingTheme,
+                    AccentColor = settingAccentColor
                 };
                 foreach (var proj in Projects.ProjectsList)
                 {

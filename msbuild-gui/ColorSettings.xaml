@@ -6,10 +6,11 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
         xmlns:local="clr-namespace:msbuild_gui"
+        xmlns:sys="clr-namespace:System;assembly=netstandard"
         mc:Ignorable="d"
         Title="カラー設定"
-        Height="220"
-        Width="300"
+        Height="450"
+        Width="350"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
@@ -28,13 +29,20 @@
             <EventSetter Event="Click"
                          Handler="ThemeRadio_Click" />
         </Style>
+        <Style x:Key="AccentColorRadioStyle"
+               TargetType="RadioButton"
+               BasedOn="{StaticResource DefaultRadioButtonStyle}">
+            <Setter Property="GroupName"
+                    Value="AccentColor" />
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="35*" />
-            <RowDefinition Height="11*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="5*" />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Margin="5,5,5,5">
+        <StackPanel>
             <TextBlock Text="テーマ"
                        Style="{StaticResource TitleTextBlockStyle}"
                        Margin="10,0,10,0" />
@@ -51,6 +59,41 @@
                          Style="{StaticResource ThemeRadioStyle}"
                          Margin="10,0,10,0" />
         </StackPanel>
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="アクセントカラー"
+                       Style="{StaticResource TitleTextBlockStyle}"
+                       FontSize="24"
+                       Margin="10,0,10,0" />
+            <RadioButton x:Name="AccentColorSystem"
+                         Content="Windows アクセントカラーを使用"
+                         Style="{StaticResource AccentColorRadioStyle}"
+                         Margin="10,0,10,0"
+                         Checked="AccentColorSystem_Checked"
+                         GroupName="AccentColor" />
+            <RadioButton x:Name="AccentColorSet"
+                         Content="アクセントカラーを指定"
+                         Style="{StaticResource AccentColorRadioStyle}"
+                         Margin="10,0,10,0"
+                         Checked="AccentColorSet_Checked"
+                         GroupName="AccentColor" />
+            <ListBox x:Name="AccentColorList"
+                     d:ItemsSource="{d:SampleData ItemCount=5}"
+                     FontSize="14"
+                     Margin="10,0,10,0"
+                     ItemsSource="{Binding Items}"
+                     SelectionChanged="AccentColorList_SelectionChanged"
+                     Height="140">
+                <!--<ListBox.Resources>
+                    <sys:Double x:Key="ControlContentThemeFontSize">10</sys:Double>
+                </ListBox.Resources>-->
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Height"
+                                Value="20" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </StackPanel>
         <Button IsDefault="True"
                 x:Name="OkButton"
                 MinWidth="60"
@@ -58,7 +101,7 @@
                 Click="OkButton_Click"
                 Style="{StaticResource AccentButtonStyle}"
                 Padding="5,5,5,5"
-                Grid.Row="1"
+                Grid.Row="2"
                 Height="30"
                 Width="60"
                 HorizontalAlignment="Right"

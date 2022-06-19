@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using ModernWpf;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -32,6 +33,22 @@ namespace msbuild_gui
             {
                 this.Left = System.Windows.SystemParameters.PrimaryScreenWidth / 2 - this.Width / 2;
                 this.Top = System.Windows.SystemParameters.PrimaryScreenHeight / 2 - this.Height / 2;
+            }
+
+            Brush black = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF111111"));
+            Brush gray = new SolidColorBrush((Color)ColorConverter.ConvertFromString("LightGray"));
+            Brush white = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
+            if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark 
+                || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
+            {
+                CmdResult.Background = black;
+                CmdResult.Foreground = gray;
+            }
+            else if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light
+                || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Light)
+            {
+                CmdResult.Background = white;
+                CmdResult.Foreground = black;
             }
         }
         private void CmdResult_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
