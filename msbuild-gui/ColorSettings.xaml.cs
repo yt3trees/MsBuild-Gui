@@ -1,17 +1,7 @@
 ﻿using ModernWpf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace msbuild_gui
 {
@@ -23,6 +13,18 @@ namespace msbuild_gui
         public ColorSettings()
         {
             InitializeComponent();
+            if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark)
+            {
+                ThemeDark.IsChecked = true;
+            }
+            else if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light)
+            {
+                ThemeLight.IsChecked = true;
+            }
+            else
+            {
+                ThemeSystem.IsChecked = true;
+            }
         }
 
         private void ThemeRadio_Click(object sender, RoutedEventArgs e)
