@@ -534,7 +534,6 @@ namespace msbuild_gui
                 if (errorFlg == false)
                 {
                     new ToastContentBuilder()
-                    .AddText("MsBuild-Gui")
                     .AddText("ビルド完了しました。")
                     .Show();
                     if (ShowLogCheck.IsChecked == true)
@@ -546,7 +545,6 @@ namespace msbuild_gui
                 if (errorFlg)
                 {
                     new ToastContentBuilder()
-                    .AddText("MsBuild-Gui")
                     .AddText("ビルドに失敗しました。")
                     .Show();
 
