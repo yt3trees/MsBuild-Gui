@@ -537,20 +537,9 @@ namespace msbuild_gui
                     .AddText("MsBuild-Gui")
                     .AddText("ビルド完了しました。")
                     .Show();
-                    //ModernWpf.MessageBox.Show("ビルド完了", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
                     if (ShowLogCheck.IsChecked == true)
                     {
-                        var window = new Console("実行結果", TargetList.Items.Count);
-                        window.CmdResult.Text = resultText;
-                        window.Owner = this;
-                        window.Show();
-                    }
-                    if (cmdErrorText != "")
-                    {
-                        var window = new Console("エラー", TargetList.Items.Count);
-                        window.CmdResult.Text = cmdErrorText;
-                        window.Owner = this;
-                        window.Show();
+                        ShowResult("実行結果", TargetList.Items.Count, resultText, cmdErrorText);
                     }
                 }
 
@@ -565,30 +554,11 @@ namespace msbuild_gui
                     System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance); // Shift-JISを扱うためのおまじない
                     StreamReader resultErrorText = new StreamReader(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt"
                         , System.Text.Encoding.GetEncoding("shift_jis"));
+
                     // エラーウィンドウを表示
-                    var errorWindow = new Console("エラーログ", TargetList.Items.Count);
-                    errorWindow.CmdResult.Text = resultErrorText.ReadToEnd();
-                    errorWindow.Owner = this;
+                    string errTxt = resultErrorText.ReadToEnd();
                     resultErrorText.Close();
-
-                    //ModernWpf.MessageBox.Show("ビルドに失敗しました。", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    if (ShowLogCheck.IsChecked == true)
-                    {
-                        var window = new Console("実行結果", TargetList.Items.Count);
-                        window.CmdResult.Text = resultText;
-                        window.Owner = this;
-                        window.Show();
-                    }
-                    if (cmdErrorText != "")
-                    {
-                        var window = new Console("エラー", TargetList.Items.Count);
-                        window.CmdResult.Text = cmdErrorText;
-                        window.Owner = this;
-                        window.Show();
-                    }
-                    errorWindow.Show();
-                    //errorWindow.Activate();
+                    ShowResult("実行結果 ※エラーあり", TargetList.Items.Count, resultText, cmdErrorText + errTxt);
                 }
             }
             catch (Exception ex)
@@ -601,6 +571,19 @@ namespace msbuild_gui
                 ProgressBar.Visibility = Visibility.Hidden;
                 BuildButton.IsEnabled = true;
             }
+        }
+        /// <summary>
+        /// 実行結果
+        /// </summary>
+        /// <param name="title">ウィンドウタイトル</param>
+        /// <param name="count">ビルド対象数</param>
+        /// <param name="resultText">実行結果テキスト</param>
+        /// <param name="errorText">エラーテキスト</param>
+        private void ShowResult(string title,int count,string resultText, string errorText)
+        {
+            var window = new Console(title, count, resultText, errorText);
+            window.Owner = this;
+            window.ShowDialog();
         }
         private void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat e)
         {

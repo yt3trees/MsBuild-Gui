@@ -9,40 +9,80 @@
         FocusManager.FocusedElement="{Binding ElementName=CmdResult}"
         mc:Ignorable="d"
         Title="実行結果"
-        Height="500"
-        Width="800"
+        Height="650"
+        Width="1000"
         WindowStartupLocation="Manual"
-        KeyDown="Window_KeyDown">
+        KeyDown="Window_KeyDown"
+        ShowInTaskbar="False">
+   <!-- <Window.Resources>
+        <Style x:Key="DefaultTextbox"
+               TargetType="{x:Type TextBox}">
+            <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="BorderBrush"
+                Value="Transparent" />
+        <Style.Triggers>
+            <Trigger Property="IsFocused"
+                     Value="False">
+                <Setter Property="BorderBrush"
+                            Value="#00FFFFFF" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+        </Window.Resources>-->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="450*" />
-            <RowDefinition Height="30" />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBox x:Name="CmdResult"
-                 TextWrapping="Wrap"
-                 Text="TextBox"
-                 IsReadOnly="True"
-                 VerticalScrollBarVisibility="Auto"
-                 Padding="10,10,10,10"
-                 FontFamily="BIZ UDGothic"
-                 FontSize="14"
-                 FontWeight="Normal"
-                 KeyDown="CmdResult_KeyDown" />
-        <Border x:Name="Border"
-                BorderBrush="Black"
-                BorderThickness="1" />
-        <Grid Grid.Row="1">
-            <Button x:Name="NextButton"
-                    Content="▼"
-                    HorizontalAlignment="Center"
-                    Padding="0,0,0,0"
-                    VerticalContentAlignment="Center"
-                    HorizontalContentAlignment="Center"
-                    VerticalAlignment="Top"
-                    Width="800"
-                    FontSize="16"
-                    Click="NextButton_Click"
-                    Height="30" />
-        </Grid>
+        <TabControl Margin="1,1,1,5"
+                    Style="{StaticResource TabControlPivotStyle}">
+            <TabItem Header="実行結果">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100*" />
+                        <RowDefinition Height="5*" />
+                    </Grid.RowDefinitions>
+                    <TextBox x:Name="CmdResult"
+                             TextWrapping="Wrap"
+                             Text="TextBox"
+                             IsReadOnly="True"
+                             VerticalScrollBarVisibility="Auto"
+                             Padding="5,5,20,5"
+                             FontFamily="BIZ UDGothic"
+                             FontSize="14"
+                             FontWeight="Normal"
+                             KeyDown="CmdResult_KeyDown"
+                             HorizontalScrollBarVisibility="Auto"
+                             BorderBrush="#99000000"
+                             BorderThickness="1,1,1,1"/>
+                    <Button x:Name="NextButton"
+                            Content="▼"
+                            Padding="0,0,0,0"
+                            VerticalContentAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            FontSize="16"
+                            Click="NextButton_Click"
+                            Grid.Row="1"
+                            HorizontalAlignment="Center"
+                            Width="1000"
+                            Margin="0,1,0,0" />
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="ErrorTab"
+                     Header="エラーログ">
+                <TextBox x:Name="ErrorResult"
+                         TextWrapping="Wrap"
+                         Text="TextBox"
+                         IsReadOnly="True"
+                         VerticalScrollBarVisibility="Auto"
+                         Padding="5,5,15,5"
+                         FontFamily="BIZ UDGothic"
+                         FontSize="14"
+                         FontWeight="Normal"
+                         KeyDown="ErrorResult_KeyDown"
+                         BorderBrush="#99000000"
+                         BorderThickness="1,1,1,1" />
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

@@ -14,27 +14,21 @@ namespace msbuild_gui
     {
         private int searchIndex { get; set; }
         private int searchIndexMAX { get; set; }
-        public Console(string result , int maxCount)
+        public Console(string result , int maxCount, string resultLog, string errorLog)
         {
             InitializeComponent();
-            //this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             searchIndex = 2;
             searchIndexMAX = maxCount;
             Title = result;
-            if (result == "エラーログ")
+
+            if (errorLog == "")
             {
-                Border.BorderBrush = new SolidColorBrush(Colors.LightSalmon);
+                ErrorTab.Visibility = Visibility.Hidden;
             }
-            if (result == "エラーログ")
-            {
-                this.Left = System.Windows.SystemParameters.PrimaryScreenWidth / 2 - ((this.Width / 2) - 20);
-                this.Top = System.Windows.SystemParameters.PrimaryScreenHeight / 2 - ((this.Height / 2) - 20);
-            }
-            else
-            {
-                this.Left = System.Windows.SystemParameters.PrimaryScreenWidth / 2 - this.Width / 2;
-                this.Top = System.Windows.SystemParameters.PrimaryScreenHeight / 2 - this.Height / 2;
-            }
+
+            CmdResult.Text = resultLog;
+            ErrorResult.Text = errorLog;
 
             Brush black = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF111111"));
             Brush gray = new SolidColorBrush((Color)ColorConverter.ConvertFromString("LightGray"));
@@ -44,33 +38,19 @@ namespace msbuild_gui
             {
                 CmdResult.Background = black;
                 CmdResult.Foreground = gray;
+                ErrorResult.Background = black;
+                ErrorResult.Foreground = gray;
             }
             else if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light
                 || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Light)
             {
                 CmdResult.Background = white;
                 CmdResult.Foreground = black;
+                ErrorResult.Background = white;
+                ErrorResult.Foreground = black;
             }
         }
-        private void CmdResult_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (Keyboard.Modifiers == ModifierKeys.Control)
-            {
-                if (e.Key == Key.Add)
-                {
-                    CmdResult.FontSize += 1;
-                }
-                else if (e.Key == Key.Subtract)
-                {
-                    CmdResult.FontSize -= 1;
-                }
-
-            }
-            if (e.Key == Key.Enter)
-            {
-                FocusNext();
-            }
-        }
+        
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
             FocusNext();
@@ -102,6 +82,40 @@ namespace msbuild_gui
             if (e.Key == Key.Escape)
             {
                 this.Close();
+            }
+        }
+        private void CmdResult_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (e.Key == Key.Add)
+                {
+                    CmdResult.FontSize += 1;
+                }
+                else if (e.Key == Key.Subtract)
+                {
+                    CmdResult.FontSize -= 1;
+                }
+
+            }
+            if (e.Key == Key.Enter)
+            {
+                FocusNext();
+            }
+        }
+        private void ErrorResult_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (e.Key == Key.Add)
+                {
+                    ErrorResult.FontSize += 1;
+                }
+                else if (e.Key == Key.Subtract)
+                {
+                    ErrorResult.FontSize -= 1;
+                }
+
             }
         }
     }
