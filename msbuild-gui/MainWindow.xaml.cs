@@ -23,7 +23,7 @@ namespace msbuild_gui
     public partial class MainWindow : Window
     {
         #region fields
-        delegate void DelegateProcess(string a, string b);
+        delegate void DelegateProcess(string[,] a, string b);
         #endregion
 
         #region properties
@@ -459,10 +459,9 @@ namespace msbuild_gui
         {
             try
             {
-                string resultText = "";
-                string cmdErrorText = "";
-
                 int targetIndex = 0;
+                string cmdErrorText = "";
+                string[,] list = new string[targets.Count, 2];
 
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
 
@@ -489,13 +488,16 @@ namespace msbuild_gui
                     // 標準出力・標準エラー出力・終了コードを取得する
                     string? standardOutput = process?.StandardOutput.ReadToEnd();
                     string? standardError = process?.StandardError.ReadToEnd();
-                    resultText += "------------------------------------------------------------------------------------------\n\n" +
-                                  $"[{targetIndex + 1}] {target}\n\n" +
-                                  "------------------------------------------------------------------------------------------\n\n" +
-                                  standardOutput + "\n\n\n\n\n\n";
+                    //resultText += "------------------------------------------------------------------------------------------\n\n" +
+                    //              $"[{targetIndex + 1}] {target}\n\n" +
+                    //              "------------------------------------------------------------------------------------------\n\n" +
+                    //              standardOutput + "\n\n\n\n\n\n";
                     cmdErrorText += standardError;
 
                     process?.Close();
+
+                    list[targetIndex,0] = Path.GetFileNameWithoutExtension(target);
+                    list[targetIndex,1] = standardOutput;
 
                     // ProgressBarを進める
                     Application.Current.Dispatcher.Invoke(() => {
@@ -505,7 +507,7 @@ namespace msbuild_gui
                     });
                 }
                 // UIスレッドでShowResultを実行
-                this.Dispatcher.Invoke(new DelegateProcess(ShowResult), new object[] { resultText, cmdErrorText });
+                this.Dispatcher.Invoke(new DelegateProcess(ShowResult), new object[] { list, cmdErrorText });
             }
             catch (Exception ex)
             {
@@ -517,9 +519,9 @@ namespace msbuild_gui
         /// <summary>
         /// ビルド実行結果を表示
         /// </summary>
-        /// <param name="resultText">実行結果</param>
         /// <param name="cmdErrorText">コマンドエラー結果</param>
-        private void ShowResult(string resultText, string cmdErrorText)
+        /// <param name="list">ファイル名と実行結果の2次元List</param>
+        private void ShowResult(string[,] list, string cmdErrorText)
         {
             try
             {
@@ -538,7 +540,7 @@ namespace msbuild_gui
                     .Show();
                     if (ShowLogCheck.IsChecked == true)
                     {
-                        ShowResult("実行結果", TargetList.Items.Count, resultText, cmdErrorText);
+                        ShowResult("実行結果", TargetList.Items.Count, list, cmdErrorText);
                     }
                 }
 
@@ -556,7 +558,7 @@ namespace msbuild_gui
                     // エラーウィンドウを表示
                     string errTxt = resultErrorText.ReadToEnd();
                     resultErrorText.Close();
-                    ShowResult("実行結果 ※エラーあり", TargetList.Items.Count, resultText, cmdErrorText + errTxt);
+                    ShowResult("実行結果 ※エラーあり", TargetList.Items.Count, list,  cmdErrorText + errTxt);
                 }
             }
             catch (Exception ex)
@@ -575,11 +577,10 @@ namespace msbuild_gui
         /// </summary>
         /// <param name="title">ウィンドウタイトル</param>
         /// <param name="count">ビルド対象数</param>
-        /// <param name="resultText">実行結果テキスト</param>
         /// <param name="errorText">エラーテキスト</param>
-        private void ShowResult(string title,int count,string resultText, string errorText)
+        private void ShowResult(string title,int count, string[,] list ,string errorText )
         {
-            var window = new Console(title, count, resultText, errorText);
+            var window = new Console(title, count, list, errorText);
             window.Owner = this;
             window.ShowDialog();
         }

@@ -1,9 +1,12 @@
 ﻿using ModernWpf;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
 namespace msbuild_gui
 {
@@ -14,7 +17,7 @@ namespace msbuild_gui
     {
         private int searchIndex { get; set; }
         private int searchIndexMAX { get; set; }
-        public Console(string result , int maxCount, string resultLog, string errorLog)
+        public Console(string result , int maxCount, string[,] list, string errorLog)
         {
             InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -24,58 +27,62 @@ namespace msbuild_gui
 
             if (errorLog == "")
             {
-                ErrorTab.Visibility = Visibility.Hidden;
+                ResultTabControl.Items.Remove(ErrorTab);
             }
-
-            CmdResult.Text = resultLog;
-            ErrorResult.Text = errorLog;
-
+            
             Brush black = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF111111"));
             Brush gray = new SolidColorBrush((Color)ColorConverter.ConvertFromString("LightGray"));
             Brush white = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
+            ErrorResult.Text = errorLog;
+
+            for (int count = 0; count < maxCount; count++)
+            {
+                TabItem item = new TabItem();
+                TextBox text = new TextBox();
+                
+                text.TextWrapping = TextWrapping.Wrap;
+                text.IsReadOnly = true;
+                text.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                var font = new FontFamily("BIZ UDGothic");
+                text.FontFamily = font;
+                text.FontSize = 14;
+                text.FontWeight = FontWeights.Normal;
+                Brush brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF111111"));
+                text.BorderBrush = brush;
+                text.BorderThickness = new Thickness(1, 1, 1, 1);
+                text.Padding = new Thickness(5, 5, 15, 5);
+                text.KeyDown += CmdResult_KeyDown;
+
+                if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark
+                || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
+                {
+                    text.Background = black;
+                    text.Foreground = gray;
+                }
+                else if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light
+                    || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Light)
+                {
+                    text.Background = white;
+                    text.Foreground = black;
+                }
+                text.Text = list[count,1];
+                item.Header = list[count,0];
+                item.Content = text;
+                ResultTabControl.Items.Add(item);
+            }
+
             if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark 
                 || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
             {
-                CmdResult.Background = black;
-                CmdResult.Foreground = gray;
                 ErrorResult.Background = black;
                 ErrorResult.Foreground = gray;
             }
             else if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light
                 || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Light)
             {
-                CmdResult.Background = white;
-                CmdResult.Foreground = black;
                 ErrorResult.Background = white;
                 ErrorResult.Foreground = black;
             }
-        }
-        
-        private void NextButton_Click(object sender, RoutedEventArgs e)
-        {
-            FocusNext();
-        }
-        /// <summary>
-        /// 次のビルド実行結果に移動する
-        /// </summary>
-        private void FocusNext()
-        {
-            CmdResult.Focus();
-            string searchText = "[" + searchIndex + "]";
-            CmdResult.CaretIndex = CmdResult.Text.Length;
-
-            // searchIndexがsearchIndexMAXと同じ値ならIndexを0にする
-            if (searchIndex >= searchIndexMAX)
-            {
-                searchIndex = 0;
-            }
-            int index = CmdResult.Text.IndexOf(searchText);
-            if (index != -1)
-            {
-                CmdResult.CaretIndex = index - 10;
-            }
-            searchIndex++;
-            Debug.WriteLine(searchIndex.ToString());
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -86,21 +93,30 @@ namespace msbuild_gui
         }
         private void CmdResult_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            // フォーカスしているテキストボックスを取得
+            TextBox textBox = (TextBox)Keyboard.FocusedElement;
+
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
                 if (e.Key == Key.Add)
                 {
-                    CmdResult.FontSize += 1;
+                    textBox.FontSize += 1;
                 }
                 else if (e.Key == Key.Subtract)
                 {
-                    CmdResult.FontSize -= 1;
+                    textBox.FontSize -= 1;
                 }
-
             }
             if (e.Key == Key.Enter)
             {
-                FocusNext();
+                if (textBox.CaretIndex == textBox.Text.Length)
+                {
+                    textBox.CaretIndex = 0;
+                }
+                else
+                {
+                    textBox.CaretIndex = textBox.Text.Length;
+                }
             }
         }
         private void ErrorResult_KeyDown(object sender, KeyEventArgs e)
@@ -115,7 +131,17 @@ namespace msbuild_gui
                 {
                     ErrorResult.FontSize -= 1;
                 }
-
+            }
+            if (e.Key == Key.Enter)
+            {
+                if (ErrorResult.CaretIndex == ErrorResult.Text.Length)
+                {
+                    ErrorResult.CaretIndex = 0;
+                }
+                else
+                {
+                    ErrorResult.CaretIndex = ErrorResult.Text.Length;
+                }
             }
         }
     }

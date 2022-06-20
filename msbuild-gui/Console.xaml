@@ -34,40 +34,9 @@
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TabControl Margin="1,1,1,5"
+        <TabControl x:Name="ResultTabControl"
+                    Margin="1,1,1,5"
                     Style="{StaticResource TabControlPivotStyle}">
-            <TabItem Header="実行結果">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="100*" />
-                        <RowDefinition Height="5*" />
-                    </Grid.RowDefinitions>
-                    <TextBox x:Name="CmdResult"
-                             TextWrapping="Wrap"
-                             Text="TextBox"
-                             IsReadOnly="True"
-                             VerticalScrollBarVisibility="Auto"
-                             Padding="5,5,20,5"
-                             FontFamily="BIZ UDGothic"
-                             FontSize="14"
-                             FontWeight="Normal"
-                             KeyDown="CmdResult_KeyDown"
-                             HorizontalScrollBarVisibility="Auto"
-                             BorderBrush="#99000000"
-                             BorderThickness="1,1,1,1"/>
-                    <Button x:Name="NextButton"
-                            Content="▼"
-                            Padding="0,0,0,0"
-                            VerticalContentAlignment="Center"
-                            HorizontalContentAlignment="Center"
-                            FontSize="16"
-                            Click="NextButton_Click"
-                            Grid.Row="1"
-                            HorizontalAlignment="Center"
-                            Width="1000"
-                            Margin="0,1,0,0" />
-                </Grid>
-            </TabItem>
             <TabItem x:Name="ErrorTab"
                      Header="エラーログ">
                 <TextBox x:Name="ErrorResult"
