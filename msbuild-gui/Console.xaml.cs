@@ -43,8 +43,7 @@ namespace msbuild_gui
                 text.TextWrapping = TextWrapping.Wrap;
                 text.IsReadOnly = true;
                 text.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-                var font = new FontFamily("BIZ UDGothic");
-                text.FontFamily = font;
+                text.FontFamily = new FontFamily("BIZ UDGothic");
                 text.FontSize = 14;
                 text.FontWeight = FontWeights.Normal;
                 Brush brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF111111"));
@@ -65,8 +64,14 @@ namespace msbuild_gui
                     text.Background = white;
                     text.Foreground = black;
                 }
-                text.Text = list[count,1];
-                item.Header = list[count,0];
+                text.Text = list[count, 1];
+
+                TextBlock textBlock = new TextBlock();
+                textBlock.Text = list[count, 0];
+                textBlock.FontFamily = new FontFamily("Yu Gothic UI");
+                textBlock.FontSize = 20;
+                item.Header = textBlock;
+
                 item.Content = text;
                 ResultTabControl.Items.Add(item);
             }
