@@ -246,8 +246,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:msbuild-gui"
-        "ProductCode" = "8:{DFB1A0DD-433F-43C8-BC46-E0082DE64131}"
-        "PackageCode" = "8:{885FFE95-5C06-4C59-819F-01A613B08D15}"
+        "ProductCode" = "8:{9406A80C-7350-4A59-8CAF-77395C9F1B61}"
+        "PackageCode" = "8:{F1A8EC16-C971-47BF-BCAB-FEFC33C19403}"
         "UpgradeCode" = "8:{7D70ECDB-383F-40E2-B1A8-D750CFA02BE0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

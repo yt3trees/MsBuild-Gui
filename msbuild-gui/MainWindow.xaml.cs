@@ -488,10 +488,6 @@ namespace msbuild_gui
                     // 標準出力・標準エラー出力・終了コードを取得する
                     string? standardOutput = process?.StandardOutput.ReadToEnd();
                     string? standardError = process?.StandardError.ReadToEnd();
-                    //resultText += "------------------------------------------------------------------------------------------\n\n" +
-                    //              $"[{targetIndex + 1}] {target}\n\n" +
-                    //              "------------------------------------------------------------------------------------------\n\n" +
-                    //              standardOutput + "\n\n\n\n\n\n";
                     cmdErrorText += standardError;
 
                     process?.Close();
