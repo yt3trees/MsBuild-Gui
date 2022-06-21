@@ -462,6 +462,8 @@ namespace msbuild_gui
                 int targetIndex = 0;
                 string cmdErrorText = "";
                 string[,] list = new string[targets.Count, 2];
+                string errorLogBef = "";
+                string errorLogNow = "";
 
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
 
@@ -492,7 +494,15 @@ namespace msbuild_gui
 
                     process?.Close();
 
-                    list[targetIndex,0] = Path.GetFileNameWithoutExtension(target);
+                    string errFlg = "";
+                    errorLogNow = File.ReadAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt");
+                    if (string.Compare(errorLogBef, errorLogNow) != 0)
+                    {
+                        errFlg = "*";
+                    }
+                    errorLogBef = errorLogNow;
+
+                    list[targetIndex,0] = Path.GetFileNameWithoutExtension(target) + errFlg;
                     list[targetIndex,1] = standardOutput;
 
                     // ProgressBarを進める
