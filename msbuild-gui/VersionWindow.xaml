@@ -64,7 +64,8 @@
                  Height="20"
                  MinHeight="25"
                  SelectionBrush="#CC0078D7"
-                 Grid.Column="1" />
+                 Grid.Column="1"
+                 IsReadOnly="True" />
         <Button IsDefault="True"
                 x:Name="OkButton"
                 MinWidth="60"
