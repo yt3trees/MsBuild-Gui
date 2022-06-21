@@ -558,7 +558,14 @@ namespace msbuild_gui
                     // エラーウィンドウを表示
                     string errTxt = resultErrorText.ReadToEnd();
                     resultErrorText.Close();
-                    ShowResult("実行結果 ※エラーあり", TargetList.Items.Count, list,  cmdErrorText + errTxt);
+                    if (ShowLogCheck.IsChecked == true)
+                    {
+                        ShowResult("実行結果 ※エラーあり", TargetList.Items.Count, list, cmdErrorText + errTxt);
+                    }
+                    else
+                    {
+                        ShowResult("エラーログ", 0, list, cmdErrorText + errTxt);
+                    }
                 }
             }
             catch (Exception ex)
