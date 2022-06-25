@@ -117,11 +117,233 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccentColor" xml:space="preserve">
+    <value>Accent Color</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add(_A)＞</value>
+  </data>
+  <data name="Alert" xml:space="preserve">
+    <value>Alert</value>
+  </data>
+  <data name="Build" xml:space="preserve">
+    <value>Build</value>
+  </data>
+  <data name="BuildTarget" xml:space="preserve">
+    <value>Build Target</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="CloseTheWindowWithoutSaving1" xml:space="preserve">
+    <value>The input information has been changed.</value>
+  </data>
+  <data name="CloseTheWindowWithoutSaving2" xml:space="preserve">
+    <value>Do you want to close the window without saving?</value>
+  </data>
+  <data name="ColorSettings" xml:space="preserve">
+    <value>Color Settings</value>
+  </data>
+  <data name="ColorSettings_C" xml:space="preserve">
+    <value>Color Settings(_C)</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="CopyAndCreateContent" xml:space="preserve">
+    <value>Copy and create</value>
+  </data>
+  <data name="CsProjList" xml:space="preserve">
+    <value>csproj List</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="DLLOutputDestinationFolder" xml:space="preserve">
+    <value>DLL output destination folder</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ErrorLog" xml:space="preserve">
+    <value>Error Log</value>
+  </data>
+  <data name="ExecutionResult" xml:space="preserve">
+    <value>Execution Result</value>
+  </data>
+  <data name="Exit_X" xml:space="preserve">
+    <value>Exit(_X)</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="File_F" xml:space="preserve">
+    <value>File(_F)</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help(_H)</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="ImportComplete" xml:space="preserve">
+    <value>Import Completed</value>
+  </data>
+  <data name="LanguageSetting" xml:space="preserve">
+    <value>Language Setting</value>
+  </data>
+  <data name="LanguageSettings" xml:space="preserve">
+    <value>Language Settings</value>
+  </data>
+  <data name="LanguageSettings_L" xml:space="preserve">
+    <value>Language Settings(_L)</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Mb_BuildCompleted" xml:space="preserve">
+    <value>Build completed.</value>
+  </data>
+  <data name="Mb_BuildFailed" xml:space="preserve">
+    <value>Build failed.</value>
+  </data>
+  <data name="Mb_DoYouWantToRemove" xml:space="preserve">
+    <value> Do you want to remove it?</value>
+  </data>
+  <data name="Mb_ExportComplete" xml:space="preserve">
+    <value>Export completed</value>
+  </data>
+  <data name="Mb_FolderDoesNotExist" xml:space="preserve">
+    <value>The folder does not exist.</value>
+  </data>
+  <data name="Mb_NotAllProjectsCanBeRemoved" xml:space="preserve">
+    <value>Not all projects can be removed.</value>
+  </data>
+  <data name="Mb_PlsSelectBuildTarget" xml:space="preserve">
+    <value>Please select a build target.</value>
+  </data>
+  <data name="Mb_PlsSelectTheTargetForDeletion" xml:space="preserve">
+    <value>Select the target for deletion.</value>
+  </data>
+  <data name="Mb_Saved" xml:space="preserve">
+    <value>Saved.</value>
+  </data>
+  <data name="Mb_TheNameOfAProjectThatAlreadyExists" xml:space="preserve">
+    <value>The name of a project that already exists.</value>
+  </data>
+  <data name="MsBuildParameters" xml:space="preserve">
+    <value>MsBuild Parameters</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="MsBuild_Gui" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MsBuild-Gui.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="MsBuild_Gui1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MsBuild-Gui.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="OpenFile" xml:space="preserve">
+    <value>Open File</value>
+  </data>
+  <data name="PleaseEnterAProjectName" xml:space="preserve">
+    <value>Enter a project name.</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="ProjectName:" xml:space="preserve">
+    <value>Project Name:</value>
+  </data>
+  <data name="ProjectNamesThatAlreadyExistCannotBeImported" xml:space="preserve">
+    <value>Project names that already exist cannot be imported.</value>
+  </data>
+  <data name="ProjectSettings" xml:space="preserve">
+    <value>Project Settings</value>
+  </data>
+  <data name="ProjectSettings_P" xml:space="preserve">
+    <value>Project Settings(_P)</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>＜Remove(_D)</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SaveTheFile" xml:space="preserve">
+    <value>Save the file</value>
+  </data>
+  <data name="SelectAccentColor" xml:space="preserve">
+    <value>Select accent color</value>
+  </data>
+  <data name="SelectFolder" xml:space="preserve">
+    <value>Select folder</value>
+  </data>
+  <data name="SelectMsBuild" xml:space="preserve">
+    <value>Select MsBuild.exe</value>
+  </data>
+  <data name="SelectOutputDestinationFolder" xml:space="preserve">
+    <value>Select destination folder for dll output</value>
+  </data>
+  <data name="Settings_E" xml:space="preserve">
+    <value>Settings(_E)</value>
+  </data>
+  <data name="ShowBuildLog" xml:space="preserve">
+    <value>Show Build Log</value>
+  </data>
+  <data name="SourceFolder" xml:space="preserve">
+    <value>Source Folder</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Tt_AddProject" xml:space="preserve">
+    <value>Add a project.</value>
+  </data>
+  <data name="Tt_AddTargetList" xml:space="preserve">
+    <value>Add to build target from csproj list.</value>
+  </data>
+  <data name="Tt_CloseWindow" xml:space="preserve">
+    <value>Close the window.</value>
+  </data>
+  <data name="Tt_CopyDllPath" xml:space="preserve">
+    <value>Copy the path to the DLL output folder.</value>
+  </data>
+  <data name="Tt_ExportRegisteredData" xml:space="preserve">
+    <value>Export registered data.</value>
+  </data>
+  <data name="Tt_ImportExportedJsonFile" xml:space="preserve">
+    <value>Import the exported json file.</value>
+  </data>
+  <data name="Tt_PlsInputMsBuildPath" xml:space="preserve">
+    <value>Specify the path to MsBuild to be used.</value>
+  </data>
+  <data name="Tt_PlsSelectCsprojFolder" xml:space="preserve">
+    <value>Specify the folder path where .csproj is stored under</value>
+  </data>
+  <data name="Tt_PlsSelectOutputDestinationFolder" xml:space="preserve">
+    <value>Specify the output destination for the .dll file.</value>
+  </data>
+  <data name="Tt_RemoveProject" xml:space="preserve">
+    <value>Remove the project.</value>
+  </data>
+  <data name="Tt_RemoveTargetList" xml:space="preserve">
+    <value>Remove from build target.</value>
+  </data>
+  <data name="Tt_ReplaceTargetList" xml:space="preserve">
+    <value>Swap the order of build execution.</value>
+  </data>
+  <data name="Tt_SaveYourEntries" xml:space="preserve">
+    <value>Save your entries.</value>
+  </data>
+  <data name="UseWindowsAccentColor" xml:space="preserve">
+    <value>Use Windows Accent Color</value>
+  </data>
+  <data name="UseWindowsTheme" xml:space="preserve">
+    <value>Use Windows Theme</value>
+  </data>
+  <data name="VersionInformation" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Version_A" xml:space="preserve">
+    <value>Version(_A)</value>
   </data>
 </root>

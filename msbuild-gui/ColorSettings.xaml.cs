@@ -86,7 +86,6 @@ namespace msbuild_gui
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            // 設定ファイルに保存
             ((MainWindow)this.Owner).saveJson();
             OkFlg = true;
             this.Close();

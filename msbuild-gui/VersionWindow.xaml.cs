@@ -19,7 +19,7 @@ namespace msbuild_gui
             }
             catch (Exception ex)
             {
-                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ModernWpf.MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

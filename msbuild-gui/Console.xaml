@@ -8,7 +8,9 @@
         ui:WindowHelper.UseModernWindowStyle="True"
         FocusManager.FocusedElement="{Binding ElementName=CmdResult}"
         mc:Ignorable="d"
-        Title="実行結果"
+        xmlns:app="clr-namespace:msbuild_gui"
+        xmlns:properties="clr-namespace:msbuild_gui.Properties"
+        Title="{Binding Resources.ExecutionResult, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
         Height="650"
         Width="1000"
         WindowStartupLocation="Manual"
@@ -37,8 +39,33 @@
         <TabControl x:Name="ResultTabControl"
                     Margin="1,1,1,5"
                     Style="{StaticResource TabControlPivotStyle}">
+            <TabControl.Template>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Hidden">
+                            <TabPanel x:Name="HeaderPanel"
+                                      Panel.ZIndex="1"
+                                      KeyboardNavigation.TabIndex="1"
+                                      Grid.Column="0"
+                                      Grid.Row="0"
+                                      Margin="2,2,2,0"
+                                      IsItemsHost="true" />
+                        </ScrollViewer>
+                        <ContentPresenter x:Name="PART_SelectedContentHost"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          Margin="{TemplateBinding Padding}"
+                                          ContentSource="SelectedContent"
+                                          Grid.Row="1" />
+                    </Grid>
+                </ControlTemplate>
+            </TabControl.Template>
             <TabItem x:Name="ErrorTab"
-                     Header="エラーログ">
+                     Header="{Binding Resources.ErrorLog, Source={x:Static app:ResourceService.Current}, Mode=OneWay}">
                 <TextBox x:Name="ErrorResult"
                          TextWrapping="Wrap"
                          Text="TextBox"
@@ -50,7 +77,8 @@
                          FontWeight="Normal"
                          KeyDown="ErrorResult_KeyDown"
                          BorderBrush="#99000000"
-                         BorderThickness="1,1,1,1" />
+                         BorderThickness="1,1,1,1"
+                         Margin="12,0,12,5" />
             </TabItem>
         </TabControl>
     </Grid>

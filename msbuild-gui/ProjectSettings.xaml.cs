@@ -100,7 +100,8 @@ namespace msbuild_gui
                 .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault() != ConfigurationCombo.Text
                 )
             {
-                var result = ModernWpf.MessageBox.Show("入力内容が変更されています。\n保存せず画面を閉じますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = ModernWpf.MessageBox.Show(Properties.Resources.CloseTheWindowWithoutSaving1
+                    +"\n"+ Properties.Resources.CloseTheWindowWithoutSaving2, Properties.Resources.Confirmation, MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result != MessageBoxResult.Yes)
                 {
                     e.Cancel = true;
@@ -117,7 +118,7 @@ namespace msbuild_gui
         {
             using (var cofd = new CommonOpenFileDialog()
                 {
-                    Title = "フォルダ選択",
+                    Title = Properties.Resources.SelectFolder,
                     InitialDirectory = ProjFolderPath.Text,
                     IsFolderPicker = true,
                 }
@@ -133,7 +134,7 @@ namespace msbuild_gui
         {
             using (var cofd = new CommonOpenFileDialog()
                 {
-                    Title = "dll出力先フォルダ選択",
+                    Title = Properties.Resources.SelectOutputDestinationFolder,
                     InitialDirectory = OutputFolderPath.Text,
                     IsFolderPicker = true,
                 }
@@ -149,7 +150,7 @@ namespace msbuild_gui
         {
             using (var cofd = new CommonOpenFileDialog()
                 {
-                    Title = "MsBuild.exe選択",
+                    Title = Properties.Resources.SelectMsBuild,
                     InitialDirectory = MsBuildPath.Text == "" ? "" : MsBuildPath.Text.Substring(0, MsBuildPath.Text.LastIndexOf("\\")),
                     IsFolderPicker = false,
                 }
@@ -198,7 +199,7 @@ namespace msbuild_gui
             }
             catch (Exception ex)
             {
-                ModernWpf.MessageBox.Show(ex.Message, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                ModernWpf.MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void ASPCopyButton1_Click(object sender, RoutedEventArgs e)
@@ -223,7 +224,7 @@ namespace msbuild_gui
                 // 入力したプロジェクト名重複している場合は登録できない(大文字小文字を区別しない)
                 if (MainWindow.Projects.ProjectsList.Any(x => x.Value.ProjectName.ToLower() == window.Answer.ToLower()))
                 {
-                    ModernWpf.MessageBox.Show("すでに存在するプロジェクト名です。", "error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ModernWpf.MessageBox.Show(Properties.Resources.Mb_TheNameOfAProjectThatAlreadyExists, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 int key = MainWindow.Projects.ProjectsList.Keys.Max() + 1;
@@ -250,15 +251,15 @@ namespace msbuild_gui
         {
             if (ProjSettingCombo.Items.Count == 1)
             {
-                ModernWpf.MessageBox.Show("全てのプロジェクトを削除することはできません。", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                ModernWpf.MessageBox.Show(Properties.Resources.Mb_NotAllProjectsCanBeRemoved, Properties.Resources.Alert, MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
             if (ProjSettingCombo.SelectedItem == null)
             {
-                ModernWpf.MessageBox.Show("削除対象を選択してください。", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ModernWpf.MessageBox.Show(Properties.Resources.Mb_PlsSelectTheTargetForDeletion, Properties.Resources.Alert, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            var result = ModernWpf.MessageBox.Show($"{ProjSettingCombo.SelectedItem}を削除しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = ModernWpf.MessageBox.Show($"{ProjSettingCombo.SelectedItem}"+ Properties.Resources.Mb_DoYouWantToRemove, Properties.Resources.Confirmation, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes)
             {
                 return;
@@ -316,7 +317,7 @@ namespace msbuild_gui
             string fileName = now + "_msbuildgui.json";
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = "ファイルを保存する";
+            saveFileDialog.Title = Properties.Resources.SaveTheFile;
             saveFileDialog.InitialDirectory = @"C:\";
             saveFileDialog.FileName = fileName;
             bool? result = saveFileDialog.ShowDialog();
@@ -324,7 +325,7 @@ namespace msbuild_gui
             {
                 string filePath = saveFileDialog.FileName;
                 System.IO.File.WriteAllText(filePath, jsonData, Encoding.UTF8);
-                ModernWpf.MessageBox.Show($"エクスポート完了\n{filePath}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                ModernWpf.MessageBox.Show(Properties.Resources.Mb_ExportComplete + $"\n{filePath}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -332,10 +333,10 @@ namespace msbuild_gui
         {
             // jsonファイルを選択する
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "ファイルを開く";
+            openFileDialog.Title = Properties.Resources.OpenFile;
             openFileDialog.InitialDirectory = @"C:\";
             openFileDialog.FileName = "msbuildgui.json";
-            openFileDialog.Filter = "jsonファイル(*.json)|*.json";
+            openFileDialog.Filter = "jsonFile(*.json)|*.json";
             bool? result = openFileDialog.ShowDialog();
             if (result == true)
             {
@@ -350,7 +351,7 @@ namespace msbuild_gui
                         // 入力したプロジェクト名重複している場合は登録できない(大文字小文字を区別しない)
                         if (MainWindow.Projects.ProjectsList.Any(x => x.Value.ProjectName.ToLower() == proj.ProjectName.ToLower()))
                         {
-                            ModernWpf.MessageBox.Show($"すでに存在するプロジェクト名はインポートできません。\n{proj.ProjectName}", "error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            ModernWpf.MessageBox.Show(Properties.Resources.ProjectNamesThatAlreadyExistCannotBeImported + $"\n{proj.ProjectName}", Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
                     }
@@ -382,7 +383,7 @@ namespace msbuild_gui
                     ((MainWindow)this.Owner).saveJson();
 
                     string importProj = string.Join(", ", projects);
-                    ModernWpf.MessageBox.Show($"インポート完了\n{importProj}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ModernWpf.MessageBox.Show(Properties.Resources.ImportComplete + $"\n{importProj}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     // コンボボックスを更新
                     Window_SourceInitialized(sender, e);
                     // MainWindowのプロジェクトドロップダウンをクリアして再セット
@@ -404,7 +405,7 @@ namespace msbuild_gui
             else if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 SaveButton_Click(sender, e);
-                ModernWpf.MessageBox.Show("保存しました。", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                ModernWpf.MessageBox.Show(Properties.Resources.Mb_Saved, "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 System.Windows.Input.Keyboard.ClearFocus();
             }
         }
@@ -461,7 +462,7 @@ namespace msbuild_gui
             }
             catch (Exception ex)
             {
-                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ModernWpf.MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         #endregion

@@ -13,6 +13,8 @@
         Width="800"
         SourceInitialized="Window_SourceInitialized"
         WindowStartupLocation="CenterScreen"
+        xmlns:properties="clr-namespace:msbuild_gui.Properties"
+        xmlns:app="clr-namespace:msbuild_gui"
         Closing="Window_Closing"
         KeyDown="Window_KeyDown"
         Icon="/msbuild-gui;component/Resources/MsBuild-Gui.ico">
@@ -39,7 +41,7 @@
                      Opacity="0.9" />
         <StackPanel Margin="0,2,0,0"
                     Grid.Row="1">
-            <Label Content="プロジェクト"
+            <Label Content="{Binding Resources.Project, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                    HorizontalContentAlignment="Center"
                    Height="30"
                    VerticalContentAlignment="Center"
@@ -51,7 +53,7 @@
                       VerticalAlignment="Center"
                       TabIndex="4" />
             <Button x:Name="SettingButton"
-                    Content="プロジェクト設定"
+                    Content="{Binding Resources.ProjectSettings, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                     Margin="30,10,30,10"
                     FontSize="14"
                     HorizontalAlignment="Center"
@@ -59,22 +61,20 @@
                     TabIndex="5" />
         </StackPanel>
         <Button x:Name="AddButton"
-                Content="追加(_A)＞"
+                Content="{Binding Resources.Add, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                 HorizontalAlignment="Center"
                 FontFamily="Yu Gothic UI"
                 Height="30"
                 Grid.Column="1"
                 Grid.Row="2"
                 Padding="5,0,5,0"
-                Width="75"
+                Width="90"
                 Margin="0,-50,0,0"
                 Click="AddButton_Click"
                 TabIndex="8"
-                ToolTip="csproj一覧からビルド対象に追加します。">
-            
-        </Button>
+                ToolTip="{Binding Resources.Tt_AddTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"/>
         <Button x:Name="RemoveButton"
-                Content="＜削除(_D)"
+                Content="{Binding Resources.Remove, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 FontFamily="Yu Gothic UI"
@@ -83,10 +83,10 @@
                 Margin="0,50,0,0"
                 Grid.Row="2"
                 Padding="5,0,5,0"
-                Width="75"
+                Width="90"
                 Click="RemoveButton_Click"
                 TabIndex="9"
-                ToolTip="ビルド対象から削除します。"/>
+                ToolTip="{Binding Resources.Tt_RemoveTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"/>
         <ListBox x:Name="SourceList"
                  d:ItemsSource="{d:SampleData ItemCount=5}"
                  Margin="10,40,10,0"
@@ -113,8 +113,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Grid Width="250"
-                  HorizontalAlignment="Center">
+            <Grid HorizontalAlignment="Center"
+                  Width="260">
                 <ui:ProgressRing x:Name="ProgressRing"
                                  IsActive="False"
                                  Height="30"
@@ -131,7 +131,7 @@
                                  Margin="-314,-6,0,0"
                                  VerticalAlignment="Top" />-->
                 <Button x:Name="BuildButton"
-                        Content="ビルド"
+                        Content="{Binding Resources.Build, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                         Height="30"
                         FontSize="14"
                         Padding="0,1,0,1"
@@ -150,30 +150,29 @@
                     </ui:FlyoutService.Flyout>-->
                 </Button>
                 <CheckBox x:Name="ShowLogCheck"
-                          Content="ビルドログを表示"
+                          Content="{Binding Resources.ShowBuildLog, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                           Click="ShowLogCheck_Click"
                           HorizontalAlignment="Right"
-                          TabIndex="14" />
+                          TabIndex="14"
+                          MinHeight="32" />
             </Grid>
         </Grid>
         <Label Grid.Column="2"
-               Content="ビルド対象"
+               Content="{Binding Resources.BuildTarget, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                HorizontalAlignment="Center"
                VerticalAlignment="Top"
                FontSize="14"
                Grid.Row="2"
                Height="29"
-               Width="70"
                HorizontalContentAlignment="Center"
                VerticalContentAlignment="Center"
                Margin="0,5,0,0" />
-        <Label Content="csproj一覧"
+        <Label Content="{Binding Resources.CsProjList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                HorizontalAlignment="Center"
                VerticalAlignment="Top"
                FontSize="14"
                Grid.Row="2"
                Height="29"
-               Width="76"
                HorizontalContentAlignment="Center"
                VerticalContentAlignment="Center"
                Margin="0,5,0,0" />
@@ -190,20 +189,20 @@
                 Click="UpdateButton_Click" />-->
         <Menu Grid.ColumnSpan="3"
               Margin="0,4,0,6">
-            <MenuItem Header="ファイル(_F)"
+            <MenuItem Header="{Binding Resources.File_F, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                       Click="MenuItem_Click" TabIndex="1">
-                <MenuItem Header="終了(_X)" />
+                <MenuItem Header="{Binding Resources.Exit_X, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
             </MenuItem>
-            <MenuItem Header="設定(_E)"
+            <MenuItem Header="{Binding Resources.Settings_E, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                       TabIndex="2">
-                <MenuItem Header="カラー設定(_C)"
+                <MenuItem Header="{Binding Resources.ColorSettings_C, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                           Click="ColorSetting_Click" />
-                <MenuItem Header="プロジェクト設定(_P)"
+                <MenuItem Header="{Binding Resources.LanguageSettings_L, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                           Click="Button_Click" />
             </MenuItem>
-            <MenuItem Header="ヘルプ(_H)"
+            <MenuItem Header="{Binding Resources.Help, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                       TabIndex="3">
-                <MenuItem Header="バージョン情報(_A)"
+                <MenuItem Header="{Binding Resources.Version_A, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                           Click="MenuItem_Click_1" />
             </MenuItem>
         </Menu>
@@ -220,7 +219,7 @@
                 Grid.Column="2"
                 Click="UpButton_Click"
                 TabIndex="12"
-                ToolTip="ビルド実行順序を入れ替えます。" />
+                ToolTip="{Binding Resources.Tt_ReplaceTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
         <Button x:Name="DownButton"
                 Content="▼"
                 HorizontalAlignment="Right"
@@ -234,7 +233,7 @@
                 Click="DownButton_Click"
                 Grid.Column="2"
                 TabIndex="11" 
-                ToolTip="ビルド実行順序を入れ替えます。"/>
+                ToolTip="{Binding Resources.Tt_ReplaceTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
         <TextBox x:Name="SearchTextbox"
                  HorizontalAlignment="Right"
                  Margin="0,5,10,0"

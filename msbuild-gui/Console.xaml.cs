@@ -50,6 +50,7 @@ namespace msbuild_gui
                 text.BorderBrush = brush;
                 text.BorderThickness = new Thickness(1, 1, 1, 1);
                 text.Padding = new Thickness(5, 5, 15, 5);
+                text.Margin = new Thickness(12, 0, 12, 5);
                 text.KeyDown += CmdResult_KeyDown;
 
                 if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark

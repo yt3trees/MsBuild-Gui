@@ -2,18 +2,21 @@
 using Microsoft.Toolkit.Uwp.Notifications;
 using ModernWpf;
 using ModernWpf.Controls;
+using msbuild_gui.Properties;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using UI = ModernWpf;
 
 namespace msbuild_gui
 {
@@ -44,6 +47,7 @@ namespace msbuild_gui
             }
             public static Dictionary<int, ProjectData> ProjectsList = new Dictionary<int, ProjectData>();
             public static bool ShowLog = false;
+            public static string Language;
         }
         /// <summary>
         /// 設定ファイル用プロパティ
@@ -59,6 +63,8 @@ namespace msbuild_gui
             public string? Theme { get; set; }
             [JsonProperty("AccentColor")]
             public string? AccentColor { get; set; }
+            [JsonProperty("Language")]
+            public string? Language { get; set; }
         }
         /// <summary>
         /// 設定ファイル用プロパティ
@@ -104,6 +110,31 @@ namespace msbuild_gui
             try
             {
                 LoadAppSettings();
+                
+                if (Projects.Language == "en")
+                {
+                    ResourceService.Current.ChangeCulture("en");
+                    RemoveButton.FontSize = 13;
+                }
+                else if (Projects.Language == "ja-JP")
+                {
+                    ResourceService.Current.ChangeCulture("ja-JP");
+                }
+                else
+                {
+                    var window = new LanguageSettings();
+                    window.Owner = this;
+                    window.ShowDialog();
+                    if (Projects.Language == "ja-JP")
+                    {
+                        RemoveButton.FontSize = 14;
+                    }
+                    if (Projects.Language == "en")
+                    {
+                        RemoveButton.FontSize = 13;
+                    }
+                }
+
                 Projects.ProjectsList.ToList().ForEach(x => ProjCombo.Items.Add(x.Value.ProjectName));
             }
             catch (Exception ex)
@@ -257,15 +288,17 @@ namespace msbuild_gui
         /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // ProjComboが空白の場合はProjComboの1つ目の値をセット
-            string? pj = ProjCombo.Text;
-            if (ProjCombo.Text == "")
-            {
-                pj = ProjCombo.Items[0] as string;
-            }
-            var window = new ProjectSettings(pj);
+            var window = new LanguageSettings();
             window.Owner = this;
             window.ShowDialog();
+            if (Projects.Language == "ja-JP")
+            {
+                RemoveButton.FontSize = 14;
+            }
+            if (Projects.Language == "en")
+            {
+                RemoveButton.FontSize = 13;
+            }
         }
         /// <summary>
         /// バージョン情報を表示
@@ -373,7 +406,9 @@ namespace msbuild_gui
                 }
                 else
                 {
-                    ModernWpf.MessageBox.Show("フォルダが存在しません。\n" + proj.Value.SourceFolder, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //{Binding Resources.Project, Source={x:Static app:ResourceService.Current}, Mode=OneWay}
+                    
+                    ModernWpf.MessageBox.Show(Properties.Resources.Mb_FolderDoesNotExist + "\n" + proj.Value.SourceFolder, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -394,7 +429,7 @@ namespace msbuild_gui
                 List<string> targets = TargetList.Items.Cast<string>().ToList();
                 if (targets.Count == 0)
                 {
-                    ModernWpf.MessageBox.Show("ビルド対象を選択してください。", "確認", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ModernWpf.MessageBox.Show(Properties.Resources.Mb_PlsSelectBuildTarget, Properties.Resources.Confirmation, MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
                 //if (ModernWpf.MessageBox.Show("ビルドを実行しますか？", "確認", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
@@ -542,18 +577,18 @@ namespace msbuild_gui
                 if (errorFlg == false)
                 {
                     new ToastContentBuilder()
-                    .AddText("ビルド完了しました。")
+                    .AddText(Properties.Resources.Mb_BuildCompleted)
                     .Show();
                     if (ShowLogCheck.IsChecked == true)
                     {
-                        ShowResult("実行結果", TargetList.Items.Count, list, cmdErrorText);
+                        ShowResult(Properties.Resources.ExecutionResult, TargetList.Items.Count, list, cmdErrorText);
                     }
                 }
 
                 if (errorFlg)
                 {
                     new ToastContentBuilder()
-                    .AddText("ビルドに失敗しました。")
+                    .AddText(Properties.Resources.Mb_BuildFailed)
                     .Show();
 
                     // エラー出力ファイルの読み込み
@@ -566,17 +601,17 @@ namespace msbuild_gui
                     resultErrorText.Close();
                     if (ShowLogCheck.IsChecked == true)
                     {
-                        ShowResult("実行結果 ※エラーあり", TargetList.Items.Count, list, cmdErrorText + errTxt);
+                        ShowResult(Properties.Resources.ExecutionResult + " ※" + Properties.Resources.Error, TargetList.Items.Count, list, cmdErrorText + errTxt);
                     }
                     else
                     {
-                        ShowResult("エラーログ", 0, list, cmdErrorText + errTxt);
+                        ShowResult(Properties.Resources.ErrorLog, 0, list, cmdErrorText + errTxt);
                     }
                 }
             }
             catch (Exception ex)
             {
-                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ModernWpf.MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             finally
@@ -643,7 +678,7 @@ namespace msbuild_gui
                     });
                 }
 
-                Debug.Print("■取得プロジェクト一覧");
+                Debug.Print("■ProjectList");
                 foreach (var proj in Projects.ProjectsList)
                 {
                     Debug.Print($"Id: {proj.Key}, ProjectName: {proj.Value.ProjectName}, SourceFolder: {proj.Value.SourceFolder}" +
@@ -679,6 +714,7 @@ namespace msbuild_gui
                     var color = (Color)ColorConverter.ConvertFromString(accentColor);
                     ThemeManager.Current.AccentColor = color;
                 }
+                Projects.Language = config.GetValue<string>("Language");
             }
             catch (Exception ex)
             {
@@ -726,7 +762,8 @@ namespace msbuild_gui
                     Project = new List<ProjectData>(),
                     ShowLog = isChecked.ToString(),
                     Theme = settingTheme,
-                    AccentColor = settingAccentColor
+                    AccentColor = settingAccentColor,
+                    Language = Projects.Language
                 };
                 foreach (var proj in Projects.ProjectsList)
                 {
@@ -756,5 +793,38 @@ namespace msbuild_gui
             }
         }
         #endregion
+    }
+    /// <summary>
+    /// 多言語化されたリソースと言語の切り替え機能を提供します。
+    /// </summary>
+    public class ResourceService : INotifyPropertyChanged
+    {
+        #region Singleton members
+        public static readonly ResourceService _current = new ResourceService();
+        public static ResourceService Current { get { return _current; } }
+        #endregion Singleton members
+        public readonly msbuild_gui.Properties.Resources _resource = new Resources();
+        /// <summary>
+        /// 多言語化されたリソースを取得します。
+        /// </summary>
+        public msbuild_gui.Properties.Resources Resources { get { return _resource; } }
+        #region INotifyPropertyChanged members
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            var h = this.PropertyChanged;
+            if (h != null) h(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion INotifyPropertyChanged members
+        public void ChangeCulture(string name)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(name);
+            this.RaisePropertyChanged("Resources");
+        }
+        public string GetCurrentCulture()
+        {
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+            return culture.Name;
+        }
     }
 }

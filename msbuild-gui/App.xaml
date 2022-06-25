@@ -6,6 +6,7 @@
              xmlns:ui="http://schemas.modernwpf.com/2019"
              Startup="Application_Startup"
              Exit="Application_Exit"
+             xmlns:properties="clr-namespace:msbuild_gui.Properties"
              ShutdownMode="OnMainWindowClose"><!-- 小ウィンドウを閉じる -->
     <Application.Resources>
         <ResourceDictionary>

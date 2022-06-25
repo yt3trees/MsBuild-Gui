@@ -15,7 +15,7 @@ namespace msbuild_gui
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             AnswerText.Text = defaultAnswer;
             var projSetting = ProjectSettings.ProjectNameTemp;
-            CopyCheck.Content = projSetting + "の内容をコピーして作成";
+            CopyCheck.Content = projSetting + $" {Properties.Resources.CopyAndCreateContent}"; // todo
         }
         public string Answer
         {
@@ -31,7 +31,7 @@ namespace msbuild_gui
             ProjectSettings.IsProjContentsCopy = CopyCheck.IsChecked.Value;
             if (AnswerText.Text.Trim() == "")
             {
-                ModernWpf.MessageBox.Show("プロジェクト名を入力してください。", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
+                ModernWpf.MessageBox.Show(Properties.Resources.PleaseEnterAProjectName, Properties.Resources.Alert, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             this.DialogResult = true;

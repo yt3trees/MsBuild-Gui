@@ -22,7 +22,7 @@ namespace msbuild_gui.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace msbuild_gui.Properties {
         ///   このクラスで使用されているキャッシュされた ResourceManager インスタンスを返します。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("msbuild_gui.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace msbuild_gui.Properties {
         ///   現在のスレッドの CurrentUICulture プロパティをオーバーライドします。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,351 @@ namespace msbuild_gui.Properties {
         }
         
         /// <summary>
+        ///   Accent Color に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AccentColor {
+            get {
+                return ResourceManager.GetString("AccentColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add(_A)＞ に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Alert に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Alert {
+            get {
+                return ResourceManager.GetString("Alert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Build に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Build {
+            get {
+                return ResourceManager.GetString("Build", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Build Target に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string BuildTarget {
+            get {
+                return ResourceManager.GetString("BuildTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Close に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The input information has been changed. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string CloseTheWindowWithoutSaving1 {
+            get {
+                return ResourceManager.GetString("CloseTheWindowWithoutSaving1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to close the window without saving? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string CloseTheWindowWithoutSaving2 {
+            get {
+                return ResourceManager.GetString("CloseTheWindowWithoutSaving2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Color Settings に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ColorSettings {
+            get {
+                return ResourceManager.GetString("ColorSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Color Settings(_C) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ColorSettings_C {
+            get {
+                return ResourceManager.GetString("ColorSettings_C", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Confirmation に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Confirmation {
+            get {
+                return ResourceManager.GetString("Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Copy and create に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string CopyAndCreateContent {
+            get {
+                return ResourceManager.GetString("CopyAndCreateContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   csproj List に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string CsProjList {
+            get {
+                return ResourceManager.GetString("CsProjList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Dark に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Dark {
+            get {
+                return ResourceManager.GetString("Dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   DLL output destination folder に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DLLOutputDestinationFolder {
+            get {
+                return ResourceManager.GetString("DLLOutputDestinationFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Error に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Error Log に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ErrorLog {
+            get {
+                return ResourceManager.GetString("ErrorLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Execution Result に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ExecutionResult {
+            get {
+                return ResourceManager.GetString("ExecutionResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Exit(_X) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Exit_X {
+            get {
+                return ResourceManager.GetString("Exit_X", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Export に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Export {
+            get {
+                return ResourceManager.GetString("Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   File(_F) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string File_F {
+            get {
+                return ResourceManager.GetString("File_F", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Help(_H) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Help {
+            get {
+                return ResourceManager.GetString("Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Import に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Import {
+            get {
+                return ResourceManager.GetString("Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Import Completed に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ImportComplete {
+            get {
+                return ResourceManager.GetString("ImportComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Language Setting に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string LanguageSetting {
+            get {
+                return ResourceManager.GetString("LanguageSetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Language Settings に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string LanguageSettings {
+            get {
+                return ResourceManager.GetString("LanguageSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Language Settings(_L) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string LanguageSettings_L {
+            get {
+                return ResourceManager.GetString("LanguageSettings_L", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Light に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Light {
+            get {
+                return ResourceManager.GetString("Light", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Build completed. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_BuildCompleted {
+            get {
+                return ResourceManager.GetString("Mb_BuildCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Build failed. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_BuildFailed {
+            get {
+                return ResourceManager.GetString("Mb_BuildFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Do you want to remove it? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_DoYouWantToRemove {
+            get {
+                return ResourceManager.GetString("Mb_DoYouWantToRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Export completed に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_ExportComplete {
+            get {
+                return ResourceManager.GetString("Mb_ExportComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The folder does not exist. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_FolderDoesNotExist {
+            get {
+                return ResourceManager.GetString("Mb_FolderDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Not all projects can be removed. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_NotAllProjectsCanBeRemoved {
+            get {
+                return ResourceManager.GetString("Mb_NotAllProjectsCanBeRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Please select a build target. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_PlsSelectBuildTarget {
+            get {
+                return ResourceManager.GetString("Mb_PlsSelectBuildTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Select the target for deletion. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_PlsSelectTheTargetForDeletion {
+            get {
+                return ResourceManager.GetString("Mb_PlsSelectTheTargetForDeletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Saved. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_Saved {
+            get {
+                return ResourceManager.GetString("Mb_Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The name of a project that already exists. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_TheNameOfAProjectThatAlreadyExists {
+            get {
+                return ResourceManager.GetString("Mb_TheNameOfAProjectThatAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   型 System.Byte[] のローカライズされたリソースを検索します。
         /// </summary>
-        internal static byte[] MsBuild_Gui {
+        public static byte[] MsBuild_Gui {
             get {
                 object obj = ResourceManager.GetObject("MsBuild_Gui", resourceCulture);
                 return ((byte[])(obj));
@@ -73,10 +415,334 @@ namespace msbuild_gui.Properties {
         /// <summary>
         ///   型 System.Byte[] のローカライズされたリソースを検索します。
         /// </summary>
-        internal static byte[] MsBuild_Gui1 {
+        public static byte[] MsBuild_Gui1 {
             get {
                 object obj = ResourceManager.GetObject("MsBuild_Gui1", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   MsBuild Parameters に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MsBuildParameters {
+            get {
+                return ResourceManager.GetString("MsBuildParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Open File に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OpenFile {
+            get {
+                return ResourceManager.GetString("OpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Enter a project name. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string PleaseEnterAProjectName {
+            get {
+                return ResourceManager.GetString("PleaseEnterAProjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Project に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Project {
+            get {
+                return ResourceManager.GetString("Project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Project Name: に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ProjectName_ {
+            get {
+                return ResourceManager.GetString("ProjectName:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Project names that already exist cannot be imported. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ProjectNamesThatAlreadyExistCannotBeImported {
+            get {
+                return ResourceManager.GetString("ProjectNamesThatAlreadyExistCannotBeImported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Project Settings に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ProjectSettings {
+            get {
+                return ResourceManager.GetString("ProjectSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Project Settings(_P) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ProjectSettings_P {
+            get {
+                return ResourceManager.GetString("ProjectSettings_P", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   ＜Remove(_D) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Remove {
+            get {
+                return ResourceManager.GetString("Remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Save に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Save the file に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SaveTheFile {
+            get {
+                return ResourceManager.GetString("SaveTheFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Select accent color に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SelectAccentColor {
+            get {
+                return ResourceManager.GetString("SelectAccentColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Select folder に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SelectFolder {
+            get {
+                return ResourceManager.GetString("SelectFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Select MsBuild.exe に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SelectMsBuild {
+            get {
+                return ResourceManager.GetString("SelectMsBuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Select destination folder for dll output に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SelectOutputDestinationFolder {
+            get {
+                return ResourceManager.GetString("SelectOutputDestinationFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Settings(_E) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Settings_E {
+            get {
+                return ResourceManager.GetString("Settings_E", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Show Build Log に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ShowBuildLog {
+            get {
+                return ResourceManager.GetString("ShowBuildLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Source Folder に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SourceFolder {
+            get {
+                return ResourceManager.GetString("SourceFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Theme に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Theme {
+            get {
+                return ResourceManager.GetString("Theme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add a project. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_AddProject {
+            get {
+                return ResourceManager.GetString("Tt_AddProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add to build target from csproj list. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_AddTargetList {
+            get {
+                return ResourceManager.GetString("Tt_AddTargetList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Close the window. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_CloseWindow {
+            get {
+                return ResourceManager.GetString("Tt_CloseWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Copy the path to the DLL output folder. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_CopyDllPath {
+            get {
+                return ResourceManager.GetString("Tt_CopyDllPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Export registered data. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_ExportRegisteredData {
+            get {
+                return ResourceManager.GetString("Tt_ExportRegisteredData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Import the exported json file. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_ImportExportedJsonFile {
+            get {
+                return ResourceManager.GetString("Tt_ImportExportedJsonFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Specify the path to MsBuild to be used. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_PlsInputMsBuildPath {
+            get {
+                return ResourceManager.GetString("Tt_PlsInputMsBuildPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Specify the folder path where .csproj is stored under に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_PlsSelectCsprojFolder {
+            get {
+                return ResourceManager.GetString("Tt_PlsSelectCsprojFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Specify the output destination for the .dll file. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_PlsSelectOutputDestinationFolder {
+            get {
+                return ResourceManager.GetString("Tt_PlsSelectOutputDestinationFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Remove the project. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_RemoveProject {
+            get {
+                return ResourceManager.GetString("Tt_RemoveProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Remove from build target. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_RemoveTargetList {
+            get {
+                return ResourceManager.GetString("Tt_RemoveTargetList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Swap the order of build execution. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_ReplaceTargetList {
+            get {
+                return ResourceManager.GetString("Tt_ReplaceTargetList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Save your entries. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_SaveYourEntries {
+            get {
+                return ResourceManager.GetString("Tt_SaveYourEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Use Windows Accent Color に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string UseWindowsAccentColor {
+            get {
+                return ResourceManager.GetString("UseWindowsAccentColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Use Windows Theme に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string UseWindowsTheme {
+            get {
+                return ResourceManager.GetString("UseWindowsTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Version(_A) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Version_A {
+            get {
+                return ResourceManager.GetString("Version_A", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Version に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string VersionInformation {
+            get {
+                return ResourceManager.GetString("VersionInformation", resourceCulture);
             }
         }
     }

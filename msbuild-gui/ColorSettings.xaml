@@ -7,8 +7,10 @@
         ui:WindowHelper.UseModernWindowStyle="True"
         xmlns:local="clr-namespace:msbuild_gui"
         xmlns:sys="clr-namespace:System;assembly=netstandard"
+        xmlns:properties="clr-namespace:msbuild_gui.Properties"
+        xmlns:app="clr-namespace:msbuild_gui"
         mc:Ignorable="d"
-        Title="カラー設定"
+        Title="{Binding Resources.ColorSettings, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
         Height="500"
         Width="350"
         WindowStartupLocation="CenterScreen"
@@ -44,35 +46,35 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel>
-            <TextBlock Text="テーマ"
+            <TextBlock Text="{Binding Resources.Theme, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                        Style="{StaticResource TitleTextBlockStyle}"
                        Margin="10,0,10,0" />
             <RadioButton x:Name="ThemeSystem"
-                         Content="Windows テーマを使用"
+                         Content="{Binding Resources.UseWindowsTheme, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                          Style="{StaticResource ThemeRadioStyle}"
                          Margin="10,0,10,0" />
             <RadioButton x:Name="ThemeLight"
-                         Content="ライト"
+                         Content="{Binding Resources.Light, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                          Style="{StaticResource ThemeRadioStyle}"
                          Margin="10,0,10,0" />
             <RadioButton x:Name="ThemeDark"
-                         Content="ダーク"
+                         Content="{Binding Resources.Dark, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                          Style="{StaticResource ThemeRadioStyle}"
                          Margin="10,0,10,0" />
         </StackPanel>
         <StackPanel Grid.Row="1">
-            <TextBlock Text="アクセントカラー"
+            <TextBlock Text="{Binding Resources.AccentColor, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                        Style="{StaticResource TitleTextBlockStyle}"
                        FontSize="24"
                        Margin="10,0,10,0" />
             <RadioButton x:Name="AccentColorSystem"
-                         Content="Windows アクセントカラーを使用"
+                         Content="{Binding Resources.UseWindowsAccentColor, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                          Style="{StaticResource AccentColorRadioStyle}"
                          Margin="10,0,10,0"
                          Checked="AccentColorSystem_Checked"
                          GroupName="AccentColor" />
             <RadioButton x:Name="AccentColorSet"
-                         Content="アクセントカラーを指定"
+                         Content="{Binding Resources.SelectAccentColor, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                          Style="{StaticResource AccentColorRadioStyle}"
                          Margin="10,0,10,0"
                          Checked="AccentColorSet_Checked"
