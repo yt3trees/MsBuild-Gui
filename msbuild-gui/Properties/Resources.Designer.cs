@@ -522,7 +522,7 @@ namespace msbuild_gui.Properties {
         }
         
         /// <summary>
-        ///   Select accent color に類似しているローカライズされた文字列を検索します。
+        ///   Select Accent Color に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string SelectAccentColor {
             get {

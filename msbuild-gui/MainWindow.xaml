@@ -154,7 +154,8 @@
                           Click="ShowLogCheck_Click"
                           HorizontalAlignment="Right"
                           TabIndex="14"
-                          MinHeight="32" />
+                          MinHeight="32"
+                          Width="130" />
             </Grid>
         </Grid>
         <Label Grid.Column="2"
