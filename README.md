@@ -1,3 +1,5 @@
+[日本語版 README](./README-ja.md)
+
 # MsBuild-Gui
 
 MsBuild-Gui is a tool to operate and execute MsBuild with Gui.
