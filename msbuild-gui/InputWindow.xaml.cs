@@ -15,7 +15,7 @@ namespace msbuild_gui
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             AnswerText.Text = defaultAnswer;
             var projSetting = ProjectSettings.ProjectNameTemp;
-            CopyCheck.Content = projSetting + $" {Properties.Resources.CopyAndCreateContent}"; // todo
+            CopyCheck.Content = projSetting + $" {Properties.Resources.CopyAndCreateContent}";
         }
         public string Answer
         {

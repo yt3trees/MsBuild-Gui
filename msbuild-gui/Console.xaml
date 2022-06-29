@@ -39,7 +39,7 @@
         <TabControl x:Name="ResultTabControl"
                     Margin="1,1,1,5"
                     Style="{StaticResource TabControlPivotStyle}">
-            <TabControl.Template>
+            <!--<TabControl.Template>
                 <ControlTemplate TargetType="TabControl">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -63,7 +63,7 @@
                                           Grid.Row="1" />
                     </Grid>
                 </ControlTemplate>
-            </TabControl.Template>
+            </TabControl.Template>-->
             <TabItem x:Name="ErrorTab"
                      Header="{Binding Resources.ErrorLog, Source={x:Static app:ResourceService.Current}, Mode=OneWay}">
                 <TextBox x:Name="ErrorResult"
@@ -78,7 +78,7 @@
                          KeyDown="ErrorResult_KeyDown"
                          BorderBrush="#99000000"
                          BorderThickness="1,1,1,1"
-                         Margin="12,0,12,5" />
+                         Margin="0,0,0,5" />
             </TabItem>
         </TabControl>
     </Grid>
