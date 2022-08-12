@@ -96,7 +96,8 @@
                  MouseDoubleClick="SourceList_MouseDoubleClick"
                  KeyDown="SourceList_KeyDown"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 TabIndex="7" />
+                 TabIndex="7"
+                 SelectionMode="Extended" />
         <ListBox x:Name="TargetList"
                  d:ItemsSource="{d:SampleData ItemCount=5}"
                  Margin="10,40,10,0"
@@ -107,7 +108,8 @@
                  MouseDoubleClick="TargetList_MouseDoubleClick"
                  KeyDown="TargetList_KeyDown"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 TabIndex="10" />
+                 TabIndex="10"
+                 SelectionMode="Extended" />
         <Grid Grid.Column="2"
               Grid.Row="3">
             <Grid.ColumnDefinitions>

@@ -188,10 +188,18 @@ namespace msbuild_gui
         /// </summary>
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            string? sourceFolder = SourceList.SelectedItem as string;
-            if (sourceFolder != null)
+            string[]? sourceFolder = new string[0];
+            int i = 0;
+
+            foreach(var item in SourceList.SelectedItems)
             {
-                TargetList.Items.Add(sourceFolder);
+                Array.Resize(ref sourceFolder, i + 1);
+                sourceFolder[i] = item.ToString();
+                i++;
+            }
+            foreach(var item in sourceFolder)
+            {
+                TargetList.Items.Add(item);
             }
         }
         /// <summary>
@@ -199,8 +207,19 @@ namespace msbuild_gui
         /// </summary>
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            string? targetFolder = TargetList.SelectedItem as string;
-            TargetList.Items.Remove(targetFolder);
+            string[]? targetFolder = new string[0];
+            int i = 0;
+
+            foreach(var item in TargetList.SelectedItems)
+            {
+                Array.Resize(ref targetFolder, i + 1);
+                targetFolder[i] = item.ToString();
+                i++;
+            }
+            foreach (var item in targetFolder)
+            {
+                TargetList.Items.Remove(item);
+            }
         }
 
         private void ProjCombo_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
