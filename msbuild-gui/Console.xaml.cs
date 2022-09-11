@@ -24,6 +24,11 @@ namespace msbuild_gui
             searchIndex = 2;
             searchIndexMAX = maxCount;
             Title = result;
+            // シングルビルドモード時は0のため1に置き換える
+            if (searchIndexMAX == 0)
+            {
+                searchIndexMAX = 1;
+            }
 
             if (errorLog == "")
             {
@@ -35,7 +40,7 @@ namespace msbuild_gui
             Brush white = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
             ErrorResult.Text = errorLog;
 
-            for (int count = 0; count < maxCount; count++)
+            for (int count = 0; count < searchIndexMAX; count++)
             {
                 TabItem item = new TabItem();
                 TextBox text = new TextBox();

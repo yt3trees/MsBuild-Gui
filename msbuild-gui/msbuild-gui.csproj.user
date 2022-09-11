@@ -24,6 +24,9 @@
     <Compile Update="ProjectSettings.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="SingleBuild.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="VersionWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -45,6 +48,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ProjectSettings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SingleBuild.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="VersionWindow.xaml">

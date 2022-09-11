@@ -136,6 +136,29 @@ namespace msbuild_gui
                 }
 
                 Projects.ProjectsList.ToList().ForEach(x => ProjCombo.Items.Add(x.Value.ProjectName));
+
+                // シングルビルドモード
+                string[] args = Environment.GetCommandLineArgs();
+                Debug.Print("args:"+String.Join("\n",args));
+                if (2 == args.Length)
+                {
+                    // 引数がひとつのみ渡された場合はシングルビルドモードで開く
+                    var window = new SingleBuild(args[1]);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }
+                else if (2 < args.Length)
+                {
+                    ModernWpf.MessageBox.Show("Only one file can be targeted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Application.Current.Shutdown();
+                }
+                else
+                {
+                    // Debug
+                    //var window = new SingleBuild("C:\\work\\dev\\msbuild-gui\\test\\source\\HelloWorld\\HelloWorld\\HelloWorld.csproj");
+                    //window.Owner = this;
+                    //window.ShowDialog();
+                }
             }
             catch (Exception ex)
             {
@@ -509,7 +532,7 @@ namespace msbuild_gui
         /// <param name="Target">MsBuildパラメータ:Target</param>
         /// <param name="AssemblySearchPaths">MsBuildパラメータ:AssemblySearchPaths</param>
         /// <param name="Configuration">MsBuildパラメータ:Configuration</param>
-        private void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration)
+        public void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration)
         {
             try
             {

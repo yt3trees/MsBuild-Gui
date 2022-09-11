@@ -246,15 +246,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MsBuild-Gui"
-        "ProductCode" = "8:{3D1157FB-35CF-485D-A542-150C3B87B638}"
-        "PackageCode" = "8:{51F28A31-8F2A-46FC-918A-9EE9E234321E}"
+        "ProductCode" = "8:{C3BDD766-5C32-4AF4-BB66-063DA1AEF9CF}"
+        "PackageCode" = "8:{8B5CD87D-D4B6-40DA-B228-5F488C394454}"
         "UpgradeCode" = "8:{7D70ECDB-383F-40E2-B1A8-D750CFA02BE0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.2"
+        "ProductVersion" = "8:1.0.3"
         "Manufacturer" = "8:yt3trees"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -331,6 +331,114 @@
                             "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_DA33854F64D342CDB5E5AB53426C525D"
+                            {
+                            "Name" = "8:Classes"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_46AB1335B7574265AC33E09FA17AE2AE"
+                                    {
+                                    "Name" = "8:SystemFileAssociations"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C4118FED033B4CC89AB10A34D937C175"
+                                            {
+                                            "Name" = "8:.csproj"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_50765826EB7A4FF59BF36036B7CC3780"
+                                                    {
+                                                    "Name" = "8:shell"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_6E932A7255A94B7AB8BFE8ED22E70392"
+                                                            {
+                                                            "Name" = "8:MsBuild-Gui"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_DD86AD8A53D24819B4EF36074CDD9470"
+                                                                    {
+                                                                    "Name" = "8:command"
+                                                                    "Condition" = "8:"
+                                                                    "AlwaysCreate" = "11:FALSE"
+                                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                                    "Transitive" = "11:FALSE"
+                                                                        "Keys"
+                                                                        {
+                                                                        }
+                                                                        "Values"
+                                                                        {
+                                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_0E7F0DA2A4F5467B824E454C10D535CF"
+                                                                            {
+                                                                            "Name" = "8:"
+                                                                            "Condition" = "8:"
+                                                                            "Transitive" = "11:FALSE"
+                                                                            "ValueTypes" = "3:1"
+                                                                            "Value" = "8:[TARGETDIR]MsBuild-Gui.exe \"%1\""
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_668B1CB30CF24FD5B9D552B52F4E0DB9"
+                                                                    {
+                                                                    "Name" = "8:"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:Open in MsBuild-Gui"
+                                                                    }
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_EEB3B00CFEAC4D2188F084CD1EE98220"
+                                                                    {
+                                                                    "Name" = "8:icon"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:[TARGETDIR]MsBuild-Gui.exe"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        "Values"
+                                                        {
+                                                        }
+                                                    }
+                                                }
+                                                "Values"
+                                                {
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
                                 }
                                 "Values"
                                 {
