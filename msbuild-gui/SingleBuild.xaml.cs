@@ -46,6 +46,8 @@ namespace msbuild_gui
                         .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.AssemblySearchPaths).FirstOrDefault();
                 string? Configuration = MainWindow.Projects.ProjectsList
                         .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault();
+                string? VisualStudioVersion = MainWindow.Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.VisualStudioVersion).FirstOrDefault();
 
                 string targetFileName = targetProj.Replace(SourceFolder, "");
                 targetFileName.Remove(1);
@@ -59,6 +61,7 @@ namespace msbuild_gui
                                             , Target
                                             , AssemblySearchPaths
                                             , Configuration
+                                            , VisualStudioVersion
                                             );
                 Application.Current.Shutdown();
             }

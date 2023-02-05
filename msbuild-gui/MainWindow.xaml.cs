@@ -44,6 +44,7 @@ namespace msbuild_gui
                 public string? Target { get; set; }
                 public string? AssemblySearchPaths { get; set; }
                 public string? Configuration { get; set; }
+                public string? VisualStudioVersion { get; set; }
             }
             public static Dictionary<int, ProjectData> ProjectsList = new Dictionary<int, ProjectData>();
             public static bool ShowLog = false;
@@ -88,6 +89,8 @@ namespace msbuild_gui
             public string? AssemblySearchPaths { get; set; }
             [JsonProperty("Configuration")]
             public string? Configuration { get; set; }
+            [JsonProperty("VisualStudioVersion")]
+            public string? VisualStudioVersion { get; set; }
         }
         /// <summary>
         /// SourceList検索制御用
@@ -505,6 +508,8 @@ namespace msbuild_gui
                         .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.AssemblySearchPaths).FirstOrDefault();
                 string? Configuration = Projects.ProjectsList
                         .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault();
+                string? VisualStudioVersion = Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.VisualStudioVersion).FirstOrDefault();
 
                 // 別スレッドでビルドを実行
                 Task.Run(() => RunBuild(targets
@@ -514,6 +519,7 @@ namespace msbuild_gui
                                         , Target
                                         , AssemblySearchPaths
                                         , Configuration
+                                        , VisualStudioVersion
                                         ));
             }
             catch (Exception ex)
@@ -532,7 +538,7 @@ namespace msbuild_gui
         /// <param name="Target">MsBuildパラメータ:Target</param>
         /// <param name="AssemblySearchPaths">MsBuildパラメータ:AssemblySearchPaths</param>
         /// <param name="Configuration">MsBuildパラメータ:Configuration</param>
-        public void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration)
+        public void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration, string? VisualStudioVersion)
         {
             try
             {
@@ -543,6 +549,7 @@ namespace msbuild_gui
                 string errorLogNow = "";
 
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
+                string? vsv = VisualStudioVersion == "" ? "" : "/p:VisualStudioVersion=\"" + VisualStudioVersion + "\" ";
 
                 foreach (var target in targets)
                 {
@@ -557,6 +564,7 @@ namespace msbuild_gui
                         $"/p:OutputPath={OutputFolder} /p:DebugType=None " +
                         asp +
                         $"/p:Configuration={Configuration} " +
+                        vsv +
                         $"/fileloggerparameters:LogFile=\"{Directory.GetCurrentDirectory()}\\BuildErrorLog.txt\";ErrorsOnly;Append=True",
                         CreateNoWindow = true,
                         UseShellExecute = false,
@@ -716,7 +724,8 @@ namespace msbuild_gui
                         MsBuild = proj.MsBuild,
                         Target = proj.Target,
                         AssemblySearchPaths = proj.AssemblySearchPaths,
-                        Configuration = proj.Configuration
+                        Configuration = proj.Configuration,
+                        VisualStudioVersion = proj.VisualStudioVersion
                     });
                 }
 
@@ -726,7 +735,9 @@ namespace msbuild_gui
                     Debug.Print($"Id: {proj.Key}, ProjectName: {proj.Value.ProjectName}, SourceFolder: {proj.Value.SourceFolder}" +
                         $", OutputFolder: {proj.Value.OutputFolder}, MsBuild: {proj.Value.MsBuild}" +
                         $", Target: {proj.Value.Target}, AssemblySearchPaths: {proj.Value.AssemblySearchPaths}" +
-                        $", Configuration: {proj.Value.Configuration}");
+                        $", Configuration: {proj.Value.Configuration}" +
+                        $", VisualStudioVersion: {proj.Value.VisualStudioVersion}"
+                        );
                 }
                 // ビルドログ表示フラグ
                 Projects.ShowLog = config.GetValue<bool>("ShowLog", false);
@@ -819,6 +830,7 @@ namespace msbuild_gui
                         Target = proj.Value.Target,
                         AssemblySearchPaths = proj.Value.AssemblySearchPaths,
                         Configuration = proj.Value.Configuration,
+                        VisualStudioVersion = proj.Value.VisualStudioVersion
                     });
                 }
                 var jsonData = JsonConvert.SerializeObject(appsettings, Formatting.Indented);

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 
@@ -47,6 +47,8 @@ namespace msbuild_gui
             public string? AssemblySearchPaths { get; set; }
             [JsonProperty("Configuration")]
             public string? Configuration { get; set; }
+            [JsonProperty("VisualStudioVersion")]
+            public string? VisualStudioVersion { get; set; }
         }
         #endregion
 
@@ -95,13 +97,15 @@ namespace msbuild_gui
                 | MainWindow.Projects.ProjectsList
                 .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.AssemblySearchPaths).FirstOrDefault() != (AssemblySearchPath1.Text == "" ? "" : AssemblySearchPath1.Text + ";")
                                                                                                                            + (AssemblySearchPath2.Text == "" ? "" : AssemblySearchPath2.Text + ";")
-                                                                                                                           + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";")                                                                                                      
+                                                                                                                           + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";")
                 | MainWindow.Projects.ProjectsList
                 .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault() != ConfigurationCombo.Text
+                | MainWindow.Projects.ProjectsList
+                .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.VisualStudioVersion).FirstOrDefault() != VisualStudioVersionText.Text
                 )
             {
                 var result = ModernWpf.MessageBox.Show(Properties.Resources.CloseTheWindowWithoutSaving1
-                    +"\n"+ Properties.Resources.CloseTheWindowWithoutSaving2, Properties.Resources.Confirmation, MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    + "\n" + Properties.Resources.CloseTheWindowWithoutSaving2, Properties.Resources.Confirmation, MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result != MessageBoxResult.Yes)
                 {
                     e.Cancel = true;
@@ -181,7 +185,8 @@ namespace msbuild_gui
                                                     + (AssemblySearchPath2.Text == "" ? "" : AssemblySearchPath2.Text + ";")
                                                     + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";");
                     string? Configuration = ConfigurationCombo.Text;
- 
+                    string? VisualStudioVersion = VisualStudioVersionText.Text;
+
                     int key = MainWindow.Projects.ProjectsList
                             .Where(x => x.Value.ProjectName == projectName).Select(x => x.Key).FirstOrDefault();
                     MainWindow.Projects.ProjectsList[key].SourceFolder = SourceFolder;
@@ -190,6 +195,7 @@ namespace msbuild_gui
                     MainWindow.Projects.ProjectsList[key].Target = Target;
                     MainWindow.Projects.ProjectsList[key].AssemblySearchPaths = AssemblySearchPaths;
                     MainWindow.Projects.ProjectsList[key].Configuration = Configuration;
+                    MainWindow.Projects.ProjectsList[key].VisualStudioVersion = VisualStudioVersion;
                 }
                 // 設定ファイルに保存
                 ((MainWindow)this.Owner).saveJson();
@@ -237,6 +243,7 @@ namespace msbuild_gui
                     MsBuild = IsProjContentsCopy == true ? MsBuildPath.Text : "",
                     Target = IsProjContentsCopy == true ? TargetCombo.Text : "",
                     Configuration = IsProjContentsCopy == true ? ConfigurationCombo.Text : "",
+                    VisualStudioVersion = IsProjContentsCopy == true ? VisualStudioVersionText.Text : "",
                     AssemblySearchPaths = IsProjContentsCopy == true ? (AssemblySearchPath1.Text == "" ? "" : AssemblySearchPath1.Text + ";")
                                                 + (AssemblySearchPath2.Text == "" ? "" : AssemblySearchPath2.Text + ";")
                                                 + (AssemblySearchPath3.Text == "" ? "" : AssemblySearchPath3.Text + ";") : ""
@@ -310,6 +317,7 @@ namespace msbuild_gui
                     Target = proj.Value.Target,
                     AssemblySearchPaths = proj.Value.AssemblySearchPaths,
                     Configuration = proj.Value.Configuration,
+                    VisualStudioVersion = proj.Value.VisualStudioVersion
                 });
             }
             var jsonData = JsonConvert.SerializeObject(appsettings, Formatting.Indented);
@@ -377,6 +385,7 @@ namespace msbuild_gui
                             Target = proj.Target,
                             AssemblySearchPaths = proj.AssemblySearchPaths,
                             Configuration = proj.Configuration,
+                            VisualStudioVersion = proj.VisualStudioVersion
                         });
                     }
                     // 設定ファイルに保存
@@ -437,12 +446,15 @@ namespace msbuild_gui
                 AssmblySearchPath123 = (AssemblySearchPaths == null ? "" : AssemblySearchPaths).Split(';');
                 string? Configuration = MainWindow.Projects.ProjectsList
                         .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.Configuration).FirstOrDefault();
+                string? VisualStudioVersion = MainWindow.Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.VisualStudioVersion).FirstOrDefault();
 
                 ProjFolderPath.Text = (SourceFolder == null ? "" : SourceFolder).ToString();
                 OutputFolderPath.Text = (OutputFolder == null ? "" : OutputFolder).ToString();
                 MsBuildPath.Text = (MsBuild == null ? "" : MsBuild).ToString();
                 TargetCombo.Text = (Target == null ? "" : Target).ToString();
                 ConfigurationCombo.Text = (Configuration == null ? "" : Configuration).ToString();
+                VisualStudioVersionText.Text = (VisualStudioVersion == null ? "" : VisualStudioVersion).ToString();
 
                 AssemblySearchPath1.Text = "";
                 AssemblySearchPath2.Text = "";
