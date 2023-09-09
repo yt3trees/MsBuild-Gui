@@ -602,8 +602,13 @@ namespace msbuild_gui
             }
             catch (Exception ex)
             {
-                ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ProgressRing.IsActive = false;
+                    ProgressBar.Visibility = Visibility.Hidden;
+                    BuildButton.IsEnabled = true;
+                });
             }
 
         }

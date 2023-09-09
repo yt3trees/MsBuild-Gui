@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace msbuild_gui
 {
@@ -28,6 +29,38 @@ namespace msbuild_gui
                 mutex = null;
                 this.Shutdown();
             }
+            DispatcherUnhandledException += (s, args) => HandleException(args.Exception);
+            TaskScheduler.UnobservedTaskException += (s, args) => HandleException(args.Exception?.InnerException);
+            AppDomain.CurrentDomain.UnhandledException += (s, args) => HandleException(args.ExceptionObject as Exception);
+
+        }
+        private void HandleException(Exception e)
+        {
+            if (e == null) return;
+
+            ShowCustomErrorDialog("An error has occurred.\n" + e.ToString());
+            Environment.Exit(1);
+        }
+        private void ShowCustomErrorDialog(string message)
+        {
+            Window errorWindow = new Window
+            {
+                Title = "Abnormal termination",
+                Width = 500,
+                Height = 300,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            TextBox textBox = new TextBox
+            {
+                Text = message,
+                IsReadOnly = true,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+            };
+
+            errorWindow.Content = textBox;
+            errorWindow.ShowDialog();
+            Environment.Exit(1);
         }
         private void Application_Exit(object sender, ExitEventArgs e)
         {
