@@ -259,7 +259,7 @@ namespace msbuild_gui
         }
         private void SourceList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.A)
+            if (e.Key == Key.A || e.Key == Key.Enter)
             {
                 AddButton_Click(sender, e);
             }
