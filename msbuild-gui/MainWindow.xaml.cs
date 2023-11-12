@@ -367,12 +367,27 @@ namespace msbuild_gui
         private void SearchTextbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SourceList.Items.Clear();
-            foreach (string item in List.sourceList)
+
+            if (string.IsNullOrWhiteSpace(SearchTextbox.Text))
             {
-                //大文字小文字を区別せず検索
-                if (item.IndexOf(SearchTextbox.Text, StringComparison.OrdinalIgnoreCase) >= 0)
+                // テキストボックスが空の場合、全てのアイテムを再表示
+                foreach (string item in List.sourceList)
                 {
                     SourceList.Items.Add(item);
+                }
+            }
+            else
+            {
+                // 検索ボックスからテキストを取得し、改行コードで分割する
+                var searchTerms = SearchTextbox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string item in List.sourceList)
+                {
+                    // 任意の検索語がアイテムに含まれているか確認
+                    if (searchTerms.Any(term => item.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0))
+                    {
+                        SourceList.Items.Add(item);
+                    }
                 }
             }
         }
