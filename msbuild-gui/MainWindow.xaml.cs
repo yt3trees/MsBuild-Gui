@@ -559,9 +559,10 @@ namespace msbuild_gui
             {
                 int targetIndex = 0;
                 string cmdErrorText = "";
-                string[,] list = new string[targets.Count, 2];
+                string[,] list = new string[targets.Count, 3];
                 string errorLogBef = "";
                 string errorLogNow = "";
+                string command = "";
 
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
                 string? vsv = VisualStudioVersion == "" ? "" : "/p:VisualStudioVersion=\"" + VisualStudioVersion + "\" ";
@@ -569,10 +570,7 @@ namespace msbuild_gui
                 foreach (var target in targets)
                 {
                     string targetFilePath = SourceFolder + target;
-                    Process? process = Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "cmd.exe",
-                        Arguments = $"/c \"" +
+                    command = $"/c \"" +
                         $"\"{MsBuild}\" " +
                         $"{targetFilePath} " +
                         $"/target:{Target} " +
@@ -580,7 +578,12 @@ namespace msbuild_gui
                         asp +
                         $"/p:Configuration={Configuration} " +
                         vsv +
-                        $"/fileloggerparameters:LogFile=\"{Directory.GetCurrentDirectory()}\\BuildErrorLog.txt\";ErrorsOnly;Append=True",
+                        $"/fileloggerparameters:LogFile=\"{Directory.GetCurrentDirectory()}\\BuildErrorLog.txt\";ErrorsOnly;Append=True";
+
+                    Process? process = Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = command,
                         CreateNoWindow = true,
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
@@ -604,6 +607,7 @@ namespace msbuild_gui
 
                     list[targetIndex,0] = Path.GetFileNameWithoutExtension(target) + errFlg;
                     list[targetIndex,1] = standardOutput;
+                    list[targetIndex,2] = command.Replace("/c \"","");
 
                     // ProgressBarを進める
                     Application.Current.Dispatcher.Invoke(() => {

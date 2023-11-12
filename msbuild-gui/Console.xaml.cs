@@ -1,6 +1,7 @@
 ﻿using ModernWpf;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,7 +18,8 @@ namespace msbuild_gui
     {
         private int searchIndex { get; set; }
         private int searchIndexMAX { get; set; }
-        public Console(string result , int maxCount, string[,] list, string errorLog)
+        private string command;
+        public Console(string result, int maxCount, string[,] list, string errorLog)
         {
             InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -34,11 +36,24 @@ namespace msbuild_gui
             {
                 ResultTabControl.Items.Remove(ErrorTab);
             }
-            
+
             Brush black = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF111111"));
             Brush gray = new SolidColorBrush((Color)ColorConverter.ConvertFromString("LightGray"));
             Brush white = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
+            Brush black80 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CC111111"));
+            Brush white80 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CCFFFFFF"));
             ErrorResult.Text = errorLog;
+
+            if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark
+            || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
+            {
+                ButtonBorder.Background = black80;
+            }
+            else if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light
+                || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Light)
+            {
+                ButtonBorder.Background = white80;
+            }
 
             for (int count = 0; count < searchIndexMAX; count++)
             {
@@ -80,9 +95,10 @@ namespace msbuild_gui
 
                 item.Content = text;
                 ResultTabControl.Items.Add(item);
+                command += list[count, 2].ToString() + "\r\n\r\n";
             }
 
-            if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark 
+            if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Dark
                 || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
             {
                 ErrorResult.Background = black;
@@ -153,6 +169,43 @@ namespace msbuild_gui
                 {
                     ErrorResult.CaretIndex = ErrorResult.Text.Length;
                 }
+            }
+        }
+        private void CommandButton_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new Messagebox("Execution command", command);
+            window.Owner = this;
+            window.ShowDialog();
+        }
+        private void ShowTabList(object sender, RoutedEventArgs e)
+        {
+            TabList.Items.Clear();
+            foreach (TabItem tabItem in ResultTabControl.Items)
+            {
+                if (tabItem.Header is TextBlock textBlock)
+                {
+                    string text = textBlock.Text;
+                    TreeViewItem item = new TreeViewItem();
+                    item.Header = text;
+                    TabList.Items.Add(item);
+                }
+                else
+                {
+                    string text = tabItem.Header.ToString();
+                    TreeViewItem item = new TreeViewItem();
+                    item.Header = text;
+                    TabList.Items.Add(item);
+                }
+            }
+            TabList.Visibility = Visibility.Visible;
+        }
+        private void TabList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int selectedIndex = TabList.SelectedIndex;
+            if (selectedIndex != -1)
+            {
+                ResultTabControl.SelectedIndex = selectedIndex;
+                TabList.Visibility = Visibility.Collapsed;
             }
         }
     }

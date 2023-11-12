@@ -1,23 +1,24 @@
-﻿<Window x:Class="msbuild_gui.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:msbuild_gui"
-        xmlns:ui="http://schemas.modernwpf.com/2019"
-        ui:WindowHelper.UseModernWindowStyle="True"
-        mc:Ignorable="d"
-        Title="MsBuild-Gui"
-        ResizeMode="CanResize"
-        Height="600"
-        Width="800"
-        SourceInitialized="Window_SourceInitialized"
-        WindowStartupLocation="CenterScreen"
-        xmlns:properties="clr-namespace:msbuild_gui.Properties"
-        xmlns:app="clr-namespace:msbuild_gui"
-        Closing="Window_Closing"
-        KeyDown="Window_KeyDown"
-        Icon="/msbuild-gui;component/Resources/MsBuild-Gui.ico">
+﻿<Window
+    x:Class="msbuild_gui.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="clr-namespace:msbuild_gui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:msbuild_gui"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:properties="clr-namespace:msbuild_gui.Properties"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Title="MsBuild-Gui"
+    Width="800"
+    Height="600"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    Closing="Window_Closing"
+    Icon="/msbuild-gui;component/Resources/MsBuild-Gui.ico"
+    KeyDown="Window_KeyDown"
+    ResizeMode="CanResize"
+    SourceInitialized="Window_SourceInitialized"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
@@ -30,101 +31,107 @@
             <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="15*" />
         </Grid.ColumnDefinitions>
-        <ProgressBar x:Name="ProgressBar"
-                     Grid.Row="3"
-                     MinHeight="5"
-                     MinWidth="800"
-                     Background="#33000000"
-                     Orientation="Horizontal"
-                     Grid.ColumnSpan="3"
-                     VerticalAlignment="Bottom"
-                     Opacity="0.9" />
-        <StackPanel Margin="0,2,0,0"
-                    Grid.Row="1">
-            <Label Content="{Binding Resources.Project, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                   HorizontalContentAlignment="Center"
-                   Height="30"
-                   VerticalContentAlignment="Center"
-                   FontSize="14" />
-            <ComboBox x:Name="ProjCombo"
-                      Width="180"
-                      HorizontalAlignment="Center"
-                      SelectionChanged="ProjCombo_SelectionChanged"
-                      VerticalAlignment="Center"
-                      TabIndex="4" />
-            <Button x:Name="SettingButton"
-                    Content="{Binding Resources.ProjectSettings, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                    Margin="30,10,30,10"
-                    FontSize="14"
-                    HorizontalAlignment="Center"
-                    Click="SettingButton_Click"
-                    TabIndex="5" />
-        </StackPanel>
-        <Button x:Name="AddButton"
-                Content="{Binding Resources.Add, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                HorizontalAlignment="Center"
-                FontFamily="Yu Gothic UI"
+        <ProgressBar
+            x:Name="ProgressBar"
+            Grid.Row="3"
+            Grid.ColumnSpan="3"
+            MinWidth="800"
+            MinHeight="5"
+            VerticalAlignment="Bottom"
+            Background="#33000000"
+            Opacity="0.9"
+            Orientation="Horizontal" />
+        <StackPanel Grid.Row="1" Margin="0,2,0,0">
+            <Label
                 Height="30"
-                Grid.Column="1"
-                Grid.Row="2"
-                Padding="5,0,5,0"
-                Width="90"
-                Margin="0,-50,0,0"
-                Click="AddButton_Click"
-                TabIndex="8"
-                ToolTip="{Binding Resources.Tt_AddTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"/>
-        <Button x:Name="RemoveButton"
-                Content="{Binding Resources.Remove, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Content="{Binding Resources.Project, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+                FontSize="14" />
+            <ComboBox
+                x:Name="ProjCombo"
+                Width="180"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                FontFamily="Yu Gothic UI"
-                Height="30"
-                Grid.Column="1"
-                Margin="0,50,0,0"
-                Grid.Row="2"
-                Padding="5,0,5,0"
-                Width="90"
-                Click="RemoveButton_Click"
-                TabIndex="9"
-                ToolTip="{Binding Resources.Tt_RemoveTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"/>
-        <ListBox x:Name="SourceList"
-                 d:ItemsSource="{d:SampleData ItemCount=5}"
-                 Margin="10,40,10,0"
-                 FontFamily="Consolas"
-                 Grid.Row="2"
-                 FontSize="12"
-                 MouseDoubleClick="SourceList_MouseDoubleClick"
-                 KeyDown="SourceList_KeyDown"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 TabIndex="7"
-                 SelectionMode="Extended" />
-        <ListBox x:Name="TargetList"
-                 d:ItemsSource="{d:SampleData ItemCount=5}"
-                 Margin="10,40,10,0"
-                 FontFamily="Consolas"
-                 Grid.Column="2"
-                 Grid.Row="2"
-                 FontSize="12"
-                 MouseDoubleClick="TargetList_MouseDoubleClick"
-                 KeyDown="TargetList_KeyDown"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 TabIndex="10"
-                 SelectionMode="Extended" />
-        <Grid Grid.Column="2"
-              Grid.Row="3">
+                SelectionChanged="ProjCombo_SelectionChanged"
+                TabIndex="4" />
+            <Button
+                x:Name="SettingButton"
+                Margin="30,10,30,10"
+                HorizontalAlignment="Center"
+                Click="SettingButton_Click"
+                Content="{Binding Resources.ProjectSettings, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+                FontSize="14"
+                TabIndex="5" />
+        </StackPanel>
+        <Button
+            x:Name="AddButton"
+            Grid.Row="2"
+            Grid.Column="1"
+            Width="90"
+            Height="30"
+            Margin="0,-50,0,0"
+            Padding="5,0,5,0"
+            HorizontalAlignment="Center"
+            Click="AddButton_Click"
+            Content="{Binding Resources.Add, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+            FontFamily="Yu Gothic UI"
+            TabIndex="8"
+            ToolTip="{Binding Resources.Tt_AddTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
+        <Button
+            x:Name="RemoveButton"
+            Grid.Row="2"
+            Grid.Column="1"
+            Width="90"
+            Height="30"
+            Margin="0,50,0,0"
+            Padding="5,0,5,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Click="RemoveButton_Click"
+            Content="{Binding Resources.Remove, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+            FontFamily="Yu Gothic UI"
+            TabIndex="9"
+            ToolTip="{Binding Resources.Tt_RemoveTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
+        <ListBox
+            x:Name="SourceList"
+            Grid.Row="2"
+            Margin="10,40,10,0"
+            d:ItemsSource="{d:SampleData ItemCount=5}"
+            FontFamily="Consolas"
+            FontSize="12"
+            KeyDown="SourceList_KeyDown"
+            MouseDoubleClick="SourceList_MouseDoubleClick"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            SelectionMode="Extended"
+            TabIndex="7" />
+        <ListBox
+            x:Name="TargetList"
+            Grid.Row="2"
+            Grid.Column="2"
+            Margin="10,40,10,0"
+            d:ItemsSource="{d:SampleData ItemCount=5}"
+            FontFamily="Consolas"
+            FontSize="12"
+            KeyDown="TargetList_KeyDown"
+            MouseDoubleClick="TargetList_MouseDoubleClick"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            SelectionMode="Extended"
+            TabIndex="10" />
+        <Grid Grid.Row="3" Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Grid HorizontalAlignment="Center"
-                  Width="260">
-                <ui:ProgressRing x:Name="ProgressRing"
-                                 IsActive="False"
-                                 Height="30"
-                                 Width="30"
-                                 HorizontalAlignment="Left"
-                                 Margin="-40,0,0,0"
-                                 Opacity="0.9" />
-                <!--"{Binding IsOn, ElementName=ProgressToggle}"-->
+            <Grid Width="260" HorizontalAlignment="Center">
+                <ui:ProgressRing
+                    x:Name="ProgressRing"
+                    Width="30"
+                    Height="30"
+                    Margin="-40,0,0,0"
+                    HorizontalAlignment="Left"
+                    IsActive="False"
+                    Opacity="0.9" />
+                <!--  "{Binding IsOn, ElementName=ProgressToggle}"  -->
                 <!--<ui:ToggleSwitch x:Name="ProgressToggle"
                                  Header="Toggle work"
                                  OffContent="Do work"
@@ -132,15 +139,16 @@
                                  IsOn="False"
                                  Margin="-314,-6,0,0"
                                  VerticalAlignment="Top" />-->
-                <Button x:Name="BuildButton"
-                        Content="{Binding Resources.Build, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                        Height="30"
-                        FontSize="14"
-                        Padding="0,1,0,1"
-                        Width="120"
-                        Style="{StaticResource AccentButtonStyle}"
-                        TabIndex="13"
-                        Click="BuildButton_Click">
+                <Button
+                    x:Name="BuildButton"
+                    Width="120"
+                    Height="30"
+                    Padding="0,1,0,1"
+                    Click="BuildButton_Click"
+                    Content="{Binding Resources.Build, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+                    FontSize="14"
+                    Style="{StaticResource AccentButtonStyle}"
+                    TabIndex="13">
                     <!--<ui:FlyoutService.Flyout>
                         <ui:Flyout x:Name="Flyout1">
                             <StackPanel x:Name="StackPanelFlyout">
@@ -151,34 +159,37 @@
                         </ui:Flyout>
                     </ui:FlyoutService.Flyout>-->
                 </Button>
-                <CheckBox x:Name="ShowLogCheck"
-                          Content="{Binding Resources.ShowBuildLog, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                          Click="ShowLogCheck_Click"
-                          HorizontalAlignment="Right"
-                          TabIndex="14"
-                          MinHeight="32"
-                          Width="130" />
+                <CheckBox
+                    x:Name="ShowLogCheck"
+                    Width="130"
+                    MinHeight="32"
+                    HorizontalAlignment="Right"
+                    Click="ShowLogCheck_Click"
+                    Content="{Binding Resources.ShowBuildLog, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+                    TabIndex="14" />
             </Grid>
         </Grid>
-        <Label Grid.Column="2"
-               Content="{Binding Resources.BuildTarget, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Top"
-               FontSize="14"
-               Grid.Row="2"
-               Height="29"
-               HorizontalContentAlignment="Center"
-               VerticalContentAlignment="Center"
-               Margin="0,5,0,0" />
-        <Label Content="{Binding Resources.CsProjList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Top"
-               FontSize="14"
-               Grid.Row="2"
-               Height="29"
-               HorizontalContentAlignment="Center"
-               VerticalContentAlignment="Center"
-               Margin="0,5,0,0" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="2"
+            Height="29"
+            Margin="0,5,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Content="{Binding Resources.BuildTarget, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+            FontSize="14" />
+        <Label
+            Grid.Row="2"
+            Height="29"
+            Margin="0,5,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Content="{Binding Resources.CsProjList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+            FontSize="14" />
         <!--<Button x:Name="UpdateButton"
                 Content="更新"
                 HorizontalAlignment="Right"
@@ -190,68 +201,68 @@
                 Width="46"
                 FontSize="12"
                 Click="UpdateButton_Click" />-->
-        <Menu Grid.ColumnSpan="3"
-              Margin="0,4,0,6">
-            <MenuItem Header="{Binding Resources.File_F, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                      Click="MenuItem_Click" TabIndex="1">
+        <Menu Grid.ColumnSpan="3" Margin="0,4,0,6">
+            <MenuItem
+                Click="MenuItem_Click"
+                Header="{Binding Resources.File_F, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+                TabIndex="1">
                 <MenuItem Header="{Binding Resources.Exit_X, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
             </MenuItem>
-            <MenuItem Header="{Binding Resources.Settings_E, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                      TabIndex="2">
-                <MenuItem Header="{Binding Resources.ColorSettings_C, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                          Click="ColorSetting_Click" />
-                <MenuItem Header="{Binding Resources.LanguageSettings_L, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                          Click="Button_Click" />
+            <MenuItem Header="{Binding Resources.Settings_E, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" TabIndex="2">
+                <MenuItem Click="ColorSetting_Click" Header="{Binding Resources.ColorSettings_C, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
+                <MenuItem Click="Button_Click" Header="{Binding Resources.LanguageSettings_L, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
             </MenuItem>
-            <MenuItem Header="{Binding Resources.Help, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                      TabIndex="3">
-                <MenuItem Header="{Binding Resources.Version_A, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                          Click="MenuItem_Click_1" />
+            <MenuItem Header="{Binding Resources.Help, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" TabIndex="3">
+                <MenuItem Click="MenuItem_Click_1" Header="{Binding Resources.Version_A, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
             </MenuItem>
         </Menu>
-        <Button x:Name="UpButton"
-                Content="▲"
-                HorizontalAlignment="Right"
-                Margin="0,15,10,0"
-                Grid.Row="2"
-                VerticalAlignment="Top"
-                Padding="0,0,0,0"
-                Height="20"
-                Width="20"
-                FontSize="12"
-                Grid.Column="2"
-                Click="UpButton_Click"
-                TabIndex="12"
-                ToolTip="{Binding Resources.Tt_ReplaceTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
-        <Button x:Name="DownButton"
-                Content="▼"
-                HorizontalAlignment="Right"
-                Margin="0,15,35,0"
-                Grid.Row="2"
-                VerticalAlignment="Top"
-                Padding="0,0,0,0"
-                Height="20"
-                Width="20"
-                FontSize="12"
-                Click="DownButton_Click"
-                Grid.Column="2"
-                TabIndex="11" 
-                ToolTip="{Binding Resources.Tt_ReplaceTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
-        <TextBox x:Name="SearchTextbox"
-                 HorizontalAlignment="Right"
-                 Margin="0,5,10,0"
-                 Grid.Row="2"
-                 TextWrapping="Wrap"
-                 VerticalAlignment="Top"
-                 Width="120"
-                 Height="20"
-                 Padding="5,5,5,5"
-                 VerticalContentAlignment="Center"
-                 FontSize="14"
-                 TextChanged="SearchTextbox_TextChanged"
-                 ui:ControlHelper.PlaceholderText="Search"
-                 TextAlignment="Left"
-                 TabIndex="6" />
+        <Button
+            x:Name="UpButton"
+            Grid.Row="2"
+            Grid.Column="2"
+            Width="20"
+            Height="20"
+            Margin="0,15,10,0"
+            Padding="0,0,0,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="UpButton_Click"
+            Content="▲"
+            FontSize="12"
+            TabIndex="12"
+            ToolTip="{Binding Resources.Tt_ReplaceTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
+        <Button
+            x:Name="DownButton"
+            Grid.Row="2"
+            Grid.Column="2"
+            Width="20"
+            Height="20"
+            Margin="0,15,35,0"
+            Padding="0,0,0,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="DownButton_Click"
+            Content="▼"
+            FontSize="12"
+            TabIndex="11"
+            ToolTip="{Binding Resources.Tt_ReplaceTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
+        <TextBox
+            x:Name="SearchTextbox"
+            Grid.Row="2"
+            Width="120"
+            Height="20"
+            Margin="0,5,10,0"
+            Padding="5,5,5,5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            VerticalContentAlignment="Center"
+            ui:ControlHelper.PlaceholderText="Search"
+            AcceptsReturn="True"
+            FontSize="14"
+            TabIndex="6"
+            TextAlignment="Left"
+            TextChanged="SearchTextbox_TextChanged"
+            TextWrapping="Wrap" />
 
     </Grid>
 </Window>

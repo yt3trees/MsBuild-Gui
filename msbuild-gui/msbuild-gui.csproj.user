@@ -21,6 +21,9 @@
     <Compile Update="LanguageSettings.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+        <Compile Update="Messagebox.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="ProjectSettings.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -42,6 +45,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="LanguageSettings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+        <Page Update="Messagebox.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
