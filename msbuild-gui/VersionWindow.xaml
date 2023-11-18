@@ -47,6 +47,7 @@
                    Width="155"
                    Text="Version:"
                    Grid.Column="1"
+                   MouseLeftButtonDown="VersionText_MouseLeftButtonDown"
                    Grid.Row="1"
                    Margin="1,0,0,0" />
         <TextBox x:Name="githubURLText"

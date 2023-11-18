@@ -35,5 +35,12 @@ namespace msbuild_gui
                 this.Close();
             }
         }
+
+        private void VersionText_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            string exeConfigurationPath = System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+            Clipboard.SetText(exeConfigurationPath);
+            ModernWpf.MessageBox.Show("Configuration file path copied to clipboard.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }
