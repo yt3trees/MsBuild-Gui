@@ -675,7 +675,7 @@ namespace msbuild_gui
                     resultErrorText.Close();
                     if (ShowLogCheck.IsChecked == true)
                     {
-                        ShowResult(Properties.Resources.ExecutionResult + " ※" + Properties.Resources.Error, TargetList.Items.Count, list, cmdErrorText + errTxt);
+                        ShowResult(Properties.Resources.ExecutionResult + " ※" + Properties.Resources.Error, TargetList.Items.Count, list, cmdErrorText + errTxt.Replace("\n", "\n\n"));
                     }
                     else
                     {
