@@ -105,6 +105,12 @@ namespace msbuild_gui
         public MainWindow()
         {
             InitializeComponent();
+            if (Properties.Settings.Default.UpgradeRequired)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpgradeRequired = false;
+                Properties.Settings.Default.Save();
+            }
             ProgressBar.Visibility = Visibility.Hidden;
             ToastNotificationManagerCompat.OnActivated += this.ToastNotificationManagerCompat_OnActivated;
         }
