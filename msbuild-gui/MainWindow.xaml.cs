@@ -706,11 +706,15 @@ namespace msbuild_gui
         /// <param name="title">ウィンドウタイトル</param>
         /// <param name="count">ビルド対象数</param>
         /// <param name="errorText">エラーテキスト</param>
-        private void ShowResult(string title,int count, string[,] list ,string errorText )
+        private void ShowResult(string title, int count, string[,] list, string errorText)
         {
             var window = new Console(title, count, list, errorText);
-            window.Owner = this;
-            window.ShowDialog();
+            // 親ウィンドウの中心位置に配置
+            double parentCenterX = this.Left + (this.Width / 2);
+            double parentCenterY = this.Top + (this.Height / 2);
+            window.Left = parentCenterX - (window.Width / 2);
+            window.Top = parentCenterY - (window.Height / 2);
+            window.Show();
         }
         private void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat e)
         {
