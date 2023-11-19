@@ -21,7 +21,7 @@
     <Compile Update="LanguageSettings.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-        <Compile Update="Messagebox.xaml.cs">
+    <Compile Update="Messagebox.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="ProjectSettings.xaml.cs">
@@ -35,6 +35,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="APISettings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="ColorSettings.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -47,7 +50,7 @@
     <Page Update="LanguageSettings.xaml">
       <SubType>Designer</SubType>
     </Page>
-        <Page Update="Messagebox.xaml">
+    <Page Update="Messagebox.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">

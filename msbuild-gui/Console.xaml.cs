@@ -1,4 +1,5 @@
 ﻿using ModernWpf;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -22,10 +23,19 @@ namespace msbuild_gui
         public Console(string result, int maxCount, string[,] list, string errorLog)
         {
             InitializeComponent();
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            this.Width = 1000;
+            AIResponseColumn.Width = new GridLength(0);
+            SplitterColumn.MinWidth = 0;
+            SplitterColumn.Width = new GridLength(0);
             searchIndex = 2;
             searchIndexMAX = maxCount;
             Title = result;
+
+            if (String.IsNullOrEmpty(Properties.Settings.Default.APIKey))
+            {
+                AskAIButtonBorder.ToolTip = Properties.Resources.APIisnotconfigured;
+                AskAIButton.IsEnabled = false;
+            }
             // シングルビルドモード時は0のため1に置き換える
             if (searchIndexMAX == 0)
             {
@@ -78,12 +88,16 @@ namespace msbuild_gui
                 {
                     text.Background = black;
                     text.Foreground = gray;
+                    AIResponseTextBox.Background = black;
+                    AIResponseTextBox.Foreground = gray;
                 }
                 else if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light
                     || ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Light)
                 {
                     text.Background = white;
                     text.Foreground = black;
+                    AIResponseTextBox.Background = white;
+                    AIResponseTextBox.Foreground = black;
                 }
                 text.Text = list[count, 1];
 
@@ -159,17 +173,6 @@ namespace msbuild_gui
                     ErrorResult.FontSize -= 1;
                 }
             }
-            if (e.Key == Key.Enter)
-            {
-                if (ErrorResult.CaretIndex == ErrorResult.Text.Length)
-                {
-                    ErrorResult.CaretIndex = 0;
-                }
-                else
-                {
-                    ErrorResult.CaretIndex = ErrorResult.Text.Length;
-                }
-            }
         }
         private void CommandButton_Click(object sender, RoutedEventArgs e)
         {
@@ -206,6 +209,54 @@ namespace msbuild_gui
             {
                 ResultTabControl.SelectedIndex = selectedIndex;
                 TabList.Visibility = Visibility.Collapsed;
+            }
+        }
+        private async void AskAIButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleUI(false);
+
+            try
+            {
+                string errorMessage = ErrorResult.Text;
+                string result = await System.Threading.Tasks.Task.Run(() => AskAI.ExecutePlugin(errorMessage));
+                ShowResponse(result);
+            }
+            catch (Exception ex)
+            {
+                ModernWpf.MessageBox.Show(ex.Message, Properties.Resources.Error);
+            }
+            finally
+            {
+                ToggleUI(true);
+            }
+        }
+        private void ShowResponse(string response)
+        {
+            AIResponseTextBox.Markdown = response;
+            this.Width = 1500;
+            AIResponseColumn.Width = new GridLength(500);
+            SplitterColumn.MinWidth = 5;
+            SplitterColumn.Width = GridLength.Auto;
+        }
+        private void ToggleUI(bool isEnabled)
+        {
+            AskAIButton.IsEnabled = isEnabled;
+            AskAIButton.Content = isEnabled ? "Ask AI" : "Analyzing...";
+            ProgressRing.IsActive = !isEnabled;
+        }
+        private void AskAIButtonBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!(String.IsNullOrEmpty(Properties.Settings.Default.APIKey)))
+            {
+                AskAIButtonBorder.ToolTip = "";
+                if (ProgressRing.IsActive == false)
+                {
+                    AskAIButton.IsEnabled = true;
+                }
+            }
+            else
+            {
+                ModernWpf.MessageBox.Show(Properties.Resources.APIisnotconfigured, Properties.Resources.Error);
             }
         }
     }

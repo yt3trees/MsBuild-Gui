@@ -1,6 +1,25 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="msbuild_gui.Properties" GeneratedClassName="Settings">
   <Profiles />
+  <Settings>
+    <Setting Name="APIKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Provider" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Azure</Value>
+    </Setting>
+    <Setting Name="Model" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ModelList" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-3.5-turbo-16k-instruct,gpt-3.5-turbo-1106,gpt-4,gpt-4-0613,gpt-4-1106-preview,gpt-4-vision-preview</Value>
+    </Setting>
+    <Setting Name="AzDeploymentId" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AzBaseDomain" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
     <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

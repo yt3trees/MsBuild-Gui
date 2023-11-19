@@ -1,21 +1,23 @@
-﻿<Application x:Class="msbuild_gui.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:msbuild_gui"
-             StartupUri="MainWindow.xaml"
-             xmlns:ui="http://schemas.modernwpf.com/2019"
-             Startup="Application_Startup"
-             Exit="Application_Exit"
-             xmlns:properties="clr-namespace:msbuild_gui.Properties"
-             ShutdownMode="OnMainWindowClose"><!-- 小ウィンドウを閉じる -->
+﻿<Application
+    x:Class="msbuild_gui.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:msbuild_gui"
+    xmlns:properties="clr-namespace:msbuild_gui.Properties"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Exit="Application_Exit"
+    ShutdownMode="OnMainWindowClose"
+    Startup="Application_Startup"
+    StartupUri="MainWindow.xaml">
+    <!--  小ウィンドウを閉じる  -->
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemeResources />
                 <ui:XamlControlsResources />
-                <!-- Other merged dictionaries here -->
+                <!--  Other merged dictionaries here  -->
             </ResourceDictionary.MergedDictionaries>
-            <!-- Other app resources here -->
+            <!--  Other app resources here  -->
         </ResourceDictionary>
     </Application.Resources>
 </Application>

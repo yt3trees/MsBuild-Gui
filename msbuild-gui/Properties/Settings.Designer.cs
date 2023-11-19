@@ -22,6 +22,80 @@ namespace msbuild_gui.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string APIKey {
+            get {
+                return ((string)(this["APIKey"]));
+            }
+            set {
+                this["APIKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Azure")]
+        public string Provider {
+            get {
+                return ((string)(this["Provider"]));
+            }
+            set {
+                this["Provider"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Model {
+            get {
+                return ((string)(this["Model"]));
+            }
+            set {
+                this["Model"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-3.5-turbo-16k-instruct,gpt-3.5-turbo-1106,gpt" +
+            "-4,gpt-4-0613,gpt-4-1106-preview,gpt-4-vision-preview")]
+        public string ModelList {
+            get {
+                return ((string)(this["ModelList"]));
+            }
+            set {
+                this["ModelList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AzDeploymentId {
+            get {
+                return ((string)(this["AzDeploymentId"]));
+            }
+            set {
+                this["AzDeploymentId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AzBaseDomain {
+            get {
+                return ((string)(this["AzBaseDomain"]));
+            }
+            set {
+                this["AzBaseDomain"] = value;
+            }
+        }
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]

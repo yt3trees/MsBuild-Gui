@@ -211,6 +211,7 @@
             <MenuItem Header="{Binding Resources.Settings_E, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" TabIndex="2">
                 <MenuItem Click="ColorSetting_Click" Header="{Binding Resources.ColorSettings_C, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
                 <MenuItem Click="Button_Click" Header="{Binding Resources.LanguageSettings_L, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
+                <MenuItem Click="APISetting_Click" Header="{Binding Resources.OpenAIAPISetting, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
             </MenuItem>
             <MenuItem Header="{Binding Resources.Help, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" TabIndex="3">
                 <MenuItem Click="MenuItem_Click_1" Header="{Binding Resources.Version_A, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />

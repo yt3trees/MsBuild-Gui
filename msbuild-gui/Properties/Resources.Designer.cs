@@ -88,6 +88,15 @@ namespace msbuild_gui.Properties {
         }
         
         /// <summary>
+        ///   Please set the API key. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string APIisnotconfigured {
+            get {
+                return ResourceManager.GetString("APIisnotconfigured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Build に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Build {
@@ -428,6 +437,15 @@ namespace msbuild_gui.Properties {
         public static string MsBuildParameters {
             get {
                 return ResourceManager.GetString("MsBuildParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   OpenAI API Setting に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OpenAIAPISetting {
+            get {
+                return ResourceManager.GetString("OpenAIAPISetting", resourceCulture);
             }
         }
         

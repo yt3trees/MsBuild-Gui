@@ -880,6 +880,12 @@ namespace msbuild_gui
                 return;
             }
         }
+        private void APISetting_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new APISettings();
+            window.Owner = this;
+            window.ShowDialog();
+        }
         #endregion
     }
     /// <summary>

@@ -6,15 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:msbuild_gui"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mdxam="clr-namespace:MdXaml;assembly=MdXaml"
     xmlns:properties="clr-namespace:msbuild_gui.Properties"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     Title="{Binding Resources.ExecutionResult, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-    Width="1000"
+    Width="1500"
     Height="650"
     ui:WindowHelper.UseModernWindowStyle="True"
     FocusManager.FocusedElement="{Binding ElementName=CmdResult}"
     KeyDown="Window_KeyDown"
-    ShowInTaskbar="False"
+    ShowInTaskbar="True"
     WindowStartupLocation="Manual"
     mc:Ignorable="d">
     <!-- <Window.Resources>
@@ -37,8 +38,17 @@
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition
+                x:Name="SplitterColumn"
+                Width="Auto"
+                MinWidth="5" />
+            <ColumnDefinition x:Name="AIResponseColumn" Width="500" />
+        </Grid.ColumnDefinitions>
         <TabControl
             x:Name="ResultTabControl"
+            Grid.Column="0"
             Margin="1,1,1,5"
             Style="{StaticResource TabControlPivotStyle}">
             <!--<TabControl.Template>
@@ -67,20 +77,52 @@
                 </ControlTemplate>
             </TabControl.Template>-->
             <TabItem x:Name="ErrorTab" Header="{Binding Resources.ErrorLog, Source={x:Static app:ResourceService.Current}, Mode=OneWay}">
-                <TextBox
-                    x:Name="ErrorResult"
-                    Margin="0,0,0,5"
-                    Padding="5,5,15,5"
-                    BorderBrush="#99000000"
-                    BorderThickness="1,1,1,1"
-                    FontFamily="BIZ UDGothic"
-                    FontSize="14"
-                    FontWeight="Normal"
-                    IsReadOnly="True"
-                    KeyDown="ErrorResult_KeyDown"
-                    Text="TextBox"
-                    TextWrapping="Wrap"
-                    VerticalScrollBarVisibility="Auto" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="40" />
+                    </Grid.RowDefinitions>
+                    <TextBox
+                        x:Name="ErrorResult"
+                        Grid.Row="0"
+                        Margin="0,0,0,5"
+                        Padding="5,5,15,5"
+                        AcceptsReturn="True"
+                        BorderBrush="#99000000"
+                        BorderThickness="1,1,1,1"
+                        FontFamily="BIZ UDGothic"
+                        FontSize="14"
+                        FontWeight="Normal"
+                        IsReadOnly="False"
+                        KeyDown="ErrorResult_KeyDown"
+                        Text="TextBox"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
+                    <ui:ProgressRing
+                        x:Name="ProgressRing"
+                        Grid.Row="1"
+                        Width="30"
+                        Height="30"
+                        Margin="0,0,125,0"
+                        HorizontalAlignment="Right"
+                        IsActive="False"
+                        Opacity="0.9" />
+                    <Border
+                        x:Name="AskAIButtonBorder"
+                        Grid.Row="1"
+                        MouseLeftButtonDown="AskAIButtonBorder_MouseLeftButtonDown">
+                        <Button
+                            x:Name="AskAIButton"
+                            Width="120"
+                            Height="30"
+                            Padding="0,0,0,0"
+                            HorizontalAlignment="Right"
+                            Click="AskAIButton_Click"
+                            Content="Ask AI"
+                            FontSize="14"
+                            Style="{StaticResource AccentButtonStyle}" />
+                    </Border>
+                </Grid>
             </TabItem>
         </TabControl>
         <Border
@@ -126,5 +168,37 @@
             x:Name="TabList"
             SelectionChanged="TabList_SelectionChanged"
             Visibility="Collapsed" />
+        <GridSplitter
+            Grid.Column="1"
+            Width="5"
+            HorizontalAlignment="Stretch"
+            Background="Transparent" />
+        <mdxam:MarkdownScrollViewer
+            x:Name="AIResponseTextBox"
+            Grid.Column="2"
+            Margin="0,44,10,10"
+            Padding="0,5,0,0"
+            BorderBrush="#99000000"
+            BorderThickness="1,1,1,1"
+            FontFamily="BIZ UDGothic"
+            FontSize="13"
+            FontWeight="Normal"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            VerticalScrollBarVisibility="Auto">
+            <mdxam:MarkdownScrollViewer.MarkdownStyle>
+                <Style BasedOn="{x:Static mdxam:MarkdownStyle.Sasabune}" TargetType="FlowDocument">
+                    <Style.Resources>
+                        <Style TargetType="Paragraph">
+                            <Setter Property="Margin" Value="5,10,20,10" />
+                            <Style.Triggers>
+                                <Trigger Property="Tag" Value="List">
+                                    <Setter Property="Margin" Value="0,0,0,0" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Style.Resources>
+                </Style>
+            </mdxam:MarkdownScrollViewer.MarkdownStyle>
+        </mdxam:MarkdownScrollViewer>
     </Grid>
 </Window>
