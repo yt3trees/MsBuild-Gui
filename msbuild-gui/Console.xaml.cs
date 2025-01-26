@@ -1,14 +1,9 @@
 ﻿using ModernWpf;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
 namespace msbuild_gui
 {
@@ -69,7 +64,7 @@ namespace msbuild_gui
             {
                 TabItem item = new TabItem();
                 TextBox text = new TextBox();
-                
+
                 text.TextWrapping = TextWrapping.Wrap;
                 text.IsReadOnly = true;
                 text.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;

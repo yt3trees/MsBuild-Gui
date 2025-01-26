@@ -119,7 +119,7 @@ namespace msbuild_gui
             try
             {
                 LoadAppSettings();
-                
+
                 if (Projects.Language == "en")
                 {
                     ResourceService.Current.ChangeCulture("en");
@@ -148,7 +148,7 @@ namespace msbuild_gui
 
                 // シングルビルドモード
                 string[] args = Environment.GetCommandLineArgs();
-                Debug.Print("args:"+String.Join("\n",args));
+                Debug.Print("args:" + String.Join("\n", args));
                 if (2 == args.Length)
                 {
                     // 引数がひとつのみ渡された場合はシングルビルドモードで開く
@@ -223,13 +223,13 @@ namespace msbuild_gui
             string[]? sourceFolder = new string[0];
             int i = 0;
 
-            foreach(var item in SourceList.SelectedItems)
+            foreach (var item in SourceList.SelectedItems)
             {
                 Array.Resize(ref sourceFolder, i + 1);
                 sourceFolder[i] = item.ToString();
                 i++;
             }
-            foreach(var item in sourceFolder)
+            foreach (var item in sourceFolder)
             {
                 TargetList.Items.Add(item);
             }
@@ -242,7 +242,7 @@ namespace msbuild_gui
             string[]? targetFolder = new string[0];
             int i = 0;
 
-            foreach(var item in TargetList.SelectedItems)
+            foreach (var item in TargetList.SelectedItems)
             {
                 Array.Resize(ref targetFolder, i + 1);
                 targetFolder[i] = item.ToString();
@@ -473,7 +473,7 @@ namespace msbuild_gui
                 else
                 {
                     //{Binding Resources.Project, Source={x:Static app:ResourceService.Current}, Mode=OneWay}
-                    
+
                     ModernWpf.MessageBox.Show(Properties.Resources.Mb_FolderDoesNotExist + "\n" + proj.Value.SourceFolder, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -570,6 +570,8 @@ namespace msbuild_gui
                 string errorLogNow = "";
                 string command = "";
 
+                var encoding = System.Text.Encoding.UTF8;
+
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
                 string? vsv = VisualStudioVersion == "" ? "" : "/p:VisualStudioVersion=\"" + VisualStudioVersion + "\" ";
 
@@ -593,7 +595,9 @@ namespace msbuild_gui
                         CreateNoWindow = true,
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
-                        RedirectStandardError = true
+                        RedirectStandardError = true,
+                        StandardOutputEncoding = encoding,
+                        StandardErrorEncoding = encoding
                     });
 
                     // 標準出力・標準エラー出力・終了コードを取得する
@@ -611,12 +615,13 @@ namespace msbuild_gui
                     }
                     errorLogBef = errorLogNow;
 
-                    list[targetIndex,0] = Path.GetFileNameWithoutExtension(target) + errFlg;
-                    list[targetIndex,1] = standardOutput;
-                    list[targetIndex,2] = command.Replace("/c \"","");
+                    list[targetIndex, 0] = Path.GetFileNameWithoutExtension(target) + errFlg;
+                    list[targetIndex, 1] = standardOutput;
+                    list[targetIndex, 2] = command.Replace("/c \"", "");
 
                     // ProgressBarを進める
-                    Application.Current.Dispatcher.Invoke(() => {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
                         targetIndex += 1;
                         ProgressBar.Visibility = Visibility.Visible;
                         ProgressBar.Value = targetIndex;
