@@ -4,6 +4,7 @@ using Microsoft.Extensions.AI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using ChatMessage = Microsoft.Extensions.AI.ChatMessage;
 
@@ -15,7 +16,9 @@ namespace msbuild_gui
         /// Migrated from Semantic Kernel to Microsoft Agent Framework / Microsoft.Extensions.AI
         /// https://learn.microsoft.com/en-us/agent-framework/migration-guide/from-semantic-kernel/
         /// </summary>
-        public static async Task<string> ExecutePlugin(string errorMessage)
+        /// <param name="errorMessage">The error message to analyze</param>
+        /// <param name="onChunkReceived">Optional callback invoked when each chunk is received</param>
+        public static async Task<string> ExecutePlugin(string errorMessage, Action<string> onChunkReceived = null)
         {
             var chatClient = CreateChatClientWithAuthentication();
 
@@ -49,9 +52,20 @@ namespace msbuild_gui
                 chatOptions.TopP = 0.0f;
             }
 
-            var response = await chatClient.CompleteAsync(messages, chatOptions);
+            // Use streaming to get response
+            var streamingResponse = chatClient.CompleteStreamingAsync(messages, chatOptions);
+            var fullText = new StringBuilder();
 
-            return response.Message.Text ?? string.Empty;
+            await foreach (var chunk in streamingResponse)
+            {
+                if (chunk.Text != null)
+                {
+                    fullText.Append(chunk.Text);
+                    onChunkReceived?.Invoke(chunk.Text);
+                }
+            }
+
+            return fullText.ToString();
         }
 
         private static IChatClient CreateChatClientWithAuthentication()

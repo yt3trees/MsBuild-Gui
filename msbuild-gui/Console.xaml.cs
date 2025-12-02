@@ -213,8 +213,47 @@ namespace msbuild_gui
             try
             {
                 string errorMessage = ErrorResult.Text;
-                string result = await System.Threading.Tasks.Task.Run(() => AskAI.ExecutePlugin(errorMessage));
-                ShowResponse(result);
+                var fullText = new System.Text.StringBuilder();
+                bool isFirstChunk = true;
+                bool needsUpdate = false;
+
+                // Timer to update UI periodically (reduce flickering)
+                var updateTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(100)
+                };
+                updateTimer.Tick += (s, args) =>
+                {
+                    if (needsUpdate)
+                    {
+                        AIResponseTextBox.Markdown = fullText.ToString();
+                        needsUpdate = false;
+                    }
+                };
+                updateTimer.Start();
+
+                string result = await AskAI.ExecutePlugin(errorMessage, chunk =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        fullText.Append(chunk);
+                        needsUpdate = true;
+
+                        // Expand UI on first chunk
+                        if (isFirstChunk)
+                        {
+                            this.Width = 1500;
+                            AIResponseColumn.Width = new GridLength(500);
+                            SplitterColumn.MinWidth = 5;
+                            SplitterColumn.Width = GridLength.Auto;
+                            isFirstChunk = false;
+                        }
+                    });
+                });
+
+                // Stop timer and do final update
+                updateTimer.Stop();
+                AIResponseTextBox.Markdown = fullText.ToString();
             }
             catch (Exception ex)
             {
