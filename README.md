@@ -20,9 +20,8 @@ Double-click on them to make them buildable. Then click the Build button to exec
 - Msbuild parameters can be set from the screen (all parameters are not yet supported)
 
 ## Requirement
-- Windows10
-- Visual Studio 2022
-- [.NET6](https://dotnet.microsoft.com/ja-jp/download/dotnet/6.0)
+- Windows11
+- [.NET8](https://dotnet.microsoft.com/ja-jp/download/dotnet/8.0)
 - [ModernWpf](https://github.com/Kinnara/ModernWpf)
 - [Microsoft Visual Studio Installer Projects](https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2017InstallerProjects)
 
