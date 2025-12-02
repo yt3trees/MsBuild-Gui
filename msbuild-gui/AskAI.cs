@@ -1,46 +1,73 @@
-﻿using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Orchestration;
+﻿using Azure.AI.OpenAI;
+using Azure;
+using Microsoft.Extensions.AI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using ChatMessage = Microsoft.Extensions.AI.ChatMessage;
 
 namespace msbuild_gui
 {
     internal class AskAI
     {
         /// <summary>
-        /// https://learn.microsoft.com/en-us/semantic-kernel/prompt-engineering/your-first-prompt
+        /// Migrated from Semantic Kernel to Microsoft Agent Framework / Microsoft.Extensions.AI
+        /// https://learn.microsoft.com/en-us/agent-framework/migration-guide/from-semantic-kernel/
         /// </summary>
         public static async Task<string> ExecutePlugin(string errorMessage)
         {
-            var kernel = CreateKernelWithAuthentication();
+            var chatClient = CreateChatClientWithAuthentication();
 
-            IDictionary<string, ISKFunction> plugins = kernel.ImportSemanticFunctionsFromDirectory(@"Plugins", "SemanticPlugins");
+            // Load prompt template
+            string promptTemplate = File.ReadAllText(@"Plugins\SemanticPlugins\ErrorAnalysis\skprompt.txt");
 
-            ContextVariables variables = new ContextVariables();
-            variables.Set("errorMessage", errorMessage);
-            variables.Set("language", MainWindow.Projects.Language);
+            // Replace template variables
+            string prompt = promptTemplate
+                .Replace("{{$errorMessage}}", errorMessage)
+                .Replace("{{$language}}", MainWindow.Projects.Language);
 
-            var context = await kernel.RunAsync(variables, plugins["ErrorAnalysis"]);
-            return context.ToString();
+            // Create chat messages with system instructions and user prompt
+            var messages = new List<ChatMessage>
+            {
+                new ChatMessage(ChatRole.System, "You are an expert at analyzing C# error messages."),
+                new ChatMessage(ChatRole.User, prompt)
+            };
+
+            // Check if model/deployment contains "gpt-5"
+            string modelOrDeployment = Properties.Settings.Default.Provider == "Azure"
+                ? Properties.Settings.Default.AzDeploymentId
+                : Properties.Settings.Default.Model;
+
+            bool isGpt5 = modelOrDeployment?.Contains("gpt-5", StringComparison.OrdinalIgnoreCase) ?? false;
+
+            // Execute with chat options (skip Temperature and TopP for GPT-5 models)
+            var chatOptions = new ChatOptions();
+            if (!isGpt5)
+            {
+                chatOptions.Temperature = 0.0f;
+                chatOptions.TopP = 0.0f;
+            }
+
+            var response = await chatClient.CompleteAsync(messages, chatOptions);
+
+            return response.Message.Text ?? string.Empty;
         }
-        private static IKernel CreateKernelWithAuthentication()
-        {
-            var builder = new KernelBuilder();
 
+        private static IChatClient CreateChatClientWithAuthentication()
+        {
             switch (Properties.Settings.Default.Provider)
             {
                 case "Azure":
-                    return builder.WithAzureOpenAIChatCompletionService(
-                       apiKey: Properties.Settings.Default.APIKey,
-                       deploymentName: Properties.Settings.Default.AzDeploymentId,
-                       endpoint: Properties.Settings.Default.AzBaseDomain
-                       ).Build();
+                    return new AzureOpenAIClient(
+                        new Uri(Properties.Settings.Default.AzBaseDomain),
+                        new AzureKeyCredential(Properties.Settings.Default.APIKey))
+                        .AsChatClient(modelId: Properties.Settings.Default.AzDeploymentId);
+
                 case "OpenAI":
-                    return builder.WithOpenAIChatCompletionService(
-                        apiKey: Properties.Settings.Default.APIKey,
-                        modelId: Properties.Settings.Default.Model
-                       ).Build();
+                    return new global::OpenAI.OpenAIClient(Properties.Settings.Default.APIKey)
+                        .AsChatClient(modelId: Properties.Settings.Default.Model);
+
                 default:
                     throw new InvalidOperationException("Unsupported provider");
             }
