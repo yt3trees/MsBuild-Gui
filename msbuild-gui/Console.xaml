@@ -173,32 +173,75 @@
             Width="5"
             HorizontalAlignment="Stretch"
             Background="Transparent" />
-        <mdxam:MarkdownScrollViewer
-            x:Name="AIResponseTextBox"
-            Grid.Column="2"
-            Margin="0,44,10,10"
-            Padding="0,5,0,0"
-            BorderBrush="#99000000"
-            BorderThickness="1,1,1,1"
-            FontFamily="BIZ UDGothic"
-            FontSize="13"
-            FontWeight="Normal"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            VerticalScrollBarVisibility="Auto">
-            <mdxam:MarkdownScrollViewer.MarkdownStyle>
-                <Style BasedOn="{x:Static mdxam:MarkdownStyle.Sasabune}" TargetType="FlowDocument">
-                    <Style.Resources>
-                        <Style TargetType="Paragraph">
-                            <Setter Property="Margin" Value="5,10,20,10" />
-                            <Style.Triggers>
-                                <Trigger Property="Tag" Value="List">
-                                    <Setter Property="Margin" Value="0,0,0,0" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Style.Resources>
-                </Style>
-            </mdxam:MarkdownScrollViewer.MarkdownStyle>
-        </mdxam:MarkdownScrollViewer>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <mdxam:MarkdownScrollViewer
+                x:Name="AIResponseTextBox"
+                Grid.Row="0"
+                Margin="0,44,10,10"
+                Padding="0,5,0,0"
+                BorderBrush="#99000000"
+                BorderThickness="1,1,1,1"
+                FontFamily="BIZ UDGothic"
+                FontSize="13"
+                FontWeight="Normal"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto">
+                <mdxam:MarkdownScrollViewer.MarkdownStyle>
+                    <Style BasedOn="{x:Static mdxam:MarkdownStyle.Sasabune}" TargetType="FlowDocument">
+                        <Style.Resources>
+                            <Style TargetType="Paragraph">
+                                <Setter Property="Margin" Value="5,10,20,10" />
+                                <Style.Triggers>
+                                    <Trigger Property="Tag" Value="List">
+                                        <Setter Property="Margin" Value="0,0,0,0" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </mdxam:MarkdownScrollViewer.MarkdownStyle>
+            </mdxam:MarkdownScrollViewer>
+            <Grid
+                x:Name="FollowUpQuestionPanel"
+                Grid.Row="1"
+                Margin="0,0,10,10"
+                Visibility="Visible">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="FollowUpQuestionTextBox"
+                    Grid.Column="0"
+                    Height="30"
+                    Margin="0"
+                    Padding="5"
+                    VerticalAlignment="Bottom"
+                    AcceptsReturn="True"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    FontFamily="BIZ UDGothic"
+                    FontSize="13"
+                    TextWrapping="Wrap"
+                    VerticalScrollBarVisibility="Auto" />
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Bottom">
+                    <Button
+                        x:Name="SendFollowUpButton"
+                        Width="100"
+                        Height="30"
+                        Click="SendFollowUpButton_Click"
+                        Content="Send"
+                        FontSize="14"
+                        Style="{StaticResource AccentButtonStyle}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

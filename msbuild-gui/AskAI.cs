@@ -68,6 +68,51 @@ namespace msbuild_gui
             return fullText.ToString();
         }
 
+        /// <summary>
+        /// Execute a follow-up question with conversation history
+        /// </summary>
+        /// <param name="conversationHistory">The conversation history</param>
+        /// <param name="followUpQuestion">The follow-up question from the user</param>
+        /// <param name="onChunkReceived">Optional callback invoked when each chunk is received</param>
+        public static async Task<string> ExecuteFollowUp(List<ChatMessage> conversationHistory, string followUpQuestion, Action<string> onChunkReceived = null)
+        {
+            var chatClient = CreateChatClientWithAuthentication();
+
+            // Add user's follow-up question to the conversation
+            var messages = new List<ChatMessage>(conversationHistory);
+            messages.Add(new ChatMessage(ChatRole.User, followUpQuestion));
+
+            // Check if model/deployment contains "gpt-5"
+            string modelOrDeployment = Properties.Settings.Default.Provider == "Azure"
+                ? Properties.Settings.Default.AzDeploymentId
+                : Properties.Settings.Default.Model;
+
+            bool isGpt5 = modelOrDeployment?.Contains("gpt-5", StringComparison.OrdinalIgnoreCase) ?? false;
+
+            // Execute with chat options (skip Temperature and TopP for GPT-5 models)
+            var chatOptions = new ChatOptions();
+            if (!isGpt5)
+            {
+                chatOptions.Temperature = 0.0f;
+                chatOptions.TopP = 0.0f;
+            }
+
+            // Use streaming to get response
+            var streamingResponse = chatClient.CompleteStreamingAsync(messages, chatOptions);
+            var fullText = new StringBuilder();
+
+            await foreach (var chunk in streamingResponse)
+            {
+                if (chunk.Text != null)
+                {
+                    fullText.Append(chunk.Text);
+                    onChunkReceived?.Invoke(chunk.Text);
+                }
+            }
+
+            return fullText.ToString();
+        }
+
         private static IChatClient CreateChatClientWithAuthentication()
         {
             switch (Properties.Settings.Default.Provider)

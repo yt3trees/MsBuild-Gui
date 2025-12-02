@@ -1,5 +1,8 @@
-﻿using ModernWpf;
+﻿using Microsoft.Extensions.AI;
+using ModernWpf;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,6 +18,8 @@ namespace msbuild_gui
         private int searchIndex { get; set; }
         private int searchIndexMAX { get; set; }
         private string command;
+        private List<Microsoft.Extensions.AI.ChatMessage> conversationHistory = new List<Microsoft.Extensions.AI.ChatMessage>();
+        private StringBuilder fullConversationText = new StringBuilder();
         public Console(string result, int maxCount, string[,] list, string errorLog)
         {
             InitializeComponent();
@@ -213,9 +218,26 @@ namespace msbuild_gui
             try
             {
                 string errorMessage = ErrorResult.Text;
-                var fullText = new System.Text.StringBuilder();
+                fullConversationText.Clear();
                 bool isFirstChunk = true;
                 bool needsUpdate = false;
+
+                // Initialize conversation history
+                conversationHistory.Clear();
+                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.System, "You are an expert at analyzing C# error messages."));
+
+                // Load prompt template
+                string promptTemplate = System.IO.File.ReadAllText(@"Plugins\SemanticPlugins\ErrorAnalysis\skprompt.txt");
+                string prompt = promptTemplate
+                    .Replace("{{$errorMessage}}", errorMessage)
+                    .Replace("{{$language}}", MainWindow.Projects.Language);
+
+                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, prompt));
+
+                // Add initial prompt to conversation display
+                //fullConversationText.AppendLine("## <User Question>\n");
+                //fullConversationText.AppendLine("Please analyze the following error message.\n");
+                fullConversationText.AppendLine("## 🤖AI Response\n");
 
                 // Timer to update UI periodically (reduce flickering)
                 var updateTimer = new System.Windows.Threading.DispatcherTimer
@@ -226,7 +248,7 @@ namespace msbuild_gui
                 {
                     if (needsUpdate)
                     {
-                        AIResponseTextBox.Markdown = fullText.ToString();
+                        AIResponseTextBox.Markdown = fullConversationText.ToString();
                         needsUpdate = false;
                     }
                 };
@@ -236,7 +258,7 @@ namespace msbuild_gui
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        fullText.Append(chunk);
+                        fullConversationText.Append(chunk);
                         needsUpdate = true;
 
                         // Expand UI on first chunk
@@ -253,7 +275,10 @@ namespace msbuild_gui
 
                 // Stop timer and do final update
                 updateTimer.Stop();
-                AIResponseTextBox.Markdown = fullText.ToString();
+                AIResponseTextBox.Markdown = fullConversationText.ToString();
+
+                // Add AI response to conversation history
+                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, result));
             }
             catch (Exception ex)
             {
@@ -277,6 +302,78 @@ namespace msbuild_gui
             AskAIButton.IsEnabled = isEnabled;
             AskAIButton.Content = isEnabled ? "Ask AI" : "Analyzing...";
             ProgressRing.IsActive = !isEnabled;
+        }
+        private async void SendFollowUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            string followUpQuestion = FollowUpQuestionTextBox.Text?.Trim();
+            if (string.IsNullOrEmpty(followUpQuestion))
+            {
+                return;
+            }
+
+            ToggleFollowUpUI(false);
+
+            try
+            {
+                // Add user's question to the display
+                fullConversationText.AppendLine($"\n\n---\n\n## 💬User Question\n\n{followUpQuestion}\n");
+                fullConversationText.AppendLine("## 🤖AI Response\n");
+                AIResponseTextBox.Markdown = fullConversationText.ToString();
+
+                bool needsUpdate = false;
+                var responseStart = fullConversationText.Length;
+
+                // Timer to update UI periodically (reduce flickering)
+                var updateTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(100)
+                };
+                updateTimer.Tick += (s, args) =>
+                {
+                    if (needsUpdate)
+                    {
+                        AIResponseTextBox.Markdown = fullConversationText.ToString();
+                        needsUpdate = false;
+                    }
+                };
+                updateTimer.Start();
+
+                var responseBuilder = new StringBuilder();
+                string result = await AskAI.ExecuteFollowUp(conversationHistory, followUpQuestion, chunk =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        fullConversationText.Append(chunk);
+                        responseBuilder.Append(chunk);
+                        needsUpdate = true;
+                    });
+                });
+
+                // Stop timer and do final update
+                updateTimer.Stop();
+                AIResponseTextBox.Markdown = fullConversationText.ToString();
+
+                // Add to conversation history
+                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, followUpQuestion));
+                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, result));
+
+                // Clear the input textbox
+                FollowUpQuestionTextBox.Clear();
+            }
+            catch (Exception ex)
+            {
+                ModernWpf.MessageBox.Show(ex.Message, Properties.Resources.Error);
+            }
+            finally
+            {
+                ToggleFollowUpUI(true);
+            }
+        }
+        private void ToggleFollowUpUI(bool isEnabled)
+        {
+            SendFollowUpButton.IsEnabled = isEnabled;
+            SendFollowUpButton.Content = isEnabled ? "Send" : "Sending...";
+            FollowUpQuestionTextBox.IsEnabled = isEnabled;
         }
         private void AskAIButtonBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
