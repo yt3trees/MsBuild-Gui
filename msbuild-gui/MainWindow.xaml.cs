@@ -570,7 +570,10 @@ namespace msbuild_gui
                 string errorLogNow = "";
                 string command = "";
 
-                var encoding = System.Text.Encoding.UTF8;
+                // MSBuildの出力エンコーディングを環境に合わせて自動検出
+                // 日本語環境ではShift-JISまたはUTF-8が使われるため、コンソールのエンコーディングを使用
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                var encoding = System.Text.Encoding.GetEncoding(932); // 932 = Shift-JIS (日本語Windowsのデフォルト)
 
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
                 string? vsv = VisualStudioVersion == "" ? "" : "/p:VisualStudioVersion=\"" + VisualStudioVersion + "\" ";
