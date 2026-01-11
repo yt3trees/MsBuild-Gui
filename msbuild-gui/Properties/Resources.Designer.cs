@@ -475,7 +475,16 @@ namespace msbuild_gui.Properties {
                 return ResourceManager.GetString("OpenFile", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Parallel Build に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ParallelBuild {
+            get {
+                return ResourceManager.GetString("ParallelBuild", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Enter a project name. に類似しているローカライズされた文字列を検索します。
         /// </summary>
@@ -736,7 +745,16 @@ namespace msbuild_gui.Properties {
                 return ResourceManager.GetString("Tt_ReplaceTargetList", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Build multiple projects in parallel. WARNING: Only use when projects have no dependencies. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_ParallelBuild {
+            get {
+                return ResourceManager.GetString("Tt_ParallelBuild", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Save your entries. に類似しているローカライズされた文字列を検索します。
         /// </summary>

@@ -47,6 +47,8 @@ namespace msbuild_gui
                 public string? AssemblySearchPaths { get; set; }
                 public string? Configuration { get; set; }
                 public string? VisualStudioVersion { get; set; }
+                public bool ParallelBuild { get; set; }
+                public int MaxDegreeOfParallelism { get; set; } = Environment.ProcessorCount;
             }
             public static Dictionary<int, ProjectData> ProjectsList = new Dictionary<int, ProjectData>();
             public static bool ShowLog = false;
@@ -93,6 +95,10 @@ namespace msbuild_gui
             public string? Configuration { get; set; }
             [JsonProperty("VisualStudioVersion")]
             public string? VisualStudioVersion { get; set; }
+            [JsonProperty("ParallelBuild")]
+            public bool ParallelBuild { get; set; }
+            [JsonProperty("MaxDegreeOfParallelism")]
+            public int MaxDegreeOfParallelism { get; set; } = Environment.ProcessorCount;
         }
         /// <summary>
         /// SourceList検索制御用
@@ -542,6 +548,15 @@ namespace msbuild_gui
                 string? VisualStudioVersion = Projects.ProjectsList
                         .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.VisualStudioVersion).FirstOrDefault();
 
+                // 並列ビルド設定を取得
+                bool parallelBuild = ParallelBuildCheck.IsChecked ?? false;
+                int maxDegreeOfParallelism = Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.MaxDegreeOfParallelism).FirstOrDefault();
+                if (maxDegreeOfParallelism == 0)
+                {
+                    maxDegreeOfParallelism = Environment.ProcessorCount;
+                }
+
                 // CancellationTokenSourceを初期化
                 _cancellationTokenSource?.Dispose();
                 _cancellationTokenSource = new CancellationTokenSource();
@@ -555,6 +570,8 @@ namespace msbuild_gui
                                         , AssemblySearchPaths
                                         , Configuration
                                         , VisualStudioVersion
+                                        , parallelBuild
+                                        , maxDegreeOfParallelism
                                         , _cancellationTokenSource.Token
                                         ));
             }
@@ -574,8 +591,10 @@ namespace msbuild_gui
         /// <param name="Target">MsBuildパラメータ:Target</param>
         /// <param name="AssemblySearchPaths">MsBuildパラメータ:AssemblySearchPaths</param>
         /// <param name="Configuration">MsBuildパラメータ:Configuration</param>
+        /// <param name="parallelBuild">並列ビルドを実行するか</param>
+        /// <param name="maxDegreeOfParallelism">並列度（最大同時実行数）</param>
         /// <param name="cancellationToken">キャンセル用トークン</param>
-        public void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration, string? VisualStudioVersion, CancellationToken cancellationToken)
+        public void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration, string? VisualStudioVersion, bool parallelBuild, int maxDegreeOfParallelism, CancellationToken cancellationToken)
         {
             try
             {
@@ -585,19 +604,34 @@ namespace msbuild_gui
                 string errorLogBef = "";
                 string errorLogNow = "";
                 string command = "";
-
-                // MSBuildの出力エンコーディングを環境に合わせて自動検出
-                // 日本語環境ではShift-JISまたはUTF-8が使われるため、コンソールのエンコーディングを使用
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                var encoding = System.Text.Encoding.GetEncoding(932); // 932 = Shift-JIS (日本語Windowsのデフォルト)
-
+                object lockObj = new object();
+                // MSBuildの出力エンコーディングはUTF-8を使用
+                var encoding = System.Text.Encoding.UTF8;
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
                 string? vsv = VisualStudioVersion == "" ? "" : "/p:VisualStudioVersion=\"" + VisualStudioVersion + "\" ";
-
-                foreach (var target in targets)
+                if (parallelBuild)
                 {
-                    // キャンセルがリクエストされているかチェック
-                    if (cancellationToken.IsCancellationRequested)
+                    // 並列ビルド
+                    var parallelOptions = new ParallelOptions
+                    {
+                        MaxDegreeOfParallelism = maxDegreeOfParallelism,
+                        CancellationToken = cancellationToken
+                    };
+                    try
+                    {
+                        Parallel.ForEach(targets, parallelOptions, (target, state) =>
+                        {
+                            // キャンセルがリクエストされているかチェック
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                state.Stop();
+                                return;
+                            }
+                            BuildSingleTarget(target, SourceFolder, OutputFolder, MsBuild, Target, AssemblySearchPaths, Configuration, VisualStudioVersion, asp, vsv, encoding, ref list, ref cmdErrorText, ref targetIndex, ref errorLogBef, lockObj, cancellationToken);
+                        });
+                    }
+
+                    catch (OperationCanceledException)
                     {
                         Application.Current.Dispatcher.Invoke(() =>
                         {
@@ -609,77 +643,100 @@ namespace msbuild_gui
                                 .AddText(Properties.Resources.Mb_BuildCancelled)
                                 .Show();
                         });
+
                         return;
                     }
-
-                    string targetFilePath = SourceFolder + target;
-                    command = $"/c \"" +
-                        $"\"{MsBuild}\" " +
-                        $"{targetFilePath} " +
-                        $"/target:{Target} " +
-                        $"/p:OutputPath={OutputFolder} /p:DebugType=None " +
-                        asp +
-                        $"/p:Configuration={Configuration} " +
-                        vsv +
-                        $"/fileloggerparameters:LogFile=\"{Directory.GetCurrentDirectory()}\\BuildErrorLog.txt\";ErrorsOnly;Append=True";
-
-                    Process? process = Process.Start(new ProcessStartInfo
+                }
+                else
+                {
+                    // 順次ビルド
+                    foreach (var target in targets)
                     {
-                        FileName = "cmd.exe",
-                        Arguments = command,
-                        CreateNoWindow = true,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        StandardOutputEncoding = encoding,
-                        StandardErrorEncoding = encoding
-                    });
-
-                    string? standardOutput = "";
-                    string? standardError = "";
-
-                    // キャンセルトークンの登録でプロセスを強制終了
-                    using (cancellationToken.Register(() =>
-                    {
-                        try
+                        // キャンセルがリクエストされているかチェック
+                        if (cancellationToken.IsCancellationRequested)
                         {
-                            if (process != null && !process.HasExited)
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                process.Kill();
-                            }
+                                ProgressRing.IsActive = false;
+                                ProgressBar.Visibility = Visibility.Hidden;
+                                BuildButton.Visibility = Visibility.Visible;
+                                CancelButton.Visibility = Visibility.Collapsed;
+                                new ToastContentBuilder()
+                                    .AddText(Properties.Resources.Mb_BuildCancelled)
+                                    .Show();
+                            });
+                            return;
                         }
-                        catch { }
-                    }))
-                    {
-                        // 標準出力・標準エラー出力・終了コードを取得する
-                        standardOutput = process?.StandardOutput.ReadToEnd();
-                        standardError = process?.StandardError.ReadToEnd();
-                        cmdErrorText += standardError;
 
-                        process?.WaitForExit();
+                        string targetFilePath = SourceFolder + target;
+                        command = $"/c \"" +
+                            $"\"{MsBuild}\" " +
+                            $"{targetFilePath} " +
+                            $"/target:{Target} " +
+                            $"/p:OutputPath={OutputFolder} /p:DebugType=None " +
+                            asp +
+                            $"/p:Configuration={Configuration} " +
+                            vsv +
+                            $"/fileloggerparameters:LogFile=\"{Directory.GetCurrentDirectory()}\\BuildErrorLog.txt\";ErrorsOnly;Append=True;Encoding=UTF-8";
+
+                        Process? process = Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "cmd.exe",
+                            Arguments = command,
+                            CreateNoWindow = true,
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            StandardOutputEncoding = encoding,
+                            StandardErrorEncoding = encoding
+                        });
+
+                        string? standardOutput = "";
+                        string? standardError = "";
+
+                        // キャンセルトークンの登録でプロセスを強制終了
+                        using (cancellationToken.Register(() =>
+                        {
+                            try
+                            {
+                                if (process != null && !process.HasExited)
+                                {
+                                    process.Kill();
+                                }
+                            }
+                            catch { }
+                        }))
+                        {
+                            // 標準出力・標準エラー出力・終了コードを取得する
+                            standardOutput = process?.StandardOutput.ReadToEnd();
+                            standardError = process?.StandardError.ReadToEnd();
+                            cmdErrorText += standardError;
+
+                            process?.WaitForExit();
+                        }
+
+                        process?.Close();
+
+                        string errFlg = "";
+                        errorLogNow = File.ReadAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt", encoding);
+                        if (string.Compare(errorLogBef, errorLogNow) != 0)
+                        {
+                            errFlg = "*";
+                        }
+                        errorLogBef = errorLogNow;
+
+                        list[targetIndex, 0] = Path.GetFileNameWithoutExtension(target) + errFlg;
+                        list[targetIndex, 1] = standardOutput;
+                        list[targetIndex, 2] = command.Replace("/c \"", "");
+
+                        // ProgressBarを進める
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            targetIndex += 1;
+                            ProgressBar.Visibility = Visibility.Visible;
+                            ProgressBar.Value = targetIndex;
+                        });
                     }
-
-                    process?.Close();
-
-                    string errFlg = "";
-                    errorLogNow = File.ReadAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt");
-                    if (string.Compare(errorLogBef, errorLogNow) != 0)
-                    {
-                        errFlg = "*";
-                    }
-                    errorLogBef = errorLogNow;
-
-                    list[targetIndex, 0] = Path.GetFileNameWithoutExtension(target) + errFlg;
-                    list[targetIndex, 1] = standardOutput;
-                    list[targetIndex, 2] = command.Replace("/c \"", "");
-
-                    // ProgressBarを進める
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        targetIndex += 1;
-                        ProgressBar.Visibility = Visibility.Visible;
-                        ProgressBar.Value = targetIndex;
-                    });
                 }
                 // UIスレッドでShowResultを実行
                 this.Dispatcher.Invoke(new DelegateProcess(ShowResult), new object[] { list, cmdErrorText });
@@ -696,6 +753,106 @@ namespace msbuild_gui
                 });
             }
 
+        }
+        /// <summary>
+        /// 単一ターゲットのビルドを実行
+        /// </summary>
+        private void BuildSingleTarget(string target, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration, string? VisualStudioVersion, string? asp, string? vsv, System.Text.Encoding encoding, ref string[,] list, ref string cmdErrorText, ref int targetIndex, ref string errorLogBef, object lockObj, CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            string targetFilePath = SourceFolder + target;
+            // 並列ビルド時のファイル競合を避けるため、一時的なログファイルを使用
+            string tempLogFile = $"{Directory.GetCurrentDirectory()}\\BuildErrorLog_{Path.GetFileNameWithoutExtension(target)}_{Guid.NewGuid()}.txt";
+            string command = $"/c \"" +
+                $"\"{MsBuild}\" " +
+                $"{targetFilePath} " +
+                $"/target:{Target} " +
+                $"/p:OutputPath={OutputFolder} /p:DebugType=None " +
+                asp +
+                $"/p:Configuration={Configuration} " +
+                vsv +
+                $"/fileloggerparameters:LogFile=\"{tempLogFile}\";ErrorsOnly;Encoding=UTF-8";
+
+            Process? process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = command,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                StandardOutputEncoding = encoding,
+                StandardErrorEncoding = encoding
+            });
+
+            string? standardOutput = "";
+            string? standardError = "";
+
+            // キャンセルトークンの登録でプロセスを強制終了
+            using (cancellationToken.Register(() =>
+            {
+                try
+                {
+                    if (process != null && !process.HasExited)
+                    {
+                        process.Kill();
+                    }
+                }
+                catch { }
+            }))
+            {
+                // 標準出力・標準エラー出力・終了コードを取得する
+                standardOutput = process?.StandardOutput.ReadToEnd();
+                standardError = process?.StandardError.ReadToEnd();
+
+                lock (lockObj)
+                {
+                    cmdErrorText += standardError;
+                }
+
+                process?.WaitForExit();
+            }
+
+            process?.Close();
+
+            string errFlg = "";
+
+            lock (lockObj)
+            {
+                // 一時ログファイルの内容をメインログファイルに追記
+                try
+                {
+                    if (File.Exists(tempLogFile))
+                    {
+                        string tempLogContent = File.ReadAllText(tempLogFile, encoding);
+                        if (!string.IsNullOrEmpty(tempLogContent))
+                        {
+                            File.AppendAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt", tempLogContent, encoding);
+                            errFlg = "*";
+                        }
+                        File.Delete(tempLogFile);
+                    }
+                }
+                catch { }
+
+                list[targetIndex, 0] = Path.GetFileNameWithoutExtension(target) + errFlg;
+                list[targetIndex, 1] = standardOutput;
+                list[targetIndex, 2] = command.Replace("/c \"", "");
+
+                int currentIndex = targetIndex;
+                targetIndex += 1;
+
+                // ProgressBarを進める
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ProgressBar.Visibility = Visibility.Visible;
+                    ProgressBar.Value = currentIndex + 1;
+                });
+            }
         }
         /// <summary>
         /// ビルド実行結果を表示

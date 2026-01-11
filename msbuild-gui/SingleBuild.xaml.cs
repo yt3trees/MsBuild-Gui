@@ -63,6 +63,8 @@ namespace msbuild_gui
                                             , AssemblySearchPaths
                                             , Configuration
                                             , VisualStudioVersion
+                                            , false
+                                            , Environment.ProcessorCount
                                             , CancellationToken.None
                                             );
                 Application.Current.Shutdown();

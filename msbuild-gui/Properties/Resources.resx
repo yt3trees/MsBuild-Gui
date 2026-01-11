@@ -256,6 +256,9 @@
   <data name="OpenFile" xml:space="preserve">
     <value>Open File</value>
   </data>
+  <data name="ParallelBuild" xml:space="preserve">
+    <value>Parallel Build</value>
+  </data>
   <data name="PleaseEnterAProjectName" xml:space="preserve">
     <value>Enter a project name.</value>
   </data>
@@ -342,6 +345,9 @@
   </data>
   <data name="Tt_ReplaceTargetList" xml:space="preserve">
     <value>Swap the order of build execution.</value>
+  </data>
+  <data name="Tt_ParallelBuild" xml:space="preserve">
+    <value>Build multiple projects in parallel. WARNING: Only use when projects have no dependencies.</value>
   </data>
   <data name="Tt_SaveYourEntries" xml:space="preserve">
     <value>Save your entries.</value>

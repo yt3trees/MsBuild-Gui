@@ -24,7 +24,7 @@
             <RowDefinition Height="50" />
             <RowDefinition Height="120" />
             <RowDefinition />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="15*" />
@@ -149,16 +149,28 @@
                     Click="CancelButton_Click"
                     Content="{Binding Resources.Cancel, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                     FontSize="14"
-                    Visibility="Collapsed"
-                    TabIndex="14" />
-                <CheckBox
-                    x:Name="ShowLogCheck"
-                    Width="130"
-                    MinHeight="32"
+                    TabIndex="14"
+                    Visibility="Collapsed" />
+                <StackPanel
+                    Margin="0,0,0,0"
                     HorizontalAlignment="Right"
-                    Click="ShowLogCheck_Click"
-                    Content="{Binding Resources.ShowBuildLog, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                    TabIndex="15" />
+                    Orientation="Vertical">
+                    <CheckBox
+                        x:Name="ParallelBuildCheck"
+                        Width="130"
+                        MinHeight="28"
+                        Margin="0,0,0,0"
+                        Content="{Binding Resources.ParallelBuild, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+                        TabIndex="15"
+                        ToolTip="{Binding Resources.Tt_ParallelBuild, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
+                    <CheckBox
+                        x:Name="ShowLogCheck"
+                        Width="130"
+                        MinHeight="28"
+                        Click="ShowLogCheck_Click"
+                        Content="{Binding Resources.ShowBuildLog, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+                        TabIndex="16" />
+                </StackPanel>
             </Grid>
         </Grid>
         <Label

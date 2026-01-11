@@ -252,6 +252,9 @@
   <data name="OpenFile" xml:space="preserve">
     <value>ファイルを開く</value>
   </data>
+  <data name="ParallelBuild" xml:space="preserve">
+    <value>並列ビルド</value>
+  </data>
   <data name="PleaseEnterAProjectName" xml:space="preserve">
     <value>プロジェクト名を入力してください。</value>
   </data>
@@ -338,6 +341,9 @@
   </data>
   <data name="Tt_ReplaceTargetList" xml:space="preserve">
     <value>ビルド実行順序を入れ替えます。</value>
+  </data>
+  <data name="Tt_ParallelBuild" xml:space="preserve">
+    <value>複数のプロジェクトを並列でビルドします。警告: プロジェクト間に依存関係がない場合のみ使用してください。</value>
   </data>
   <data name="Tt_SaveYourEntries" xml:space="preserve">
     <value>入力内容を保存します。</value>
