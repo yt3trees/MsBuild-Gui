@@ -159,7 +159,7 @@
                         x:Name="ParallelBuildCheck"
                         Width="130"
                         MinHeight="28"
-                        Margin="0,0,0,0"
+                        Margin="0,2,0,0"
                         Content="{Binding Resources.ParallelBuild, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
                         TabIndex="15"
                         ToolTip="{Binding Resources.Tt_ParallelBuild, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
