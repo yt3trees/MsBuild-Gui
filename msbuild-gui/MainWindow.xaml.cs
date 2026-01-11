@@ -12,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,6 +28,7 @@ namespace msbuild_gui
     {
         #region fields
         delegate void DelegateProcess(string[,] a, string b);
+        private CancellationTokenSource? _cancellationTokenSource;
         #endregion
 
         #region properties
@@ -201,6 +203,13 @@ namespace msbuild_gui
         private void BuildButton_Click(object sender, RoutedEventArgs e)
         {
             PrepareBuild();
+        }
+        /// <summary>
+        /// ビルドキャンセル
+        /// </summary>
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            _cancellationTokenSource?.Cancel();
         }
         //private void BuildButton2_Click(object sender, RoutedEventArgs e)
         //{
@@ -514,7 +523,8 @@ namespace msbuild_gui
                 ProgressBar.Value = 0;
                 ProgressBar.Minimum = 0;
                 ProgressBar.Maximum = targets.Count;
-                BuildButton.IsEnabled = false;
+                BuildButton.Visibility = Visibility.Collapsed;
+                CancelButton.Visibility = Visibility.Visible;
 
                 string? projectName = ProjCombo.SelectedItem as string;
                 string? SourceFolder = Projects.ProjectsList
@@ -532,6 +542,10 @@ namespace msbuild_gui
                 string? VisualStudioVersion = Projects.ProjectsList
                         .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.VisualStudioVersion).FirstOrDefault();
 
+                // CancellationTokenSourceを初期化
+                _cancellationTokenSource?.Dispose();
+                _cancellationTokenSource = new CancellationTokenSource();
+
                 // 別スレッドでビルドを実行
                 Task.Run(() => RunBuild(targets
                                         , SourceFolder
@@ -541,6 +555,7 @@ namespace msbuild_gui
                                         , AssemblySearchPaths
                                         , Configuration
                                         , VisualStudioVersion
+                                        , _cancellationTokenSource.Token
                                         ));
             }
             catch (Exception ex)
@@ -559,7 +574,8 @@ namespace msbuild_gui
         /// <param name="Target">MsBuildパラメータ:Target</param>
         /// <param name="AssemblySearchPaths">MsBuildパラメータ:AssemblySearchPaths</param>
         /// <param name="Configuration">MsBuildパラメータ:Configuration</param>
-        public void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration, string? VisualStudioVersion)
+        /// <param name="cancellationToken">キャンセル用トークン</param>
+        public void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration, string? VisualStudioVersion, CancellationToken cancellationToken)
         {
             try
             {
@@ -580,6 +596,22 @@ namespace msbuild_gui
 
                 foreach (var target in targets)
                 {
+                    // キャンセルがリクエストされているかチェック
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            ProgressRing.IsActive = false;
+                            ProgressBar.Visibility = Visibility.Hidden;
+                            BuildButton.Visibility = Visibility.Visible;
+                            CancelButton.Visibility = Visibility.Collapsed;
+                            new ToastContentBuilder()
+                                .AddText(Properties.Resources.Mb_BuildCancelled)
+                                .Show();
+                        });
+                        return;
+                    }
+
                     string targetFilePath = SourceFolder + target;
                     command = $"/c \"" +
                         $"\"{MsBuild}\" " +
@@ -603,10 +635,29 @@ namespace msbuild_gui
                         StandardErrorEncoding = encoding
                     });
 
-                    // 標準出力・標準エラー出力・終了コードを取得する
-                    string? standardOutput = process?.StandardOutput.ReadToEnd();
-                    string? standardError = process?.StandardError.ReadToEnd();
-                    cmdErrorText += standardError;
+                    string? standardOutput = "";
+                    string? standardError = "";
+
+                    // キャンセルトークンの登録でプロセスを強制終了
+                    using (cancellationToken.Register(() =>
+                    {
+                        try
+                        {
+                            if (process != null && !process.HasExited)
+                            {
+                                process.Kill();
+                            }
+                        }
+                        catch { }
+                    }))
+                    {
+                        // 標準出力・標準エラー出力・終了コードを取得する
+                        standardOutput = process?.StandardOutput.ReadToEnd();
+                        standardError = process?.StandardError.ReadToEnd();
+                        cmdErrorText += standardError;
+
+                        process?.WaitForExit();
+                    }
 
                     process?.Close();
 
@@ -640,7 +691,8 @@ namespace msbuild_gui
                     ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     ProgressRing.IsActive = false;
                     ProgressBar.Visibility = Visibility.Hidden;
-                    BuildButton.IsEnabled = true;
+                    BuildButton.Visibility = Visibility.Visible;
+                    CancelButton.Visibility = Visibility.Collapsed;
                 });
             }
 
@@ -705,7 +757,8 @@ namespace msbuild_gui
             finally
             {
                 ProgressBar.Visibility = Visibility.Hidden;
-                BuildButton.IsEnabled = true;
+                BuildButton.Visibility = Visibility.Visible;
+                CancelButton.Visibility = Visibility.Collapsed;
             }
         }
         /// <summary>

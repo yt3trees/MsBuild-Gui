@@ -135,6 +135,9 @@
   <data name="BuildTarget" xml:space="preserve">
     <value>ビルド対象</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>閉じる</value>
   </data>
@@ -210,6 +213,9 @@
   <data name="Mb_BuildFailed" xml:space="preserve">
     <value>ビルドに失敗しました。</value>
   </data>
+  <data name="Mb_BuildCancelled" xml:space="preserve">
+    <value>ビルドがキャンセルされました。</value>
+  </data>
   <data name="Mb_DoYouWantToRemove" xml:space="preserve">
     <value>を削除しますか？</value>
   </data>
@@ -236,6 +242,9 @@
   </data>
   <data name="MsBuildParameters" xml:space="preserve">
     <value>MsBuildパラメータ</value>
+  </data>
+  <data name="MsBuild_Gui" xml:space="preserve">
+    <value />
   </data>
   <data name="OpenAIAPISetting" xml:space="preserve">
     <value>OpenAI API設定</value>

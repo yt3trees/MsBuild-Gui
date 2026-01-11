@@ -135,6 +135,9 @@
   <data name="BuildTarget" xml:space="preserve">
     <value>Build Target</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>
@@ -209,6 +212,9 @@
   </data>
   <data name="Mb_BuildFailed" xml:space="preserve">
     <value>Build failed.</value>
+  </data>
+  <data name="Mb_BuildCancelled" xml:space="preserve">
+    <value>Build cancelled.</value>
   </data>
   <data name="Mb_DoYouWantToRemove" xml:space="preserve">
     <value> Do you want to remove it?</value>

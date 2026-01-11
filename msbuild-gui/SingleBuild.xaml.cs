@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -62,6 +63,7 @@ namespace msbuild_gui
                                             , AssemblySearchPaths
                                             , Configuration
                                             , VisualStudioVersion
+                                            , CancellationToken.None
                                             );
                 Application.Current.Shutdown();
             }

@@ -113,7 +113,16 @@ namespace msbuild_gui.Properties {
                 return ResourceManager.GetString("BuildTarget", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Cancel に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Close に類似しているローカライズされた文字列を検索します。
         /// </summary>
@@ -338,7 +347,16 @@ namespace msbuild_gui.Properties {
                 return ResourceManager.GetString("Mb_BuildFailed", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Build cancelled. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Mb_BuildCancelled {
+            get {
+                return ResourceManager.GetString("Mb_BuildCancelled", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///    Do you want to remove it? に類似しているローカライズされた文字列を検索します。
         /// </summary>
