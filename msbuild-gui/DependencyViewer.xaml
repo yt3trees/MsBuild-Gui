@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Window
     x:Class="msbuild_gui.DependencyViewer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -10,6 +10,7 @@
     Width="700"
     Height="600"
     ui:WindowHelper.UseModernWindowStyle="True"
+    KeyDown="Window_KeyDown"
     ResizeMode="CanResize"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
@@ -38,11 +39,11 @@
                     <TextBox
                         x:Name="SequentialTextBox"
                         Padding="10"
-                        VerticalScrollBarVisibility="Auto"
                         FontFamily="Consolas"
                         FontSize="12"
                         IsReadOnly="True"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
                 </Grid>
             </TabItem>
             <TabItem Header="Parallel Build Groups">
@@ -50,11 +51,11 @@
                     <TextBox
                         x:Name="ParallelTextBox"
                         Padding="10"
-                        VerticalScrollBarVisibility="Auto"
                         FontFamily="Consolas"
                         FontSize="12"
                         IsReadOnly="True"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
                 </Grid>
             </TabItem>
             <TabItem Header="Dependencies">
@@ -62,11 +63,11 @@
                     <TextBox
                         x:Name="DependenciesTextBox"
                         Padding="10"
-                        VerticalScrollBarVisibility="Auto"
                         FontFamily="Consolas"
                         FontSize="12"
                         IsReadOnly="True"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
                 </Grid>
             </TabItem>
         </TabControl>
