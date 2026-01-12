@@ -67,6 +67,12 @@ namespace msbuild_gui
 
             for (int count = 0; count < searchIndexMAX; count++)
             {
+                // nullエントリをスキップ
+                if (list[count, 0] == null || list[count, 1] == null)
+                {
+                    continue;
+                }
+
                 TabItem item = new TabItem();
                 TextBox text = new TextBox();
 

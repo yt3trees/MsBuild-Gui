@@ -364,4 +364,10 @@
   <data name="Version_A" xml:space="preserve">
     <value>Version(_A)</value>
   </data>
+  <data name="ResolveDependencies" xml:space="preserve">
+    <value>Resolve Dependencies</value>
+  </data>
+  <data name="Tt_ResolveDependencies" xml:space="preserve">
+    <value>Automatically analyze and resolve project dependencies to determine optimal build order</value>
+  </data>
 </root>

@@ -10,7 +10,7 @@
     xmlns:ui="http://schemas.modernwpf.com/2019"
     Title="MsBuild-Gui"
     Width="800"
-    Height="600"
+    Height="650"
     ui:WindowHelper.UseModernWindowStyle="True"
     Closing="Window_Closing"
     Icon="/msbuild-gui;component/Resources/MsBuild-Gui.ico"
@@ -164,12 +164,22 @@
                         TabIndex="15"
                         ToolTip="{Binding Resources.Tt_ParallelBuild, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
                     <CheckBox
+                        x:Name="ResolveDependenciesCheck"
+                        Width="130"
+                        MinHeight="28"
+                        Margin="0,0,0,0"
+                        Content="{Binding Resources.ResolveDependencies, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
+                        IsChecked="True"
+                        TabIndex="16"
+                        ToolTip="{Binding Resources.Tt_ResolveDependencies, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
+                    <CheckBox
                         x:Name="ShowLogCheck"
                         Width="130"
                         MinHeight="28"
                         Click="ShowLogCheck_Click"
                         Content="{Binding Resources.ShowBuildLog, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-                        TabIndex="16" />
+                        TabIndex="17"
+                        Visibility="Hidden" />
                 </StackPanel>
             </Grid>
         </Grid>
@@ -251,6 +261,21 @@
             FontSize="12"
             TabIndex="11"
             ToolTip="{Binding Resources.Tt_ReplaceTargetList, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
+        <Button
+            x:Name="DependencyButton"
+            Grid.Row="2"
+            Grid.Column="2"
+            Width="20"
+            Height="20"
+            Margin="0,15,60,0"
+            Padding="0,0,0,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="DependencyButton_Click"
+            Content="📊"
+            FontSize="12"
+            TabIndex="18"
+            ToolTip="Show dependency order" />
         <TextBox
             x:Name="SearchTextbox"
             Grid.Row="2"

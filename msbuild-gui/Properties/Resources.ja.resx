@@ -360,4 +360,10 @@
   <data name="Version_A" xml:space="preserve">
     <value>バージョン情報(_A)</value>
   </data>
+  <data name="ResolveDependencies" xml:space="preserve">
+    <value>依存関係を解決</value>
+  </data>
+  <data name="Tt_ResolveDependencies" xml:space="preserve">
+    <value>プロジェクト間の依存関係を自動的に解析し、最適なビルド順序を決定します</value>
+  </data>
 </root>

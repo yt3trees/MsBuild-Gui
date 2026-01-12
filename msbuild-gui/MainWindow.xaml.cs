@@ -550,6 +550,7 @@ namespace msbuild_gui
 
                 // 並列ビルド設定を取得
                 bool parallelBuild = ParallelBuildCheck.IsChecked ?? false;
+                bool resolveDependencies = ResolveDependenciesCheck.IsChecked ?? true;
                 int maxDegreeOfParallelism = Projects.ProjectsList
                         .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.MaxDegreeOfParallelism).FirstOrDefault();
                 if (maxDegreeOfParallelism == 0)
@@ -572,6 +573,7 @@ namespace msbuild_gui
                                         , VisualStudioVersion
                                         , parallelBuild
                                         , maxDegreeOfParallelism
+                                        , resolveDependencies
                                         , _cancellationTokenSource.Token
                                         ));
             }
@@ -593,8 +595,9 @@ namespace msbuild_gui
         /// <param name="Configuration">MsBuildパラメータ:Configuration</param>
         /// <param name="parallelBuild">並列ビルドを実行するか</param>
         /// <param name="maxDegreeOfParallelism">並列度（最大同時実行数）</param>
+        /// <param name="resolveDependencies">依存関係を解析してビルド順序を決定するか</param>
         /// <param name="cancellationToken">キャンセル用トークン</param>
-        public void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration, string? VisualStudioVersion, bool parallelBuild, int maxDegreeOfParallelism, CancellationToken cancellationToken)
+        public void RunBuild(List<string> targets, string? SourceFolder, string? OutputFolder, string? MsBuild, string? Target, string? AssemblySearchPaths, string? Configuration, string? VisualStudioVersion, bool parallelBuild, int maxDegreeOfParallelism, bool resolveDependencies, CancellationToken cancellationToken)
         {
             try
             {
@@ -609,9 +612,125 @@ namespace msbuild_gui
                 var encoding = System.Text.Encoding.UTF8;
                 string? asp = AssemblySearchPaths == "" ? "" : "/p:AssemblySearchPaths=\"" + AssemblySearchPaths + "\" ";
                 string? vsv = VisualStudioVersion == "" ? "" : "/p:VisualStudioVersion=\"" + VisualStudioVersion + "\" ";
-                if (parallelBuild)
+
+                // 依存関係を解析してビルド順序を決定
+                List<string> orderedTargets = targets;
+                List<List<string>>? parallelGroups = null;
+
+                if (resolveDependencies)
                 {
-                    // 並列ビルド
+                    try
+                    {
+                        // ターゲットのフルパスリストを作成
+                        var targetFullPaths = targets.Select(t => SourceFolder + t).ToList();
+
+                        // 依存関係マップを構築
+                        var dependencyMap = ProjectDependencyAnalyzer.BuildDependencyMap(targetFullPaths);
+                        var dependencyGraph = new DependencyGraph();
+                        dependencyGraph.BuildGraph(dependencyMap);
+
+                        if (parallelBuild)
+                        {
+                            // 並列ビルド用のグループを取得
+                            parallelGroups = dependencyGraph.GetParallelBuildGroups(targetFullPaths);
+
+                            // フルパスから相対パスに戻す（表示用）
+                            parallelGroups = parallelGroups.Select(group =>
+                                group.Select(fp => fp.Replace(SourceFolder, "")).ToList()
+                            ).ToList();
+                        }
+                        else
+                        {
+                            // 順次ビルド用の順序を取得
+                            var orderedFullPaths = dependencyGraph.GetBuildOrder(targetFullPaths);
+
+                            // フルパスから相対パスに戻す
+                            orderedTargets = orderedFullPaths.Select(fp => fp.Replace(SourceFolder, "")).ToList();
+                        }
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        // 循環依存が検出された場合は警告を表示してユーザー指定順序で続行
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            ModernWpf.MessageBox.Show(
+                                $"Circular dependency detected: {ex.Message}\n\nBuilding in user-specified order.",
+                                "Warning",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        });
+                        orderedTargets = targets;
+                        parallelGroups = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        // 依存関係解析に失敗した場合は警告を表示してユーザー指定順序で続行
+                        Debug.WriteLine($"Dependency analysis failed: {ex.Message}");
+                        orderedTargets = targets;
+                        parallelGroups = null;
+                    }
+                }
+
+                if (parallelBuild && parallelGroups != null)
+                {
+                    // 依存関係を考慮した並列ビルド（グループ単位で実行）
+                    try
+                    {
+                        foreach (var group in parallelGroups)
+                        {
+                            // キャンセルチェック
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    ProgressRing.IsActive = false;
+                                    ProgressBar.Visibility = Visibility.Hidden;
+                                    BuildButton.Visibility = Visibility.Visible;
+                                    CancelButton.Visibility = Visibility.Collapsed;
+                                    new ToastContentBuilder()
+                                        .AddText(Properties.Resources.Mb_BuildCancelled)
+                                        .Show();
+                                });
+                                return;
+                            }
+
+                            // 同じグループ内のプロジェクトは並列実行可能
+                            var parallelOptions = new ParallelOptions
+                            {
+                                MaxDegreeOfParallelism = maxDegreeOfParallelism,
+                                CancellationToken = cancellationToken
+                            };
+
+                            Parallel.ForEach(group, parallelOptions, (target, state) =>
+                            {
+                                if (cancellationToken.IsCancellationRequested)
+                                {
+                                    state.Stop();
+                                    return;
+                                }
+                                BuildSingleTarget(target, SourceFolder, OutputFolder, MsBuild, Target, AssemblySearchPaths, Configuration, VisualStudioVersion, asp, vsv, encoding, ref list, ref cmdErrorText, ref targetIndex, ref errorLogBef, lockObj, cancellationToken);
+                            });
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            ProgressRing.IsActive = false;
+                            ProgressBar.Visibility = Visibility.Hidden;
+                            BuildButton.Visibility = Visibility.Visible;
+                            CancelButton.Visibility = Visibility.Collapsed;
+                            new ToastContentBuilder()
+                                .AddText(Properties.Resources.Mb_BuildCancelled)
+                                .Show();
+                        });
+
+                        return;
+                    }
+                }
+                else if (parallelBuild)
+                {
+                    // 依存関係解析失敗時のフォールバック：従来の並列ビルド
                     var parallelOptions = new ParallelOptions
                     {
                         MaxDegreeOfParallelism = maxDegreeOfParallelism,
@@ -619,9 +738,8 @@ namespace msbuild_gui
                     };
                     try
                     {
-                        Parallel.ForEach(targets, parallelOptions, (target, state) =>
+                        Parallel.ForEach(orderedTargets, parallelOptions, (target, state) =>
                         {
-                            // キャンセルがリクエストされているかチェック
                             if (cancellationToken.IsCancellationRequested)
                             {
                                 state.Stop();
@@ -630,7 +748,6 @@ namespace msbuild_gui
                             BuildSingleTarget(target, SourceFolder, OutputFolder, MsBuild, Target, AssemblySearchPaths, Configuration, VisualStudioVersion, asp, vsv, encoding, ref list, ref cmdErrorText, ref targetIndex, ref errorLogBef, lockObj, cancellationToken);
                         });
                     }
-
                     catch (OperationCanceledException)
                     {
                         Application.Current.Dispatcher.Invoke(() =>
@@ -649,8 +766,8 @@ namespace msbuild_gui
                 }
                 else
                 {
-                    // 順次ビルド
-                    foreach (var target in targets)
+                    // 順次ビルド（依存関係を考慮した順序で実行）
+                    foreach (var target in orderedTargets)
                     {
                         // キャンセルがリクエストされているかチェック
                         if (cancellationToken.IsCancellationRequested)
@@ -718,12 +835,22 @@ namespace msbuild_gui
                         process?.Close();
 
                         string errFlg = "";
-                        errorLogNow = File.ReadAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt", encoding);
-                        if (string.Compare(errorLogBef, errorLogNow) != 0)
+                        try
                         {
-                            errFlg = "*";
+                            if (File.Exists(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt"))
+                            {
+                                errorLogNow = File.ReadAllText(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt", encoding);
+                                if (string.Compare(errorLogBef, errorLogNow) != 0)
+                                {
+                                    errFlg = "*";
+                                }
+                                errorLogBef = errorLogNow;
+                            }
                         }
-                        errorLogBef = errorLogNow;
+                        catch
+                        {
+                            // ファイル読み込みエラーは無視して続行
+                        }
 
                         list[targetIndex, 0] = Path.GetFileNameWithoutExtension(target) + errFlg;
                         list[targetIndex, 1] = standardOutput;
@@ -745,7 +872,7 @@ namespace msbuild_gui
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    ModernWpf.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ModernWpf.MessageBox.Show($"Build error:\n{ex.Message}\n\nStack trace:\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     ProgressRing.IsActive = false;
                     ProgressBar.Visibility = Visibility.Hidden;
                     BuildButton.Visibility = Visibility.Visible;
@@ -839,12 +966,13 @@ namespace msbuild_gui
                 }
                 catch { }
 
-                list[targetIndex, 0] = Path.GetFileNameWithoutExtension(target) + errFlg;
-                list[targetIndex, 1] = standardOutput;
-                list[targetIndex, 2] = command.Replace("/c \"", "");
-
+                // 現在のインデックスを取得してからインクリメント
                 int currentIndex = targetIndex;
                 targetIndex += 1;
+
+                list[currentIndex, 0] = Path.GetFileNameWithoutExtension(target) + errFlg;
+                list[currentIndex, 1] = standardOutput;
+                list[currentIndex, 2] = command.Replace("/c \"", "");
 
                 // ProgressBarを進める
                 Application.Current.Dispatcher.Invoke(() =>
@@ -1103,6 +1231,82 @@ namespace msbuild_gui
             var window = new APISettings();
             window.Owner = this;
             window.ShowDialog();
+        }
+        /// <summary>
+        /// 依存関係順序を表示
+        /// </summary>
+        private void DependencyButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                List<string> targets = TargetList.Items.Cast<string>().ToList();
+                if (targets.Count == 0)
+                {
+                    ModernWpf.MessageBox.Show(
+                        Properties.Resources.Mb_PlsSelectBuildTarget ?? "Please select build targets.",
+                        Properties.Resources.Confirmation ?? "Confirmation",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                string? projectName = ProjCombo.SelectedItem as string;
+                string? SourceFolder = Projects.ProjectsList
+                        .Where(x => x.Value.ProjectName == projectName).Select(x => x.Value.SourceFolder).FirstOrDefault();
+
+                // ターゲットのフルパスリストを作成
+                var targetFullPaths = targets.Select(t => SourceFolder + t).ToList();
+
+                // 依存関係マップを構築
+                var dependencyMap = ProjectDependencyAnalyzer.BuildDependencyMap(targetFullPaths);
+                var dependencyGraph = new DependencyGraph();
+                dependencyGraph.BuildGraph(dependencyMap);
+
+                // 並列ビルドグループを取得
+                var parallelGroups = dependencyGraph.GetParallelBuildGroups(targetFullPaths);
+
+                // 順次ビルド順序を取得
+                var orderedFullPaths = dependencyGraph.GetBuildOrder(targetFullPaths);
+
+                // フルパスから相対パスに戻す
+                var orderedTargets = orderedFullPaths.Select(fp => fp.Replace(SourceFolder, "")).ToList();
+                var displayGroups = parallelGroups.Select(group =>
+                    group.Select(fp => fp.Replace(SourceFolder, "")).ToList()
+                ).ToList();
+
+                // 依存関係情報を収集
+                var dependencyInfo = new Dictionary<string, HashSet<string>>();
+                foreach (var target in targets)
+                {
+                    var fullPath = SourceFolder + target;
+                    var deps = dependencyGraph.GetAllDependencies(fullPath);
+                    var relativeDeps = new HashSet<string>(
+                        deps.Select(d => d.Replace(SourceFolder, "")),
+                        StringComparer.OrdinalIgnoreCase);
+                    dependencyInfo[target] = relativeDeps;
+                }
+
+                // 専用ウィンドウで表示
+                var window = new DependencyViewer(orderedTargets, displayGroups, dependencyInfo);
+                window.Owner = this;
+                window.ShowDialog();
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModernWpf.MessageBox.Show(
+                    $"Circular dependency detected:\n{ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                ModernWpf.MessageBox.Show(
+                    $"Error analyzing dependencies:\n{ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
         #endregion
     }

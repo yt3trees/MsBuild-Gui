@@ -799,5 +799,23 @@ namespace msbuild_gui.Properties {
                 return ResourceManager.GetString("VersionInformation", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Resolve Dependencies に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ResolveDependencies {
+            get {
+                return ResourceManager.GetString("ResolveDependencies", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Automatically analyze and resolve project dependencies to determine optimal build order に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tt_ResolveDependencies {
+            get {
+                return ResourceManager.GetString("Tt_ResolveDependencies", resourceCulture);
+            }
+        }
     }
 }
