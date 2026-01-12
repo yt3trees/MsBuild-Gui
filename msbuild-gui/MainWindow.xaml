@@ -10,7 +10,7 @@
     xmlns:ui="http://schemas.modernwpf.com/2019"
     Title="MsBuild-Gui"
     Width="800"
-    Height="650"
+    Height="600"
     ui:WindowHelper.UseModernWindowStyle="True"
     Closing="Window_Closing"
     Icon="/msbuild-gui;component/Resources/MsBuild-Gui.ico"
@@ -122,7 +122,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Grid Width="260" HorizontalAlignment="Center">
+            <Grid Width="300" HorizontalAlignment="Center">
                 <ui:ProgressRing
                     x:Name="ProgressRing"
                     Width="30"
@@ -157,7 +157,7 @@
                     Orientation="Vertical">
                     <CheckBox
                         x:Name="ParallelBuildCheck"
-                        Width="130"
+                        Width="170"
                         MinHeight="28"
                         Margin="0,2,0,0"
                         Content="{Binding Resources.ParallelBuild, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
@@ -165,7 +165,7 @@
                         ToolTip="{Binding Resources.Tt_ParallelBuild, Source={x:Static app:ResourceService.Current}, Mode=OneWay}" />
                     <CheckBox
                         x:Name="ResolveDependenciesCheck"
-                        Width="130"
+                        Width="170"
                         MinHeight="28"
                         Margin="0,0,0,0"
                         Content="{Binding Resources.ResolveDependencies, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
