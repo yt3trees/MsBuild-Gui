@@ -786,7 +786,7 @@ namespace msbuild_gui
                         }
 
                         string targetFilePath = SourceFolder + target;
-                        command = $"/c \"" +
+                        command = $"/c \"chcp 65001 > nul && " +
                             $"\"{MsBuild}\" " +
                             $"{targetFilePath} " +
                             $"/target:{Target} " +
@@ -894,7 +894,7 @@ namespace msbuild_gui
             string targetFilePath = SourceFolder + target;
             // 並列ビルド時のファイル競合を避けるため、一時的なログファイルを使用
             string tempLogFile = $"{Directory.GetCurrentDirectory()}\\BuildErrorLog_{Path.GetFileNameWithoutExtension(target)}_{Guid.NewGuid()}.txt";
-            string command = $"/c \"" +
+            string command = $"/c \"chcp 65001 > nul && " +
                 $"\"{MsBuild}\" " +
                 $"{targetFilePath} " +
                 $"/target:{Target} " +
@@ -1017,9 +1017,8 @@ namespace msbuild_gui
                     .Show();
 
                     // エラー出力ファイルの読み込み
-                    System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance); // Shift-JISを扱うためのおまじない
                     StreamReader resultErrorText = new StreamReader(Directory.GetCurrentDirectory() + "\\BuildErrorLog.txt"
-                        , System.Text.Encoding.GetEncoding("shift_jis"));
+                        , System.Text.Encoding.UTF8);
 
                     // エラーウィンドウを表示
                     string errTxt = resultErrorText.ReadToEnd();
