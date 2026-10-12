@@ -246,15 +246,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MsBuild-Gui"
-        "ProductCode" = "8:{2E6585DD-6119-4510-86EF-CA8475FB693D}"
-        "PackageCode" = "8:{0F44FBB4-FC14-4099-B35A-1DC1D0B000FD}"
+        "ProductCode" = "8:{55B5D3B3-A3DF-4A68-B0EB-BAFD4729F1E1}"
+        "PackageCode" = "8:{1FA3F61C-6639-4349-AF70-9817A65BD13E}"
         "UpgradeCode" = "8:{7D70ECDB-383F-40E2-B1A8-D750CFA02BE0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.4.1"
+        "ProductVersion" = "8:1.4.2"
         "Manufacturer" = "8:yt3trees"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -904,7 +904,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8D74D3400DCC4DC197EB9C8A48E0092F"
             {
-            "SourcePath" = "8:..\\msbuild-gui\\bin\\Release\\net6.0-windows10.0.18362.0\\publish\\win-x64\\msbuild-gui.exe"
+            "SourcePath" = "8:..\\msbuild-gui\\bin\\Release\\net10.0-windows10.0.18362.0\\publish\\win-x64\\msbuild-gui.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_48CED686DB0242B9AC413E7C192F73EE"

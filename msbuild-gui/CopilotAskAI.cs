@@ -238,6 +238,31 @@ namespace msbuild_gui
             return _responseBuffer.ToString();
         }
 
+        /// <summary>
+        /// 現在のアカウントで利用可能な Copilot モデルの ID 一覧を取得します。
+        /// </summary>
+        /// <param name="gitHubToken">GitHub アクセストークン (null の場合はログイン済みユーザーを使用)</param>
+        /// <returns>ポリシーで無効化されていないモデル ID の一覧</returns>
+        public static async Task<List<string>> ListModelIdsAsync(string? gitHubToken)
+        {
+            var clientOptions = new CopilotClientOptions();
+            if (!string.IsNullOrWhiteSpace(gitHubToken))
+            {
+                clientOptions.GitHubToken = gitHubToken;
+            }
+
+            await using var client = new CopilotClient(clientOptions);
+            await client.StartAsync();
+
+            var models = await client.ListModelsAsync();
+            return models
+                .Where(m => !string.Equals(m.Policy?.State, "disabled", StringComparison.OrdinalIgnoreCase))
+                .Select(m => m.Id)
+                .Where(id => !string.IsNullOrEmpty(id))
+                .Distinct()
+                .ToList();
+        }
+
         private void EnsureInitialized()
         {
             if (_sendFunc == null)

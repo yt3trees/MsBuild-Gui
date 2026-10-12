@@ -18,9 +18,9 @@ MsBuild-GuiはMsBuildをGuiで操作・実行できるツールです。
 - Msbuildのパラメータを画面上から設定(全パラメータには未対応)
 
 ## Requirement
-- Windows10
-- Visual Studio 2022
-- [.NET6](https://dotnet.microsoft.com/ja-jp/download/dotnet/6.0)
+- Windows11
+- Visual Studio 2026
+- [.NET10](https://dotnet.microsoft.com/ja-jp/download/dotnet/10.0)
 - [ModernWpf](https://github.com/Kinnara/ModernWpf)
 - [Microsoft Visual Studio Installer Projects](https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2017InstallerProjects)
 

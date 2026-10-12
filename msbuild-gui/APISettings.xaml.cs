@@ -1,6 +1,8 @@
 using ModernWpf;
 using System;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -71,13 +73,14 @@ namespace msbuild_gui
             Properties.Settings.Default.AzDeploymentId = DeploymentIdTextbox.Text;
             Properties.Settings.Default.AzBaseDomain = BaseDomainTextbox.Text;
 
+            string model = ModelComboBox.Text.Trim();
             if (Properties.Settings.Default.Provider == "GitHubCopilot")
             {
-                Properties.Settings.Default.GitHubCopilotModel = ModelComboBox.Text;
+                Properties.Settings.Default.GitHubCopilotModel = model;
             }
             else
             {
-                Properties.Settings.Default.Model = ModelComboBox.Text;
+                Properties.Settings.Default.Model = model;
             }
 
             Properties.Settings.Default.Save();
@@ -114,13 +117,8 @@ namespace msbuild_gui
 
             if (provider == "GitHubCopilot")
             {
-                foreach (string model in CopilotModels)
-                    ModelComboBox.Items.Add(model);
-
-                string savedCopilotModel = Properties.Settings.Default.GitHubCopilotModel;
-                ModelComboBox.Text = string.IsNullOrEmpty(savedCopilotModel)
-                    ? CopilotModels[0]
-                    : savedCopilotModel;
+                SetCopilotModelItems(CopilotModels);
+                _ = LoadCopilotModelsAsync();
             }
             else
             {
@@ -129,6 +127,55 @@ namespace msbuild_gui
                     ModelComboBox.Items.Add(model);
 
                 ModelComboBox.Text = Properties.Settings.Default.Model;
+            }
+        }
+
+        /// <summary>
+        /// Copilot モデル候補をコンボボックスに設定し、保存済みモデルを選択します。
+        /// </summary>
+        private void SetCopilotModelItems(IEnumerable<string> models)
+        {
+            ModelComboBox.Items.Clear();
+            foreach (string model in models)
+                ModelComboBox.Items.Add(model);
+
+            string savedCopilotModel = Properties.Settings.Default.GitHubCopilotModel;
+            if (!string.IsNullOrEmpty(savedCopilotModel) && !ModelComboBox.Items.Contains(savedCopilotModel))
+                ModelComboBox.Items.Insert(0, savedCopilotModel);
+
+            ModelComboBox.Text = string.IsNullOrEmpty(savedCopilotModel)
+                ? ModelComboBox.Items[0] as string
+                : savedCopilotModel;
+        }
+
+        /// <summary>
+        /// サインイン済みの場合、利用可能な Copilot モデルを取得してコンボボックスを更新します。
+        /// 取得に失敗した場合は既定の候補のままにします。
+        /// </summary>
+        private async Task LoadCopilotModelsAsync()
+        {
+            string token = Properties.Settings.Default.APIKey;
+            if (string.IsNullOrWhiteSpace(token)) return;
+
+            try
+            {
+                List<string> models = await CopilotAskAI.ListModelIdsAsync(token);
+                if (models.Count == 0) return;
+
+                // 取得中にプロバイダーが切り替えられていたら反映しない
+                if (ProviderComboBox.Text != "GitHubCopilot"
+                    && (ProviderComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() != "GitHubCopilot")
+                    return;
+
+                // 取得中にユーザーが選択・入力したモデルを優先して維持
+                string current = ModelComboBox.Text;
+                SetCopilotModelItems(models);
+                if (!string.IsNullOrWhiteSpace(current))
+                    ModelComboBox.Text = current;
+            }
+            catch
+            {
+                // オフライン・未認証などの場合は既定の候補を使用
             }
         }
 
@@ -216,6 +263,9 @@ namespace msbuild_gui
                 DeviceCodePanel.Visibility = Visibility.Collapsed;
                 GitHubStatusText.Text = "✅ サインインが完了しました。";
                 GitHubSignInButton.Content = "再サインイン";
+
+                // サインインしたアカウントで利用可能なモデルを取得
+                await LoadCopilotModelsAsync();
             }
             catch (OperationCanceledException)
             {

@@ -96,7 +96,8 @@
             <Label HorizontalAlignment="Left" Content="Model" />
             <ComboBox
                 x:Name="ModelComboBox"
-                MinWidth="140"
+                MinWidth="200"
+                IsEditable="True"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top" />
             <Label x:Name="DeploymentIdLabel" HorizontalAlignment="Left" Content="Deployment-ID" />

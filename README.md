@@ -21,7 +21,8 @@ Double-click on them to make them buildable. Then click the Build button to exec
 
 ## Requirement
 - Windows11
-- [.NET8](https://dotnet.microsoft.com/ja-jp/download/dotnet/8.0)
+- Visual Studio 2026
+- [.NET10](https://dotnet.microsoft.com/ja-jp/download/dotnet/10.0)
 - [ModernWpf](https://github.com/Kinnara/ModernWpf)
 - [Microsoft Visual Studio Installer Projects](https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2017InstallerProjects)
 
