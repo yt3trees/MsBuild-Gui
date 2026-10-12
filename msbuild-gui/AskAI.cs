@@ -53,7 +53,7 @@ namespace msbuild_gui
             }
 
             // Use streaming to get response
-            var streamingResponse = chatClient.CompleteStreamingAsync(messages, chatOptions);
+            var streamingResponse = chatClient.GetStreamingResponseAsync(messages, chatOptions);
             var fullText = new StringBuilder();
 
             await foreach (var chunk in streamingResponse)
@@ -98,7 +98,7 @@ namespace msbuild_gui
             }
 
             // Use streaming to get response
-            var streamingResponse = chatClient.CompleteStreamingAsync(messages, chatOptions);
+            var streamingResponse = chatClient.GetStreamingResponseAsync(messages, chatOptions);
             var fullText = new StringBuilder();
 
             await foreach (var chunk in streamingResponse)

@@ -20,6 +20,9 @@
     <Setting Name="AzBaseDomain" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="GitHubCopilotModel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gpt-5</Value>
+    </Setting>
     <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

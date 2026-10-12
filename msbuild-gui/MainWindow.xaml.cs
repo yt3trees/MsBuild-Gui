@@ -1053,7 +1053,14 @@ namespace msbuild_gui
         /// <param name="errorText">エラーテキスト</param>
         private void ShowResult(string title, int count, string[,] list, string errorText)
         {
-            var window = new Console(title, count, list, errorText);
+            // 現在選択中のプロジェクトの SourceFolder を取得して Copilot ツールに渡す
+            string? projectName = ProjCombo.SelectedItem as string;
+            string? sourceFolder = Projects.ProjectsList
+                .Where(x => x.Value.ProjectName == projectName)
+                .Select(x => x.Value.SourceFolder)
+                .FirstOrDefault();
+
+            var window = new Console(title, count, list, errorText, sourceFolder);
             // 親ウィンドウの中心位置に配置
             double parentCenterX = this.Left + (this.Width / 2);
             double parentCenterY = this.Top + (this.Height / 2);

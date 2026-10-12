@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     x:Class="msbuild_gui.APISettings"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,8 +10,8 @@
     xmlns:sys="clr-namespace:System;assembly=netstandard"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     Title="{Binding Resources.OpenAIAPISetting, Source={x:Static app:ResourceService.Current}, Mode=OneWay}"
-    Width="350"
-    Height="400"
+    Width="370"
+    Height="480"
     ui:WindowHelper.UseModernWindowStyle="True"
     Closing="Window_Closing"
     KeyDown="Window_KeyDown"
@@ -29,14 +29,17 @@
             <Label HorizontalAlignment="Left" Content="Provider" />
             <ComboBox
                 x:Name="ProviderComboBox"
-                Width="120"
+                Width="160"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 SelectionChanged="ProviderComboBox_SelectionChanged">
                 <ComboBoxItem Content="OpenAI" />
                 <ComboBoxItem Content="Azure" />
+                <ComboBoxItem Content="GitHubCopilot" />
             </ComboBox>
-            <Label HorizontalAlignment="Left" Content="API Key" />
+
+            <!-- OpenAI / Azure 用 API Key -->
+            <Label x:Name="APIKeyLabel" HorizontalAlignment="Left" Content="API Key" />
             <PasswordBox
                 x:Name="APIKeyPasswordbox"
                 MinWidth="200"
@@ -46,13 +49,57 @@
                     <SolidColorBrush Opacity="0.5" Color="{DynamicResource SystemChromeLowColor}" />
                 </PasswordBox.Background>
             </PasswordBox>
+
+            <!-- GitHub Copilot 用サインインパネル -->
+            <StackPanel x:Name="GitHubSignInPanel" Visibility="Collapsed" Margin="0,4,0,4">
+                <Label HorizontalAlignment="Left" Content="GitHub Copilot" FontWeight="SemiBold" />
+                <TextBlock
+                    x:Name="GitHubStatusText"
+                    Margin="0,2,0,6"
+                    Foreground="{DynamicResource SystemBaseHighColorBrush}"
+                    Text="GitHub アカウントでサインインしてください。"
+                    TextWrapping="Wrap" />
+                <Button
+                    x:Name="GitHubSignInButton"
+                    Width="180"
+                    HorizontalAlignment="Left"
+                    Click="GitHubSignInButton_Click"
+                    Content="Sign in with GitHub" />
+                <!-- デバイスフロー認証コード表示パネル -->
+                <Border
+                    x:Name="DeviceCodePanel"
+                    Margin="0,8,0,0"
+                    Padding="8"
+                    BorderBrush="{DynamicResource SystemBaseLowColorBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="ブラウザが開きます。以下のコードを入力してください:" TextWrapping="Wrap" />
+                        <TextBlock
+                            x:Name="DeviceCodeText"
+                            Margin="0,4,0,0"
+                            FontFamily="Consolas"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            HorizontalAlignment="Center" />
+                        <Button
+                            Margin="0,6,0,0"
+                            HorizontalAlignment="Center"
+                            Click="CopyCodeButton_Click"
+                            Content="コードをコピー"
+                            Width="120" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
             <Label HorizontalAlignment="Left" Content="Model" />
             <ComboBox
                 x:Name="ModelComboBox"
                 MinWidth="140"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top" />
-            <Label HorizontalAlignment="Left" Content="Deployment-ID" />
+            <Label x:Name="DeploymentIdLabel" HorizontalAlignment="Left" Content="Deployment-ID" />
             <TextBox
                 x:Name="DeploymentIdTextbox"
                 MinWidth="200"
@@ -61,7 +108,7 @@
                     <SolidColorBrush Opacity="0.5" Color="{DynamicResource SystemChromeLowColor}" />
                 </TextBox.Background>
             </TextBox>
-            <Label HorizontalAlignment="Left" Content="BaseDomain" />
+            <Label x:Name="BaseDomainLabel" HorizontalAlignment="Left" Content="BaseDomain" />
             <TextBox
                 x:Name="BaseDomainTextbox"
                 MinWidth="200"

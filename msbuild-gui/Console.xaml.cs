@@ -20,9 +20,16 @@ namespace msbuild_gui
         private string command;
         private List<Microsoft.Extensions.AI.ChatMessage> conversationHistory = new List<Microsoft.Extensions.AI.ChatMessage>();
         private StringBuilder fullConversationText = new StringBuilder();
-        public Console(string result, int maxCount, string[,] list, string errorLog)
+
+        // GitHub Copilot エージェント (GitHubCopilot プロバイダー選択時に使用)
+        private CopilotAskAI? _copilot;
+        // SourceFolder (Copilot ツールのサンドボックス境界)
+        private readonly string? _sourceFolder;
+
+        public Console(string result, int maxCount, string[,] list, string errorLog, string? sourceFolder = null)
         {
             InitializeComponent();
+            _sourceFolder = sourceFolder;
             this.Width = 1000;
             AIResponseColumn.Width = new GridLength(0);
             SplitterColumn.MinWidth = 0;
@@ -138,6 +145,16 @@ namespace msbuild_gui
                 this.Close();
             }
         }
+
+        private async void Window_Closed(object sender, EventArgs e)
+        {
+            // Copilot セッションを破棄
+            if (_copilot != null)
+            {
+                await _copilot.DisposeAsync();
+                _copilot = null;
+            }
+        }
         private void CmdResult_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             // フォーカスしているテキストボックスを取得
@@ -228,24 +245,9 @@ namespace msbuild_gui
                 bool isFirstChunk = true;
                 bool needsUpdate = false;
 
-                // Initialize conversation history
-                conversationHistory.Clear();
-                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.System, "You are an expert at analyzing C# error messages."));
-
-                // Load prompt template
-                string promptTemplate = System.IO.File.ReadAllText(@"Plugins\SemanticPlugins\ErrorAnalysis\skprompt.txt");
-                string prompt = promptTemplate
-                    .Replace("{{$errorMessage}}", errorMessage)
-                    .Replace("{{$language}}", MainWindow.Projects.Language);
-
-                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, prompt));
-
-                // Add initial prompt to conversation display
-                //fullConversationText.AppendLine("## <User Question>\n");
-                //fullConversationText.AppendLine("Please analyze the following error message.\n");
                 fullConversationText.AppendLine("## 🤖AI Response\n");
 
-                // Timer to update UI periodically (reduce flickering)
+                // UI 更新タイマー (フリッカー低減)
                 var updateTimer = new System.Windows.Threading.DispatcherTimer
                 {
                     Interval = TimeSpan.FromMilliseconds(100)
@@ -260,14 +262,14 @@ namespace msbuild_gui
                 };
                 updateTimer.Start();
 
-                string result = await AskAI.ExecutePlugin(errorMessage, chunk =>
+                void OnChunk(string chunk)
                 {
                     Dispatcher.Invoke(() =>
                     {
                         fullConversationText.Append(chunk);
                         needsUpdate = true;
 
-                        // Expand UI on first chunk
+                        // 初回チャンク受信時に AI 応答ペインを展開
                         if (isFirstChunk)
                         {
                             this.Width = 1500;
@@ -277,14 +279,47 @@ namespace msbuild_gui
                             isFirstChunk = false;
                         }
                     });
-                });
+                }
 
-                // Stop timer and do final update
+                if (Properties.Settings.Default.Provider == "GitHubCopilot")
+                {
+                    // ---- GitHub Copilot SDK 経路 ----
+                    // 前回のセッションを破棄して新しいセッションを開始
+                    if (_copilot != null)
+                    {
+                        await _copilot.DisposeAsync();
+                        _copilot = null;
+                    }
+
+                    _copilot = new CopilotAskAI();
+                    await _copilot.InitializeAsync(
+                        gitHubToken: Properties.Settings.Default.APIKey,
+                        model: Properties.Settings.Default.GitHubCopilotModel,
+                        sourceFolder: _sourceFolder);
+
+                    await _copilot.AnalyzeAsync(errorMessage, OnChunk);
+                }
+                else
+                {
+                    // ---- 既存 Azure/OpenAI 経路 (無変更) ----
+                    conversationHistory.Clear();
+                    conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.System, "You are an expert at analyzing C# error messages."));
+
+                    string promptTemplate = System.IO.File.ReadAllText(@"Plugins\SemanticPlugins\ErrorAnalysis\skprompt.txt");
+                    string prompt = promptTemplate
+                        .Replace("{{$errorMessage}}", errorMessage)
+                        .Replace("{{$language}}", MainWindow.Projects.Language);
+
+                    conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, prompt));
+
+                    string result = await AskAI.ExecutePlugin(errorMessage, OnChunk);
+
+                    // 会話履歴を更新 (フォローアップ用)
+                    conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, result));
+                }
+
                 updateTimer.Stop();
                 AIResponseTextBox.Markdown = fullConversationText.ToString();
-
-                // Add AI response to conversation history
-                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, result));
             }
             catch (Exception ex)
             {
@@ -321,15 +356,12 @@ namespace msbuild_gui
 
             try
             {
-                // Add user's question to the display
                 fullConversationText.AppendLine($"\n\n---\n\n## 💬User Question\n\n{followUpQuestion}\n");
                 fullConversationText.AppendLine("## 🤖AI Response\n");
                 AIResponseTextBox.Markdown = fullConversationText.ToString();
 
                 bool needsUpdate = false;
-                var responseStart = fullConversationText.Length;
 
-                // Timer to update UI periodically (reduce flickering)
                 var updateTimer = new System.Windows.Threading.DispatcherTimer
                 {
                     Interval = TimeSpan.FromMilliseconds(100)
@@ -344,26 +376,36 @@ namespace msbuild_gui
                 };
                 updateTimer.Start();
 
-                var responseBuilder = new StringBuilder();
-                string result = await AskAI.ExecuteFollowUp(conversationHistory, followUpQuestion, chunk =>
+                void OnChunk(string chunk)
                 {
                     Dispatcher.Invoke(() =>
                     {
                         fullConversationText.Append(chunk);
-                        responseBuilder.Append(chunk);
                         needsUpdate = true;
                     });
-                });
+                }
 
-                // Stop timer and do final update
+                if (Properties.Settings.Default.Provider == "GitHubCopilot" && _copilot != null)
+                {
+                    // ---- GitHub Copilot SDK 経路: 同一セッションで継続 ----
+                    await _copilot.FollowUpAsync(followUpQuestion, OnChunk);
+                }
+                else
+                {
+                    // ---- 既存 Azure/OpenAI 経路 (無変更) ----
+                    var responseBuilder = new StringBuilder();
+                    string result = await AskAI.ExecuteFollowUp(conversationHistory, followUpQuestion, chunk =>
+                    {
+                        OnChunk(chunk);
+                        responseBuilder.Append(chunk);
+                    });
+
+                    conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, followUpQuestion));
+                    conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, result));
+                }
+
                 updateTimer.Stop();
                 AIResponseTextBox.Markdown = fullConversationText.ToString();
-
-                // Add to conversation history
-                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, followUpQuestion));
-                conversationHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, result));
-
-                // Clear the input textbox
                 FollowUpQuestionTextBox.Clear();
             }
             catch (Exception ex)
